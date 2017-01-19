@@ -1,0 +1,573 @@
+/*
+       document : style.css, for shasta-projects
+     created on : thursday, january 19, 2017, 08:51 AM
+         author : adrielo (audrey) bongalon
+    description : css stylesheet for the site
+
+                                        88
+                                        88
+                                        88
+      ,adPPYYba,  88       88   ,adPPYb,88  8b,dPPYba,   ,adPPYba,  8b       d8
+      ""     `Y8  88       88  a8"    `Y88  88P'   "Y8  a8P,,,,,88  `8b     d8'
+      ,adPPPPP88  88       88  8b      :88  88          8PP"""""""   `8b   d8'
+      88,    ,88  "8a,   ,a88  "8a,   ,d88  88          "8b,   ,aa    `8b,d8'
+      `"8bbdP"Y8   `"YbbdP'Y8   `"8bbdP"Y8  88           `"Ybbd8"'      Y88'
+                                                                        d8'
+                                                                       d8'
+*/
+
+
+
+
+root {
+    display: block;
+}
+
+
+
+
+html {
+    background: url("clouds-polluted-city.jpg") no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+
+
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Raleway", sans-serif;
+}
+
+
+
+
+#air-pollution {
+    font-family: "Raleway", sans-serif;
+    color: #000000;
+    font-size: 100px;
+    text-align: center;
+    margin: 20% 0 0;
+    padding: 0;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+
+
+
+.name {
+    margin: 0;
+    width: 100%;
+    border-bottom: 1px solid #00ffff;
+}
+
+
+
+
+.name h1 {
+    font-family: "Raleway", sans-serif;
+    font-weight: 100;
+    color: #ffffff;
+    font-size: 40px;
+    padding: 0.5% 6% 0.5%;
+    margin: 0;
+}
+.name h1::selection {
+    background: #9f8e38; /* WebKit/Blink Browsers */
+}
+.name h1::-moz-selection {
+    background: #9f8e38; /* Gecko Browsers */
+}
+
+
+
+
+.welcome {
+    width: 100%;
+    font-family: "Raleway", sans-serif;
+    font-size: 15px;
+    color: #ffffff;
+    text-align: center;
+}
+
+
+
+
+.welcome {
+    text-align: center;
+}
+.welcome h5::selection {
+    background: #9f8e38; /* WebKit/Blink Browsers */
+}
+.welcome h5::-moz-selection {
+    background: #9f8e38; /* Gecko Browsers */
+}
+
+
+
+
+.welcome a {
+    font-family: "Raleway", sans-serif;
+    color: #ffffff;
+    font-size: 14px;
+    text-align: center;
+    font-weight: bold;
+    text-decoration: none;
+    vertical-align: middle;
+    padding: 15px;
+    border: 1px solid #ffffff;
+    border-radius: 23px;
+    margin-top: 100px;
+    transition: 0.5s all;
+}
+.welcome a::selection {
+    background: #9f8e38; /* WebKit/Blink Browsers */
+}
+.welcome a::-moz-selection {
+    background: #9f8e38; /* Gecko Browsers */
+}
+
+
+
+
+.entry-button {
+    margin-top: 100px;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+
+
+
+.entry-button a:active {    
+    color: #ffffff;
+    background-color: #00bcbc;
+    cursor: default;
+}
+
+
+
+
+.entry-button:hover {
+    -webkit-transform:scale(1.1);
+    -moz-transform:scale(1.1);
+    -ms-transform:scale(1.1);
+    -o-transform:scale(1.1);
+    transform:scale(1.1);
+}
+
+
+
+
+.entry-button a:hover {
+    background-color: #dddddd;
+    background-color: rgba(255, 255, 255, 0.25);
+    cursor: default;
+}
+
+
+
+
+.nav {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	background-color: #000000;
+	background-color: rgba(0, 0, 0, 0.7);
+	border-bottom: 1px solid #00ffff;
+}
+
+
+
+
+.nav ul {
+    list-style: none;
+	margin: 0 6% 0;
+	width: 30%;
+	padding: 0;
+
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+}
+
+
+
+
+.nav a {
+    border-right: 1px solid #444444;
+}
+.left-border {
+    border-left: 1px solid #444444;
+}
+
+
+
+
+.nav li {
+    font-family: "Raleway", sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 15px;
+    text-align: center;
+    white-space: nowrap;
+
+    flex: 1 1 auto;
+}
+
+
+
+
+.nav li a {
+    display: block;
+    padding: 8px 15px;
+    text-decoration: none;
+    color: #00ffff;
+    transition: 0.4s background-color;
+}
+.nav li a::selection {
+    background: #ffffff; /* WebKit/Blink Browsers */
+}
+.nav li a::-moz-selection {
+    background: #ffffff; /* Gecko Browsers */
+}
+
+
+
+
+.nav a:hover {
+    background-color: #006868;
+    background-color: rgba(0, 255, 255, 0.4);
+    cursor: default;
+}
+
+
+
+
+.content-box {
+    margin: 0 6%;
+}
+
+
+
+
+.main {
+    display: inline-block;
+    margin: 0 10px 0 0;
+    height: 100%;
+    width: 70.25%;
+    background-color: #f7f7f7;
+    background-color: rgba(255,255,255,0.75);
+    border-left: 1px solid #a1a1a1;
+    border-right: 1px solid #a1a1a1;
+}
+
+
+
+
+.main-text {
+    font-family: "Open Sans", sans-serif;
+    color: #000000;
+    font-size: 15px;
+    text-align: justify;
+    padding: 0 20px;
+    margin: 10px 0 15px;
+}
+
+
+
+
+.main-text::selection, .main-text::-moz-selection, .sidebar-text::selection, .sidebar-text::-moz-selection, #air-pollution::selection, #air-pollution::-moz-selection,
+h1::selection, h1::-moz-selection, i::selection, i::-moz-selection, b::selection , b::-moz-selection, p.main-text a::selection, p.main-text a::-moz-selection, li::selection,
+li::-moz-selection, br::selection, br::-moz-selection, span::selection, span::-moz-selection {
+    background: #c2b15f;
+}
+
+
+
+
+.sidebar-text {
+    font-family: "Open Sans", sans-serif;
+    color: #000000;
+    font-size: 13px;
+    text-align: justify;
+    padding: 0 10px;
+    margin: 10px 0 15px;
+}
+
+
+
+
+.bullet-list {
+    margin: 0;
+    padding: 0;
+}
+
+
+
+
+.bullet-list li {
+    list-style: none;
+    font-family: "Open Sans", sans-serif;
+    color: #000000;
+    font-size: 15px;
+    text-align: justify;
+    padding: 0 20px 0 0;
+}
+
+
+
+
+.bullet-list li:before {
+    content: "-";
+    padding-right: 5px;
+}
+
+
+
+
+.sidebar {
+    float: right;
+    vertical-align: top;
+    margin: 0;
+    width: 27%;
+    /*height: 100%;*/
+    background-color: #f7f7f7;
+    background-color: rgba(255,255,255,0.75);
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+    border: 1px solid #a1a1a1;
+}
+
+
+
+
+.smol-main {
+    display: inline-block;
+    margin: 0 1% 0 0;
+    width: 70.25%;
+    background-color: #f7f7f7;
+    background-color: rgba(255,255,255,0.75);
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+    border-left: 1px solid #a1a1a1;
+    border-right: 1px solid #a1a1a1;
+    border-bottom: 1px solid #a1a1a1;
+}
+.smol-main::selection {
+    background: #9f8e38; /* WebKit/Blink Browsers */
+}
+.smol-main::-moz-selection {
+    background: #9f8e38; /* Gecko Browsers */
+}
+
+
+
+
+.full-main {
+    display: inline-block;
+    margin: 0 6%;
+    height: 100%;
+    background-color: #f7f7f7;
+    background-color: rgba(255,255,255,0.75);
+    border-left: 1px solid #a1a1a1;
+    border-right: 1px solid #a1a1a1;
+}
+
+
+
+
+.jump-to {
+    background-color: #eeeeee;
+    border: 2px solid #a1a1a1;
+    border-radius: 3px;
+    box-shadow: 2px 2px 3px #333333;
+    margin: 0 20px;
+    width: 200px;
+}
+
+
+
+
+.smol-title {
+    font-family: "Raleway", sans-serif;
+    color: #000000;
+    font-size: 15px;
+    font-weight: bold;
+    margin: 10px 10px 0;
+}
+.smol-title::selection {
+    background: #9f8e38; /* WebKit/Blink Browsers */
+}
+.smol-title::-moz-selection {
+    background: #9f8e38; /* Gecko Browsers */
+}
+
+
+
+
+.jump-to ol {
+    margin: 5px 5px 10px;
+}
+
+
+
+
+.jump-to li {
+    font-family: "Open Sans", sans-serif;
+    color: #000000;
+    font-size: 12px;
+    font-weight: bold;
+    margin: 0 10px;
+}
+
+
+
+
+.jump-to a, jump-to a:visited {
+    color: #555599;
+}
+.jump-to a::selection {
+    background: #9f8e38; /* WebKit/Blink Browsers */
+}
+.jump-to a::-moz-selection {
+    background: #9f8e38; /* Gecko Browsers */
+}
+
+
+
+
+.img-border img {
+    border: 2px solid #eeeeee;
+    border-radius: 3px;
+    box-shadow: 2px 2px 3px #333333;
+}
+img::selection {
+    background: #9f8e38; /* WebKit/Blink Browsers */
+}
+img::-moz-selection {
+    background: #9f8e38; /* Gecko Browsers */
+}
+
+.default-img img{
+    margin: 5px 20px;
+    display: inline-block;
+}
+
+
+
+
+/* vv----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----vv */
+
+.caption-box {
+    margin: 5px 20px 0;
+}
+/* make sure to manually add the width and the side to float it to in the html */
+
+
+
+
+.caption {
+    font-family: "Open Sans", sans-serif;
+    color: #000000;
+    font-size: 10px;
+    margin: 0;
+    padding-top: 2px;
+    text-align: center;
+}
+
+/* ^^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^^ */
+
+
+
+
+.subtext {
+    font-family: "Open Sans", sans-serif;
+    color: #000000;
+    font-size: 13px;
+}
+
+
+
+
+.mono {
+    font-family: "Cousine", monospace;
+    color: #000000;
+    font-size: 15px;
+}
+
+
+
+
+.mono-side {
+    font-family: "Cousine", monospace;
+    color: #000000;
+    font-size: 13px;
+}
+
+
+
+
+.offwhite-highlight {
+    background-color: #efefef;
+    padding: 1px 2px;
+    border-radius: 2px;
+}
+.offwhite-highlight::selection {
+    background: #9f8e38; /* WebKit/Blink Browsers */
+}
+.offwhite-highlight::-moz-selection {
+    background: #9f8e38; /* Gecko Browsers */
+}
+
+
+
+
+.white-highlight {
+    background-color: #ffffff;
+    padding: 1px 2px;
+    border-radius: 2px;
+}
+.white-highlight::selection {
+    background: #9f8e38; /* WebKit/Blink Browsers */
+}
+.white-highlight::-moz-selection {
+    background: #9f8e38; /* Gecko Browsers */
+}
+
+
+
+
+/* ----------------------------------------------------------------------------------------------------------------------------------------------- */
+
+
+
+
+.calculator-box {
+    display: inline-block;
+    width: 99.8%;
+    margin: 0;
+    background-color: #f7f7f7;
+    background-color: rgba(255, 255, 255, 0.75);
+    border-left: 1px solid #a1a1a1;
+    border-right: 1px solid #a1a1a1;
+    border-bottom: 1px solid #a1a1a1;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+}
