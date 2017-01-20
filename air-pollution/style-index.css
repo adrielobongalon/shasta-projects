@@ -27,14 +27,16 @@ root {
 
 
 html {
-    background: url("clouds-polluted-city.jpg") no-repeat center center fixed; 
+    background: url("clouds-polluted-city.jpg") no-repeat right center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
+    min-height: 101%;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 
@@ -54,7 +56,7 @@ body {
     color: #000000;
     font-size: 100px;
     text-align: center;
-    margin: 20% 0 0;
+    margin: 0;
     padding: 0;
     white-space: nowrap;
     overflow: hidden;
@@ -69,14 +71,16 @@ body {
     font-size: 26px;
     color: #ffffff;
     text-align: center;
+    margin: 0;
+    padding: 0;
 }
 
 
 
 
 #button {
-    margin-top: 100px;
     text-align: center;
+
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -ms-transition: all 0.5s ease;
@@ -122,12 +126,42 @@ body {
 
 
 
-/*#air-pollution::selection, #air-pollution::-moz-selection,*/
-/*h1::selection, h1::-moz-selection, i::selection, i::-moz-selection, b::selection , b::-moz-selection, p.main-text a::selection, p.main-text a::-moz-selection, li::selection,*/
-/*li::-moz-selection, br::selection, br::-moz-selection, span::selection, span::-moz-selection {*/
-/*    background: #c2b15f;*/
-/*}*/
-
 #air-pollution::selection, #by-audrey::selection, a::selection {
     background: #eadc97;
+    background: rgba(234, 220, 151, 0.5);
+}
+/* firefox is sooooo outdated. you have to manually enter each one. you cant list them or they'll glitch */
+#air-pollution::-moz-selection {
+    background: #eadc97;
+    background: rgba(234, 220, 151, 0.5);
+}
+#by-audrey::-moz-selection {
+    background: #eadc97;
+    background: rgba(234, 220, 151, 0.5);
+}
+a::-moz-selection {
+    background: #eadc97;
+    background: rgba(234, 220, 151, 0.5);
+}
+
+
+
+
+.title {
+    /*border-top: 1px solid green;*/
+    /*border-bottom: 1px dashed green;*/
+    /*flex: 0 1 auto;*/
+    width: 100%;
+    min-height: 33vh;
+    position: absolute;
+    top: 35vh;
+}
+
+
+
+
+.button-div {
+    width: 100%;
+    position: absolute;
+    top: 70vh;
 }
