@@ -43,6 +43,12 @@
         <meta name="msapplication-TileColor" content="#eadc97">
         <meta name="msapplication-TileImage" content="../audreyfavicons/mstile-144x144.png">
         <meta name="theme-color" content="#eadc97">
+
+        <!-- This needs to load before the calculations -->
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+        </script>
+        <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
     </head>
     <body>
         <h1 id="title">Air Pollution</h1>
@@ -58,17 +64,48 @@
         <div class="content-box">
             <div class="main">
                 <h2 class="main-header">Cars - Carbon Dioxide</h2>
-                <p class="main-text">For this project, I decided to direct my research theme at common forms of air pollution. After some initial
-                online research, I narrowed down a list to three common sources of air pollution: cars, power plants, and cows.</p>
+                <p class="main-text">When it comes to air pollution, the first thing you'd probably think of is cars. Known for producing a multitude
+                of greenhouse gases, especially carbon dioxide (C0<sub>2</sub>), cars are responsible a significant fraction of all C0<sub>2</sub>
+                emissions.</p>
     
-                <p class="main-text">I then generated these research questions:</p>
-                <ol class="main-text numbered-list">
-                    <li>On average, how many carbon dioxide molecules does my family’s car, a 2013 Mazda 3, emit annually?</li>
-                    <li>How many grams sulfur are produced yearly by the nearest coal power plant via sulfur dioxide emissions?</li>
-                    <li>How many litres of methane are released by cows in the US every year?</li>
-                </ol>
-                    
-                <p class="main-text">Then I conducted further reaserch and made calculations to answer each question.</p>
+                <p class="main-text">Just as a reminder, my research question for this topic was:<br>"On average, how many carbon dioxide molecules does
+                my family’s car, a 2013 Mazda 3, emit annually?"</p>
+
+                <div class="flex-container">
+                    <div class="caption-box flex-item">
+                        <div class="img-border">
+                            <img src="images/mazda3.png" width="100%" alt="a grey 2013 Mazda3 hatchback">
+                        </div>
+                        <p class="caption">This is what the car looks like.</p>
+                    </div>
+
+                    <div class="flex-item">
+                        <p class="main-text" style="margin-top: 5px; padding-left: 0;">So here's some of the data that I gathered specifically from
+                        the dashboard and the manuals on the car.</p>
+                        <ul class="unordered-list">
+                            <li>make and model: 2013 Mazda 3 hatchback</li>
+                            <li>overall mpg rating: 32 miles per gallon (mpg)</li>
+                            <li>engine capacity: 2.0 litres</li>
+                            <li>fuel type: petrol</li>
+                            <li>mileage: 60,193 miles</li>
+                            <li>owned since: 2013 (~4 years)</li>
+                        </ul>
+        
+                        <p class="main-text" style="padding-left: 0;">And here's the data I gathered online.</p>
+                        <ul class="unordered-list">
+                            <li>CO<sub>2</sub> emissions: 119 g/km</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <p class="main-text">Note that not all of this data was necessary in the calculation, but <i>was</i> necessary for the research.
+                There are several variants of the Mazda3, and finding the right one was not easy.</p>
+
+                <p class="main-text">And from there, I just made the following calculation:</p>
+                <div class="main-text" style="text-align: left;">
+                    $$  ({{60193 \hspace{1.5mm} miles} \over {4 \hspace{1.5mm} years}})  \times  ({{60193 \hspace{1.5mm} miles} \over {4 \hspace{1.5mm} years}})  \times
+                        ({{60193 \hspace{1.5mm} miles} \over {4 \hspace{1.5mm} years}})  \times  ({{60193 \hspace{1.5mm} miles} \over {4 \hspace{1.5mm} years}})  $$
+                </div>
             </div>
             <div class="sidebar">
                 <h4 class="sidebar-header">About</h4>
