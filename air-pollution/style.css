@@ -27,14 +27,16 @@ root {
 
 
 html {
-    background: url("clouds-polluted-city.jpg") no-repeat center center fixed; 
+    background: url("clouds-polluted-city.jpg") no-repeat right center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
+    min-height: 101%;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 
@@ -49,131 +51,91 @@ body {
 
 
 
-#air-pollution {
+.main-text {
+    font-family: "Open Sans", sans-serif;
+    color: #000000;
+    font-size: 15px;
+    text-align: justify;
+    padding: 0 20px;
+    margin: 10px 0 15px;
+}
+
+
+
+
+.sidebar-text {
+    font-family: "Open Sans", sans-serif;
+    color: #000000;
+    font-size: 13px;
+    text-align: justify;
+    padding: 0 10px;
+    margin: 10px 0 15px;
+}
+
+
+
+
+.main-header {
     font-family: "Raleway", sans-serif;
     color: #000000;
-    font-size: 100px;
-    text-align: center;
-    margin: 20% 0 0;
-    padding: 0;
-    white-space: nowrap;
-    overflow: hidden;
+    font-size: 25px;
+    text-align: justify;
+    margin: 20px 20px 0;
+    border-bottom: 1px solid #a1a1a1;
 }
 
 
 
 
-.name {
-    margin: 0;
-    width: 100%;
-    border-bottom: 1px solid #00ffff;
-}
-
-
-
-
-.name h1 {
+.sidebar-header {
     font-family: "Raleway", sans-serif;
-    font-weight: 100;
+    color: #000000;
+    font-size: 20px;
+    text-align: justify;
+    margin: 15px 10px 0;
+    border-bottom: 1px solid #a1a1a1;
+    padding-top: 10px;
+}
+
+
+
+
+.numbered-list {
+    margin: 0 40px 20px;
+}
+
+
+
+
+.numbered-list li:before {
+    padding-right: 20px;
+}
+
+
+
+
+.sidebar {
+    float: right;
+    vertical-align: top;
+    margin: 0;
+    width: 27%;
+    /*height: 100%;*/
+    background-color: #f7f7f7;
+    background-color: rgba(255,255,255,0.75);
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+    border: 1px solid #a1a1a1;
+}
+
+
+
+
+#title {
+    margin: 0.5% 6% 0.5%;
+    font-family: "Raleway", sans-serif;
     color: #ffffff;
     font-size: 40px;
-    padding: 0.5% 6% 0.5%;
-    margin: 0;
-}
-.name h1::selection {
-    background: #9f8e38; /* WebKit/Blink Browsers */
-}
-.name h1::-moz-selection {
-    background: #9f8e38; /* Gecko Browsers */
-}
-
-
-
-
-.welcome {
-    width: 100%;
-    font-family: "Raleway", sans-serif;
-    font-size: 15px;
-    color: #ffffff;
-    text-align: center;
-}
-
-
-
-
-.welcome {
-    text-align: center;
-}
-.welcome h5::selection {
-    background: #9f8e38; /* WebKit/Blink Browsers */
-}
-.welcome h5::-moz-selection {
-    background: #9f8e38; /* Gecko Browsers */
-}
-
-
-
-
-.welcome a {
-    font-family: "Raleway", sans-serif;
-    color: #ffffff;
-    font-size: 14px;
-    text-align: center;
-    font-weight: bold;
-    text-decoration: none;
-    vertical-align: middle;
-    padding: 15px;
-    border: 1px solid #ffffff;
-    border-radius: 23px;
-    margin-top: 100px;
-    transition: 0.5s all;
-}
-.welcome a::selection {
-    background: #9f8e38; /* WebKit/Blink Browsers */
-}
-.welcome a::-moz-selection {
-    background: #9f8e38; /* Gecko Browsers */
-}
-
-
-
-
-.entry-button {
-    margin-top: 100px;
-    -webkit-transition: all 0.5s ease;
-    -moz-transition: all 0.5s ease;
-    -ms-transition: all 0.5s ease;
-    -o-transition: all 0.5s ease;
-    transition: all 0.5s ease;
-}
-
-
-
-
-.entry-button a:active {    
-    color: #ffffff;
-    background-color: #00bcbc;
-    cursor: default;
-}
-
-
-
-
-.entry-button:hover {
-    -webkit-transform:scale(1.1);
-    -moz-transform:scale(1.1);
-    -ms-transform:scale(1.1);
-    -o-transform:scale(1.1);
-    transform:scale(1.1);
-}
-
-
-
-
-.entry-button a:hover {
-    background-color: #dddddd;
-    background-color: rgba(255, 255, 255, 0.25);
-    cursor: default;
+    font-weight: 100;
 }
 
 
@@ -184,8 +146,9 @@ body {
 	margin: 0;
 	padding: 0;
 	background-color: #000000;
-	background-color: rgba(0, 0, 0, 0.7);
-	border-bottom: 1px solid #00ffff;
+	background-color: rgba(0, 0, 0, 0.4);
+	border-top: 1px solid #ffffff;
+	border-bottom: 1px solid #ffffff;
 }
 
 
@@ -210,11 +173,11 @@ body {
 
 
 
-.nav a {
-    border-right: 1px solid #444444;
-}
-.left-border {
+.nav li {
     border-left: 1px solid #444444;
+}
+.nav li:last-of-type {
+    border-right: 1px solid #444444;
 }
 
 
@@ -238,23 +201,49 @@ body {
     display: block;
     padding: 8px 15px;
     text-decoration: none;
-    color: #00ffff;
+    color: #ffffff;
     transition: 0.4s background-color;
-}
-.nav li a::selection {
-    background: #ffffff; /* WebKit/Blink Browsers */
-}
-.nav li a::-moz-selection {
-    background: #ffffff; /* Gecko Browsers */
 }
 
 
 
 
 .nav a:hover {
-    background-color: #006868;
-    background-color: rgba(0, 255, 255, 0.4);
+    background-color: #eadc97;
+    background-color: rgba(234, 220, 151, 0.5);
     cursor: default;
+}
+
+
+
+
+.main-text::selection, .sidebar-text::selection, #title::selection, .nav::selection, a::selection, li::selection {
+    background: #eadc97;
+    background: rgba(234, 220, 151, 0.75);
+}
+.main-text::-moz-selection {
+    background: #eadc97;
+    background: rgba(234, 220, 151, 0.75);
+}
+.sidebar-text::-moz-selection {
+    background: #eadc97;
+    background: rgba(234, 220, 151, 0.75);
+}
+#title::-moz-selection {
+    background: #eadc97;
+    background: rgba(234, 220, 151, 0.75);
+}
+.nav::-moz-selection {
+    background: #eadc97;
+    background: rgba(234, 220, 151, 0.75);
+}
+a::-moz-selection {
+    background: #eadc97;
+    background: rgba(234, 220, 151, 0.75);
+}
+li::-moz-selection {
+    background: #eadc97;
+    background: rgba(234, 220, 151, 0.75);
 }
 
 
@@ -281,83 +270,6 @@ body {
 
 
 
-.main-text {
-    font-family: "Open Sans", sans-serif;
-    color: #000000;
-    font-size: 15px;
-    text-align: justify;
-    padding: 0 20px;
-    margin: 10px 0 15px;
-}
-
-
-
-
-.main-text::selection, .main-text::-moz-selection, .sidebar-text::selection, .sidebar-text::-moz-selection, #air-pollution::selection, #air-pollution::-moz-selection,
-h1::selection, h1::-moz-selection, i::selection, i::-moz-selection, b::selection , b::-moz-selection, p.main-text a::selection, p.main-text a::-moz-selection, li::selection,
-li::-moz-selection, br::selection, br::-moz-selection, span::selection, span::-moz-selection {
-    background: #c2b15f;
-}
-
-
-
-
-.sidebar-text {
-    font-family: "Open Sans", sans-serif;
-    color: #000000;
-    font-size: 13px;
-    text-align: justify;
-    padding: 0 10px;
-    margin: 10px 0 15px;
-}
-
-
-
-
-.bullet-list {
-    margin: 0;
-    padding: 0;
-}
-
-
-
-
-.bullet-list li {
-    list-style: none;
-    font-family: "Open Sans", sans-serif;
-    color: #000000;
-    font-size: 15px;
-    text-align: justify;
-    padding: 0 20px 0 0;
-}
-
-
-
-
-.bullet-list li:before {
-    content: "-";
-    padding-right: 5px;
-}
-
-
-
-
-.sidebar {
-    float: right;
-    vertical-align: top;
-    margin: 0;
-    width: 27%;
-    /*height: 100%;*/
-    background-color: #f7f7f7;
-    background-color: rgba(255,255,255,0.75);
-    border-bottom-left-radius: 7px;
-    border-bottom-right-radius: 7px;
-    border: 1px solid #a1a1a1;
-}
-
-
-
-
 .smol-main {
     display: inline-block;
     margin: 0 1% 0 0;
@@ -369,54 +281,6 @@ li::-moz-selection, br::selection, br::-moz-selection, span::selection, span::-m
     border-left: 1px solid #a1a1a1;
     border-right: 1px solid #a1a1a1;
     border-bottom: 1px solid #a1a1a1;
-}
-.smol-main::selection {
-    background: #9f8e38; /* WebKit/Blink Browsers */
-}
-.smol-main::-moz-selection {
-    background: #9f8e38; /* Gecko Browsers */
-}
-
-
-
-
-.full-main {
-    display: inline-block;
-    margin: 0 6%;
-    height: 100%;
-    background-color: #f7f7f7;
-    background-color: rgba(255,255,255,0.75);
-    border-left: 1px solid #a1a1a1;
-    border-right: 1px solid #a1a1a1;
-}
-
-
-
-
-.jump-to {
-    background-color: #eeeeee;
-    border: 2px solid #a1a1a1;
-    border-radius: 3px;
-    box-shadow: 2px 2px 3px #333333;
-    margin: 0 20px;
-    width: 200px;
-}
-
-
-
-
-.smol-title {
-    font-family: "Raleway", sans-serif;
-    color: #000000;
-    font-size: 15px;
-    font-weight: bold;
-    margin: 10px 10px 0;
-}
-.smol-title::selection {
-    background: #9f8e38; /* WebKit/Blink Browsers */
-}
-.smol-title::-moz-selection {
-    background: #9f8e38; /* Gecko Browsers */
 }
 
 
@@ -469,92 +333,6 @@ img::-moz-selection {
     margin: 5px 20px;
     display: inline-block;
 }
-
-
-
-
-/* vv----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----v----vv */
-
-.caption-box {
-    margin: 5px 20px 0;
-}
-/* make sure to manually add the width and the side to float it to in the html */
-
-
-
-
-.caption {
-    font-family: "Open Sans", sans-serif;
-    color: #000000;
-    font-size: 10px;
-    margin: 0;
-    padding-top: 2px;
-    text-align: center;
-}
-
-/* ^^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^----^^ */
-
-
-
-
-.subtext {
-    font-family: "Open Sans", sans-serif;
-    color: #000000;
-    font-size: 13px;
-}
-
-
-
-
-.mono {
-    font-family: "Cousine", monospace;
-    color: #000000;
-    font-size: 15px;
-}
-
-
-
-
-.mono-side {
-    font-family: "Cousine", monospace;
-    color: #000000;
-    font-size: 13px;
-}
-
-
-
-
-.offwhite-highlight {
-    background-color: #efefef;
-    padding: 1px 2px;
-    border-radius: 2px;
-}
-.offwhite-highlight::selection {
-    background: #9f8e38; /* WebKit/Blink Browsers */
-}
-.offwhite-highlight::-moz-selection {
-    background: #9f8e38; /* Gecko Browsers */
-}
-
-
-
-
-.white-highlight {
-    background-color: #ffffff;
-    padding: 1px 2px;
-    border-radius: 2px;
-}
-.white-highlight::selection {
-    background: #9f8e38; /* WebKit/Blink Browsers */
-}
-.white-highlight::-moz-selection {
-    background: #9f8e38; /* Gecko Browsers */
-}
-
-
-
-
-/* ----------------------------------------------------------------------------------------------------------------------------------------------- */
 
 
 

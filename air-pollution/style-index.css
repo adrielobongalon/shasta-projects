@@ -112,11 +112,6 @@ body {
     margin-top: 100px;
     transition: 0.5s all;
 }
-#button a:active {    
-    color: #ffffff;
-    background-color: #00bcbc;
-    cursor: default;
-}
 #button a:hover {
     background-color: #dddddd;
     background-color: rgba(255, 255, 255, 0.25);
@@ -128,7 +123,7 @@ body {
 
 #air-pollution::selection, #by-audrey::selection, a::selection {
     background: #eadc97;
-    background: rgba(234, 220, 151, 0.5);
+    background: rgba(234, 220, 151, 0.75);
 }
 /* firefox is sooooo outdated. you have to manually enter each one. you cant list them or they'll glitch */
 #air-pollution::-moz-selection {
@@ -148,9 +143,6 @@ a::-moz-selection {
 
 
 .title {
-    /*border-top: 1px solid green;*/
-    /*border-bottom: 1px dashed green;*/
-    /*flex: 0 1 auto;*/
     width: 100%;
     min-height: 33vh;
     position: absolute;
