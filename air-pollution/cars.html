@@ -73,9 +73,7 @@
 
                 <div class="flex-container">
                     <div class="caption-box flex-item">
-                        <div class="img-border">
-                            <img src="images/mazda3.png" width="100%" alt="a grey 2013 Mazda3 hatchback">
-                        </div>
+                        <img src="images/mazda3.png" width="100%" alt="a grey 2013 Mazda3 hatchback">
                         <p class="caption">This is what the car looks like.</p>
                     </div>
 
@@ -99,17 +97,39 @@
                 </div>
 
                 <p class="main-text">Note that not all of this data was necessary in the calculation, but <i>was</i> necessary for the research.
-                There are several variants of the Mazda3, and finding the right one was not easy.</p>
+                There are several variants of the Mazda 3, and finding the right one was not easy.</p>
 
-                <p class="main-text">And from there, I just made the following calculation:</p>
-                <div class="main-text" style="text-align: left;">
-                    $$  ({{60193 \hspace{1.5mm} miles} \over {4 \hspace{1.5mm} years}})  \times  ({{60193 \hspace{1.5mm} miles} \over {4 \hspace{1.5mm} years}})  \times
-                        ({{60193 \hspace{1.5mm} miles} \over {4 \hspace{1.5mm} years}})  \times  ({{60193 \hspace{1.5mm} miles} \over {4 \hspace{1.5mm} years}})  $$
+                <p class="main-text">And from there, I just made the following calculations:</p>
+                <div style="text-align: left;">
+                    <p>
+                    $$  \begin{equation} \label{eq1} \begin{split}
+
+                        molar \hspace{1.5mm} mass \hspace{1.5mm} of \hspace{1.5mm} CO_2 & =
+                        molar \hspace{1.5mm} mass \hspace{1.5mm} of \hspace{1.5mm} carbon +
+                        ( 2 \times molar \hspace{1.5mm} mass \hspace{1.5mm} of \hspace{1.5mm} oxygen ) \\
+
+                        & = 12.0107 \hspace{1.5mm} g \hspace{1.5mm} C / mol \hspace{1.5mm} C + ( 2 \times 15.9994 \hspace{1.5mm} g \hspace{1.5mm} O / mol \hspace{1.5mm} O ) \\
+
+                        & = 44.0095 \hspace{1.5mm} g \hspace{1.5mm} CO_2 / mol \hspace{1.5mm} CO_2
+
+                    \end{split} \end{equation}  $$
+                    </p>
+
+                    <p id="" style="margin-top: 75px;">
+                    $$
+                        ({{60193 \hspace{1.5mm} mi} \over {4 \hspace{1.5mm} yrs}})  \times  ({{1.609344 \hspace{1.5mm} km} \over {1 \hspace{1.5mm} mi}})  \times
+                        ({{119 \hspace{1.5mm} g} \over {1 \hspace{1.5mm} km}})      \times  ({{1 \hspace{1.5mm} mol} \over {44.0095 \hspace{1.5mm} g}})   \times
+                        ({{6.022140857 \times 10^{23} \hspace{1.5mm} molecules} \over {1 \hspace{1.5mm} mol}})  \\
+                        =  3.9435 \times 10^{28} \hspace{1.5mm} molecules/year
+                    $$
+                    </p>
                 </div>
             </div>
             <div class="sidebar">
                 <h4 class="sidebar-header">About</h4>
-                <p class="sidebar-text">This site is for a high school chemistry project named "What's Your Number?". (srsly who named this project?)</p>
+                <p class="sidebar-text">This site is for a high school chemistry project named "What's Your Number?". (srsly who named this project? mr davey it better not
+                have been you please tell me it's not you it's such a bad pun why did you do that actually now that i think about it i dont know for sure that it's you i really
+                hope it's not. thank you)</p>
             </div>
         </div>
     </body>
