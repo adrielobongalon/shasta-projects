@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <!--
-       document : cows.html, for shasta-projects
-     created on : friday, january 20, 2017, 07:26 am
+       document : mathjax.html, for shasta-projects
+     created on : friday, january 20, 2017, 13:57 pm
          author : adrielo (audrey) bongalon
-    description : page on CH4 emissions from cows
+    description : page on CO2 emissions from cars
 
                                ___
                               /\  \
@@ -19,9 +19,9 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Cows - Air Pollution</title>
+        <title>Mathjax - Air Pollution</title>
         <link rel="stylesheet" type="text/css" href="style.css">
-        <link href="https://fonts.googleapis.com/css?family=Raleway:400|Open+Sans" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Raleway:400&#124;Open+Sans" rel="stylesheet" type="text/css">
 
         <link rel="apple-touch-icon" sizes="57x57" href="../audreyfavicons/apple-touch-icon-57x57.png">
         <link rel="apple-touch-icon" sizes="60x60" href="../audreyfavicons/apple-touch-icon-60x60.png">
@@ -43,6 +43,12 @@
         <meta name="msapplication-TileColor" content="#eadc97">
         <meta name="msapplication-TileImage" content="../audreyfavicons/mstile-144x144.png">
         <meta name="theme-color" content="#eadc97">
+
+        <!-- This needs to load before the calculations -->
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+        </script>
+        <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
     </head>
     <body>
         <h1 id="title">Air Pollution</h1>
@@ -57,37 +63,42 @@
         </div>
         <div class="content-box">
             <div class="main">
-                <h2 class="main-header">Cows - Methane</h2>
-                <div class="caption-box img-border" style="width: 40%; margin-top: 10px; float: left;">
-                    <img src="images/cow.jpg" style="width: 100%;" alt="a cow">
-                    <p class="caption">Moo.</p>
-                </div>
-
-                <p class="main-text">Cows. Yes, Cows. Cattle. Those farm animals that go "moo". You might not believe me, but they are actually a
-                major source of air pollution.</p>
-
-                <p class="main-text">You see, with a huge populations comes a huge demand for beef (and milk). In order to get all that
-                beef, we need to raise a lot of cattle and make sure they grow big. And in order to increase farming efficiency, we feed them a type
-                of grass that they aren't able to fully digest. It ferments in their stomachs and produces gas, which they release into the
-                atmosphere by burping. The problem is that one of those gases is methane (CH<sub>4</sub>), a greenhouse gas.</p>
-                
-                <p class="main-text">According to
-                <a href="http://animals.howstuffworks.com/mammals/methane-cow.htm" target="_blank">How Stuff Works</a>, experts estimate that a
-                single dairy cow expels between 100 and 500 litres of methane per day, an "amount comparable to the pollution produced by a car".</p>
-    
-                <p class="main-text">Just as a reminder, my research question for this topic was:<br>"On average, how many carbon dioxide molecules does
-                my family’s car, a 2013 Mazda 3, emit annually?"</p>
-
-                <p class="main-text">Note that not all of this data was necessary in the calculation, but <i>was</i> necessary for the research.
-                There are several variants of the Mazda 3, and finding the right one was not easy.</p>
-
+                <h2 class="main-header">Mathjax</h2>
                 <p class="main-text">And from there, I just made the following calculations:</p>
-                <h1 class="main-header" style="margin-top: 100px;">Assumptions and Limitations</h1>
+                <div style="width: 100%; display: table;">
+                    <p>
+                    $$  \begin{equation} \label{eq1} \begin{split}
+
+                        molar \hspace{1.5mm} mass \hspace{1.5mm} of \hspace{1.5mm} CO_2 & =
+                        molar \hspace{1.5mm} mass \hspace{1.5mm} of \hspace{1.5mm} carbon +
+                        ( 2 \times molar \hspace{1.5mm} mass \hspace{1.5mm} of \hspace{1.5mm} oxygen ) \\
+
+                        & = 12.0107 \hspace{1.5mm} g \hspace{1.5mm} C / mol \hspace{1.5mm} C + ( 2 \times 15.9994 \hspace{1.5mm} g \hspace{1.5mm} O / mol \hspace{1.5mm} O ) \\
+
+                        & = 44.0095 \hspace{1.5mm} g \hspace{1.5mm} CO_2 / mol \hspace{1.5mm} CO_2
+
+                    \end{split} \end{equation}  $$
+                    </p>
+
+                    <p id="" style="margin-top: 75px;">
+                    $$
+                        \Bigg({{60193 \hspace{1.5mm} mi} \over {4 \hspace{1.5mm} yrs}}\Bigg)  \times
+                        \Bigg({{1.609344 \hspace{1.5mm} km} \over {1 \hspace{1.5mm} mi}}\Bigg)  \times
+                        \Bigg({{119 \hspace{1.5mm} g \hspace{1.5mm} CO_2} \over {1 \hspace{1.5mm} km}}\Bigg)  \times
+                        \Bigg({{1 \hspace{1.5mm} mol \hspace{1.5mm} CO_2} \over {44.0095 \hspace{1.5mm} g \hspace{1.5mm} CO_2}}\Bigg)  \times
+                        \Bigg({{6.022140857 \times 10^{23} \hspace{1.5mm} molecules \hspace{1.5mm} CO_2} \over {1 \hspace{1.5mm} mol \hspace{1.5mm} CO_2}}\Bigg)  \\
+                        =  3.9435 \times 10^{28} \hspace{1.5mm} molecules \hspace{1.5mm} CO_2/year
+                    $$
+                    </p>
+                </div>
+                <h1 class="main-header" style="margin-top: 75px;">Assumptions and Limitations</h1>
                 <p class="main-text">The information above is nice, but it's important to keep in mind that it assumes several things.</p>
             </div>
             <div class="sidebar">
                 <h4 class="sidebar-header">About</h4>
-                <p class="sidebar-text">This site is for a high school chemistry project named "What's Your Number?". (srsly who named this project?)</p>
+                <p class="sidebar-text">This site is for a high school chemistry project named "What's Your Number?". (srsly who named this project? mr davey it better not
+                have been you please tell me it's not you it's such a bad pun why did you do that actually now that i think about it i dont know for sure that it's you i really
+                hope it's not. thank you)</p>
             </div>
         </div>
     </body>

@@ -21,7 +21,7 @@
         <meta charset="utf-8">
         <title>Cars - Air Pollution</title>
         <link rel="stylesheet" type="text/css" href="style.css">
-        <link href="https://fonts.googleapis.com/css?family=Raleway:400|Open+Sans" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Raleway:400&#124;Open+Sans" rel="stylesheet" type="text/css">
 
         <link rel="apple-touch-icon" sizes="57x57" href="../audreyfavicons/apple-touch-icon-57x57.png">
         <link rel="apple-touch-icon" sizes="60x60" href="../audreyfavicons/apple-touch-icon-60x60.png">
@@ -65,7 +65,7 @@
             <div class="main">
                 <h2 class="main-header">Cars - Carbon Dioxide</h2>
                 <p class="main-text">When it comes to air pollution, the first thing you'd probably think of is cars. Known for producing a multitude
-                of greenhouse gases, especially carbon dioxide (C0<sub>2</sub>), cars are responsible a significant fraction of all C0<sub>2</sub>
+                of greenhouse gases, especially carbon dioxide (CO<sub>2</sub>), cars are responsible a significant fraction of all CO<sub>2</sub>
                 emissions.</p>
     
                 <p class="main-text">Just as a reminder, my research question for this topic was:<br>"On average, how many carbon dioxide molecules does
@@ -73,7 +73,7 @@
 
                 <div class="flex-container">
                     <div class="caption-box flex-item">
-                        <img src="images/mazda3.png" width="100%" alt="a grey 2013 Mazda3 hatchback">
+                        <img src="images/mazda3.png" style="width: 100%;" alt="a grey 2013 Mazda3 hatchback">
                         <p class="caption">This is what the car looks like.</p>
                     </div>
 
@@ -100,33 +100,16 @@
                 There are several variants of the Mazda 3, and finding the right one was not easy.</p>
 
                 <p class="main-text">And from there, I just made the following calculations:</p>
-                <div style="text-align: left;">
-                    <p>
-                    $$  \begin{equation} \label{eq1} \begin{split}
-
-                        molar \hspace{1.5mm} mass \hspace{1.5mm} of \hspace{1.5mm} CO_2 & =
-                        molar \hspace{1.5mm} mass \hspace{1.5mm} of \hspace{1.5mm} carbon +
-                        ( 2 \times molar \hspace{1.5mm} mass \hspace{1.5mm} of \hspace{1.5mm} oxygen ) \\
-
-                        & = 12.0107 \hspace{1.5mm} g \hspace{1.5mm} C / mol \hspace{1.5mm} C + ( 2 \times 15.9994 \hspace{1.5mm} g \hspace{1.5mm} O / mol \hspace{1.5mm} O ) \\
-
-                        & = 44.0095 \hspace{1.5mm} g \hspace{1.5mm} CO_2 / mol \hspace{1.5mm} CO_2
-
-                    \end{split} \end{equation}  $$
-                    </p>
-
-                    <p id="" style="margin-top: 75px;">
-                    $$
-                        ({{60193 \hspace{1.5mm} mi} \over {4 \hspace{1.5mm} yrs}})  \times
-                        ({{1.609344 \hspace{1.5mm} km} \over {1 \hspace{1.5mm} mi}})  \times
-                        ({{119 \hspace{1.5mm} g \hspace{1.5mm} CO_2} \over {1 \hspace{1.5mm} km}})  \times
-                        ({{1 \hspace{1.5mm} mol \hspace{1.5mm} CO_2} \over {44.0095 \hspace{1.5mm} g \hspace{1.5mm} CO_2}})  \times
-                        ({{6.022140857 \times 10^{23} \hspace{1.5mm} molecules \hspace{1.5mm} CO_2} \over {1 \hspace{1.5mm} mol \hspace{1.5mm} CO_2}})  \\
-                        =  3.9435 \times 10^{28} \hspace{1.5mm} molecules \hspace{1.5mm} CO_2/year
-                    $$
-                    </p>
-                    <p>words</p>
+                <div class="calculations-box">
+                    <img src="images/calculations/molar_mass_CO2.png" alt="molar mass of CO2: 44.0095 g/mol" class="calculation">
+                    <img src="images/calculations/molecules_CO2.png" alt="3.9435 * 10^23 molecules of CO2 / year" class="calculation" id="CO2-molecules">
                 </div>
+
+
+
+
+                <h1 class="main-header" style="margin-top: 100px;">Assumptions and Limitations</h1>
+                <p class="main-text">The information above is nice, but it's important to keep in mind that it assumes several things.</p>
             </div>
             <div class="sidebar">
                 <h4 class="sidebar-header">About</h4>
@@ -135,5 +118,8 @@
                 hope it's not. thank you)</p>
             </div>
         </div>
+        <script src="jquery/jquery-3.1.1.js" type="text/javascript"></script>
+        <script src="jquery.waypoints.min.js" type="text/javascript"></script>
+        <script src="jquery/sticky.min.js" type="text/javascript"></script>
     </body>
 </html>
