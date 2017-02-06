@@ -32,7 +32,7 @@ html {
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-    min-height: 101%;
+    min-height: 100%;
     margin: 0;
     padding: 0;
     overflow-x: hidden;

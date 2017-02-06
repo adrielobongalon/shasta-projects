@@ -33,7 +33,7 @@ html {
     -o-background-size: cover;
     background-size: cover;
     height: 100%;
-    min-height: 100%;    /* this may seem like a contradiction, but this line is only for the background image */
+    min-height: 100%;    /* this line is mainly for the background image on mobile */
     margin: 0;
     padding: 0;
     overflow-x: hidden;
@@ -53,76 +53,112 @@ body {
 
 
 
-.main-text {
+/*  .main-text {  */
+.content-box p {
     font-family: "Open Sans", sans-serif;
     color: #000000;
     font-size: 15px;
     text-align: justify;
-    padding: 0 20px;
-    margin: 10px 0 10px;
+    margin: 0 20px;
+    padding: 0;
+}
+.content-box p + p, .flex-item ul + p {
+    margin-top: 10px;
 }
 
 
 
 
-.sidebar-text {
+/*  .sidebar-text {  */
+.sidebar p {
     font-family: "Open Sans", sans-serif;
     color: #000000;
     font-size: 13px;
     text-align: justify;
-    padding: 0 10px;
-    margin: 10px 0 15px;
+    margin: 10px 10px 15px;
+    padding: 0;
 }
 
 
 
 
-.main-header {
+/*  .main-header {  */
+h2 {
     font-family: "Raleway", sans-serif;
     color: #000000;
     font-size: 25px;
     text-align: justify;
-    margin: 20px 20px 0;
+    margin: 20px 20px 10px;
+    padding: 0;
     border-bottom: 1px solid #a1a1a1;
+}
+h2 ~ h2 {
+    margin-top: 150px;
 }
 
 
 
 
-.sidebar-header {
+/*  .sidebar-header {  */
+h3 {
     font-family: "Raleway", sans-serif;
     color: #000000;
     font-size: 20px;
     text-align: justify;
-    margin: 15px 10px 0;
+    margin: 25px 10px 0;
+    padding: 0;
     border-bottom: 1px solid #a1a1a1;
-    padding-top: 10px;
 }
 
 
 
 
-.numbered-list {
-    margin: 0 40px 20px;
+.content-box a {
+    color: #9f8e36;
 }
-.numbered-list li:before {
-    padding-right: 20px;
+.content-box a:visited {
+    color: #4f4302;
 }
 
 
 
 
-.unordered-list {
+ol {
+    margin: 10px 20px 10px 55px;
+    padding: 0;
+}
+ol li {
+    font-family: "Open Sans", sans-serif;
+    font-size: 15px;
+    text-align: justify;
+    margin: 0;
+    padding: 0 0 0 10px;    /* space between numbers and text */
+}
+
+
+
+
+ul {
     display: inline-block;
     list-style: none;
     font-family: "Open Sans", sans-serif;
     font-size: 13px;
-    margin: 0 20px;
+    margin: 0 20px 0 40px;
     padding: 0;
 }
-.unordered-list li:before {
+ul li {
+    text-align: justify;
+}
+ul li::before {
     content: "-";
     padding-right: 10px;
+}
+
+
+
+
+sub, sup {
+    line-height: 0;
 }
 
 
@@ -187,10 +223,13 @@ body {
 
 
 .nav li {
-    border-left: 1px solid #444444;
+    border-left: 1px solid #525252;
+}
+.nav li::before {
+    content: none;
 }
 .nav li:last-of-type {
-    border-right: 1px solid #444444;
+    border-right: 1px solid #525252;
 }
 
 
@@ -230,16 +269,16 @@ body {
 
 
 
-.main-text::selection, .sidebar-text::selection, #title::selection, .nav::selection, .main-header::selection, .sidebar-header::selection,
-.caption::selection, a::selection, i::selection, sub::selection, li::selection, img::selection, br::selection {
+.content-box p::selection, #title::selection, .nav::selection, h2::selection, h3::selection, .caption::selection,
+a::selection, i::selection, sub::selection, sup::selection, li::selection, img::selection, br::selection {
     background: #eadc97;
     background: rgba(234, 220, 151, 0.75);
 }
-.main-text::-moz-selection {
+.main p::-moz-selection {
     background: #eadc97;
     background: rgba(234, 220, 151, 0.75);
 }
-.sidebar-text::-moz-selection {
+.sidebar p::-moz-selection {
     background: #eadc97;
     background: rgba(234, 220, 151, 0.75);
 }
@@ -251,11 +290,11 @@ body {
     background: #eadc97;
     background: rgba(234, 220, 151, 0.75);
 }
-.main-header::-moz-selection {
+h2::-moz-selection {
     background: #eadc97;
     background: rgba(234, 220, 151, 0.75);
 }
-.sidebar-header::-moz-selection {
+h3::-moz-selection {
     background: #eadc97;
     background: rgba(234, 220, 151, 0.75);
 }
@@ -272,6 +311,10 @@ i::-moz-selection {
     background: rgba(234, 220, 151, 0.75);
 }
 sub::-moz-selection {
+    background: #eadc97;
+    background: rgba(234, 220, 151, 0.75);
+}
+sup::-moz-selection {
     background: #eadc97;
     background: rgba(234, 220, 151, 0.75);
 }
@@ -336,6 +379,7 @@ br::-moz-selection {
     display: inline-block;
     width: 99.8%;
     margin: 0;
+    padding: 0 0 10px;    /* needs moar visual space beneath list */
     background-color: #f7f7f7;
     background-color: rgba(255, 255, 255, 0.75);
     border-left: 1px solid #a1a1a1;
@@ -348,14 +392,16 @@ br::-moz-selection {
 
 
 
-.calculations-box {
-    margin: 0 20px;
+.calculations {
+    margin: 20px 20px 0;
 }
 
 
 
 
 .flex-container {
+    margin: 10px 0;
+    padding: 0;
     display: -webkit-box;
     display: -moz-box;
     display: -ms-flexbox;
@@ -371,37 +417,10 @@ br::-moz-selection {
 
 .flex-item {
     flex: 1 1 auto;
+    margin: auto 0;
 }
-
-
-
-
-.jump-to ol {
-    margin: 5px 5px 10px;
-}
-
-
-
-
-.jump-to li {
-    font-family: "Open Sans", sans-serif;
-    color: #000000;
-    font-size: 12px;
-    font-weight: bold;
-    margin: 0 10px;
-}
-
-
-
-
-.jump-to a, jump-to a:visited {
-    color: #555599;
-}
-.jump-to a::selection {
-    background: #9f8e38; /* WebKit/Blink Browsers */
-}
-.jump-to a::-moz-selection {
-    background: #9f8e38; /* Gecko Browsers */
+.flex-item p {
+    padding: 0;
 }
 
 
@@ -409,6 +428,7 @@ br::-moz-selection {
 
 .img-border img {
     border: 2px solid #eeeeee;
+    margin-top: 3px;                    /* to compensate for the border */
     border-radius: 3px;
     box-shadow: 2px 2px 3px #333333;
 }
@@ -416,34 +436,29 @@ br::-moz-selection {
 
 
 
-.calculation {
-    /* note that these elements are images */
+.calculations img {
     width: 100%;
 
     /* aligns to center */
     display: block;
     margin: 0 auto;
 }
-
-
-
-
-#CO2-molecules {
-    margin-top: 40px;
+.calculations img + img {
+    margin-top: 40px;    /* puts spaces between images. only between. not before or after */
 }
 
 
 
 
 .caption-box {
-    margin: 5px 20px 0;
+    margin: auto 20px;
 }
 /* make sure to manually add the width and the side to float it to in the html */
 
 
 
 
-.caption {
+p.caption {
     font-family: "Open Sans", sans-serif;
     color: #000000;
     font-size: 10px;

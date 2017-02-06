@@ -21,7 +21,7 @@
         <meta charset="utf-8">
         <title>Mathjax - Air Pollution</title>
         <link rel="stylesheet" type="text/css" href="style.css">
-        <link href="https://fonts.googleapis.com/css?family=Raleway:400&#124;Open+Sans" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Raleway&#124;Open+Sans" rel="stylesheet" type="text/css">
 
         <link rel="apple-touch-icon" sizes="57x57" href="../audreyfavicons/apple-touch-icon-57x57.png">
         <link rel="apple-touch-icon" sizes="60x60" href="../audreyfavicons/apple-touch-icon-60x60.png">
@@ -43,28 +43,22 @@
         <meta name="msapplication-TileColor" content="#eadc97">
         <meta name="msapplication-TileImage" content="../audreyfavicons/mstile-144x144.png">
         <meta name="theme-color" content="#eadc97">
-
-        <!-- This needs to load before the calculations -->
-        <script type="text/x-mathjax-config">
-            MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
-        </script>
-        <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
     </head>
     <body>
         <h1 id="title">Air Pollution</h1>
         <div class="nav">
             <ul>
-                <li><a href="overview.html" class="left-border">Overview</a>    </li>
-                <li><a href="cars.html">Cars</a>                                </li>
-                <li><a href="power-plants.html">Power Plants</a>                </li>
-                <li><a href="cows.html">Cows</a>                                </li>
-                <li><a href="references.html">References</a>                    </li>
+                <li><a href="overview.html">Overview</a>        </li>
+                <li><a href="cars.html">Cars</a>                </li>
+                <li><a href="power-plants.html">Power Plants</a></li>
+                <li><a href="cows.html">Cows</a>                </li>
+                <li><a href="references.html">References</a>    </li>
             </ul>
         </div>
         <div class="content-box">
             <div class="main">
-                <h2 class="main-header">Mathjax</h2>
-                <p class="main-text">And from there, I just made the following calculations:</p>
+                <h2>Mathjax</h2>
+                <p>And from there, I just made the following calculations:</p>
                 <div style="width: 100%; display: table;">
                     <p>
                     $$  \begin{equation} \label{eq1} \begin{split}
@@ -91,15 +85,20 @@
                     $$
                     </p>
                 </div>
-                <h1 class="main-header" style="margin-top: 75px;">Assumptions and Limitations</h1>
-                <p class="main-text">The information above is nice, but it's important to keep in mind that it assumes several things.</p>
+                <h2 style="margin-top: 100px;">Assumptions and Limitations</h2>
+                <p>The information above is nice, but it's important to keep in mind that it assumes several things.</p>
             </div>
             <div class="sidebar">
-                <h4 class="sidebar-header">About</h4>
-                <p class="sidebar-text">This site is for a high school chemistry project named "What's Your Number?". (srsly who named this project? mr davey it better not
+                <h3>About</h3>
+                <p>This site is for a high school chemistry project named "What's Your Number?". (srsly who named this project? mr davey it better not
                 have been you please tell me it's not you it's such a bad pun why did you do that actually now that i think about it i dont know for sure that it's you i really
                 hope it's not. thank you)</p>
             </div>
         </div>
+        <!-- This needs to load before the calculations -->
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+        </script>
+        <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
     </body>
 </html>

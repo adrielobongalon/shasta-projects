@@ -21,7 +21,7 @@
         <meta charset="utf-8">
         <title>Cars - Air Pollution</title>
         <link rel="stylesheet" type="text/css" href="style.css">
-        <link href="https://fonts.googleapis.com/css?family=Raleway:400&#124;Open+Sans" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Raleway&#124;Open+Sans" rel="stylesheet" type="text/css">
 
         <link rel="apple-touch-icon" sizes="57x57" href="../audreyfavicons/apple-touch-icon-57x57.png">
         <link rel="apple-touch-icon" sizes="60x60" href="../audreyfavicons/apple-touch-icon-60x60.png">
@@ -43,32 +43,26 @@
         <meta name="msapplication-TileColor" content="#eadc97">
         <meta name="msapplication-TileImage" content="../audreyfavicons/mstile-144x144.png">
         <meta name="theme-color" content="#eadc97">
-
-        <!-- This needs to load before the calculations -->
-        <script type="text/x-mathjax-config">
-            MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
-        </script>
-        <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
     </head>
     <body>
         <h1 id="title">Air Pollution</h1>
         <div class="nav">
             <ul>
-                <li><a href="overview.html" class="left-border">Overview</a>    </li>
-                <li><a href="cars.html">Cars</a>                                </li>
-                <li><a href="power-plants.html">Power Plants</a>                </li>
-                <li><a href="cows.html">Cows</a>                                </li>
-                <li><a href="references.html">References</a>                    </li>
+                <li><a href="overview.html">Overview</a>        </li>
+                <li><a href="cars.html">Cars</a>                </li>
+                <li><a href="power-plants.html">Power Plants</a></li>
+                <li><a href="cows.html">Cows</a>                </li>
+                <li><a href="references.html">References</a>    </li>
             </ul>
         </div>
         <div class="content-box">
             <div class="main">
-                <h2 class="main-header">Cars - Carbon Dioxide</h2>
-                <p class="main-text">When it comes to air pollution, the first thing you'd probably think of is cars. Known for producing a multitude
+                <h2>Cars - Carbon Dioxide</h2>
+                <p>When it comes to air pollution, the first thing you'd probably think of is cars. Known for producing a multitude
                 of greenhouse gases, especially carbon dioxide (CO<sub>2</sub>), cars are responsible a significant fraction of all CO<sub>2</sub>
                 emissions.</p>
     
-                <p class="main-text">Just as a reminder, my research question for this topic was:<br>"On average, how many carbon dioxide molecules does
+                <p>Just as a reminder, my research question for this topic was:<br>"On average, how many carbon dioxide molecules does
                 my family’s car, a 2013 Mazda 3, emit annually?"</p>
 
                 <div class="flex-container">
@@ -78,48 +72,51 @@
                     </div>
 
                     <div class="flex-item">
-                        <p class="main-text" style="margin-top: 5px; padding-left: 0;">So here's some of the data that I gathered specifically from
-                        the dashboard and the manuals on the car.</p>
-                        <ul class="unordered-list">
+                        <p>So here's some of the data that I gathered specifically from
+                        the dashboard and the manuals on the car:</p>
+                        <ul>
                             <li>make and model: 2013 Mazda 3 hatchback</li>
                             <li>overall mpg rating: 32 miles per gallon (mpg)</li>
                             <li>engine capacity: 2.0 litres</li>
                             <li>fuel type: petrol</li>
                             <li>mileage: 60,193 miles</li>
-                            <li>owned since: 2013 (~4 years)</li>
+                            <li>owned since: 2013 (= 4 years)</li>
                         </ul>
         
-                        <p class="main-text" style="padding-left: 0;">And here's the data I gathered online.</p>
-                        <ul class="unordered-list">
+                        <p>And here's the data I gathered online:</p>
+                        <ul>
                             <li>CO<sub>2</sub> emissions: 119 g/km</li>
+                            <li>1 mole of carbon = 12.0107 g</li>
+                            <li>1 mole of oxygen = 15.9994 g</li>
+                            <li>1 mole = 6.022140857 &times; 10<sup>23</sup></li>
                         </ul>
                     </div>
                 </div>
 
-                <p class="main-text">Note that not all of this data was necessary in the calculation, but <i>was</i> necessary for the research.
+                <p>Note that not all of this data was necessary in the calculation, but <i>was</i> necessary for the research.
                 There are several variants of the Mazda 3, and finding the right one was not easy.</p>
 
-                <p class="main-text">And from there, I just made the following calculations:</p>
-                <div class="calculations-box">
-                    <img src="images/calculations/molar_mass_CO2.png" alt="molar mass of CO2: 44.0095 g/mol" class="calculation">
-                    <img src="images/calculations/molecules_CO2.png" alt="3.9435 * 10^23 molecules of CO2 / year" class="calculation" id="CO2-molecules">
+                <p style="margin-top: 40px;">Anyways, from there, I just made the following calculations:</p>
+                <div class="calculations">
+                    <img src="images/calculations/molar_mass_CO2.png" alt="molar mass of CO2: 44.0095 g/mol">
+                    <img src="images/calculations/molecules_CO2.png" alt="3.9435 * 10^23 molecules of CO2 / year" id="CO2-molecules">
                 </div>
 
 
 
 
-                <h1 class="main-header" style="margin-top: 100px;">Assumptions and Limitations</h1>
-                <p class="main-text">The information above is nice, but it's important to keep in mind that it assumes several things.</p>
+                <h2>Assumptions and Limitations</h2>
+                <p>The information above is nice, but it's important to keep in mind that it assumes several things.</p>
             </div>
             <div class="sidebar">
-                <h4 class="sidebar-header">About</h4>
-                <p class="sidebar-text">This site is for a high school chemistry project named "What's Your Number?". (srsly who named this project? mr davey it better not
+                <h3>About</h3>
+                <p>This site is for a high school chemistry project named "What's Your Number?". (srsly who named this project? mr davey it better not
                 have been you please tell me it's not you it's such a bad pun why did you do that actually now that i think about it i dont know for sure that it's you i really
                 hope it's not. thank you)</p>
             </div>
         </div>
         <script src="jquery/jquery-3.1.1.js" type="text/javascript"></script>
-        <script src="jquery.waypoints.min.js" type="text/javascript"></script>
+        <script src="jquery/waypoints.min.js" type="text/javascript"></script>
         <script src="jquery/sticky.min.js" type="text/javascript"></script>
     </body>
 </html>
