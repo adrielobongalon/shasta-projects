@@ -164,21 +164,6 @@ sub, sup {
 
 
 
-.sidebar {
-    float: right;
-    vertical-align: top;
-    margin: 0;
-    width: 27%;
-    background-color: #f7f7f7;
-    background-color: rgba(255,255,255,0.75);
-    border-bottom-left-radius: 7px;
-    border-bottom-right-radius: 7px;
-    border: 1px solid #a1a1a1;
-}
-
-
-
-
 #title {
     margin: 0.5% 6% 0.5%;
     font-family: "Raleway", sans-serif;
@@ -355,6 +340,24 @@ br::-moz-selection {
     background-color: rgba(255,255,255,0.75);
     border-left: 1px solid #a1a1a1;
     border-right: 1px solid #a1a1a1;
+}
+
+
+
+
+.sidebar {
+    float: right;
+    vertical-align: top;
+    margin: 0;
+    padding: 0;
+    width: 27%;
+    background-color: #f7f7f7;
+    background-color: rgba(255,255,255,0.75);
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+    border-left: 1px solid #a1a1a1;
+    border-right: 1px solid #a1a1a1;
+    border-bottom: 1px solid #a1a1a1;
 }
 
 

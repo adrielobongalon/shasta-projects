@@ -1,19 +1,26 @@
-/* global $ Waypoint */
+/* global $ */
 
-$(document).ready(function() {
-    function stickyDiv() {
-        var $stickyElement = $('.basic-sticky-example');
-        var sticky;
-    
-        if ($stickyElement.length) {
-            sticky = new Waypoint.Sticky({
-                element: $stickyElement[0],
-                wrapper: '<div class="sticky-wrapper waypoint" />'
-            });
-        }
+// Cache selectors outside callback for performance. 
+var $window = $(window);
+var $stickyDiv = $("#sticky-div");
+var distanceFromTop = $stickyDiv.offset().top;
+var distanceScrolled = 0;
+
+$window.scroll(moveSidebar);
+$window.resize(resetOffset);
+
+function moveSidebar() {
+    distanceScrolled = $(window).scrollTop();
+
+    if (distanceScrolled > distanceFromTop) {
+        $stickyDiv.css("margin-top", (distanceScrolled - distanceFromTop - 2) + "px");
     }
+    else {
+        $stickyDiv.css("margin-top", "0px");
+    }
+}
 
-    $(window).on('load', function() {
-        stickyDiv();
-    });
-});
+function resetOffset() {
+    distanceFromTop = $stickyDiv.offset().top;
+    moveSidebar();
+}
