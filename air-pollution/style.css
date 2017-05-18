@@ -4,16 +4,17 @@
          author : adrielo (audrey) bongalon
     description : css stylesheet for the site
 
-                                        88
-                                        88
-                                        88
-      ,adPPYYba,  88       88   ,adPPYb,88  8b,dPPYba,   ,adPPYba,  8b       d8
-      ""     `Y8  88       88  a8"    `Y88  88P'   "Y8  a8P,,,,,88  `8b     d8'
-      ,adPPPPP88  88       88  8b      :88  88          8PP"""""""   `8b   d8'
-      88,    ,88  "8a,   ,a88  "8a,   ,d88  88          "8b,   ,aa    `8b,d8'
-      `"8bbdP"Y8   `"YbbdP'Y8   `"8bbdP"Y8  88           `"Ybbd8"'      Y88'
-                                                                        d8'
-                                                                       d8'
+             .8.        8 8888      88   8 888888888o.       8 888888888o.    8 888888888888 `8.`8888.      ,8'
+            .888.       8 8888      88   8 8888    `^888.    8 8888    `88.   8 8888          `8.`8888.    ,8'
+           :88888.      8 8888      88   8 8888        `88.  8 8888     `88   8 8888           `8.`8888.  ,8'
+          . `88888.     8 8888      88   8 8888         `88  8 8888     ,88   8 8888            `8.`8888.,8'
+         .8. `88888.    8 8888      88   8 8888          88  8 8888    ,88'   8 8888888888       `8.`88888'
+        .8`8. `88888.   8 8888      88   8 8888          88  8 888888888P'    8 8888              `8. 8888
+       .8' `8. `88888.  8 8888      88   8 8888         ,88  8 8888`8b        8 8888               `8 8888
+      .8'   `8. `88888. ` 8888     ,8P   8 8888        ,88'  8 8888 `8b.      8 8888                8 8888
+     .888888888. `88888.  8888   ,d8P    8 8888     ,o8P'    8 8888   `8b.    8 8888                8 8888
+    .8'       `8. `88888.  `Y88888P'     8 888888888P'       8 8888     `88.  8 888888888888        8 8888
+
 */
 
 
@@ -239,7 +240,11 @@ sub, sup {
     padding: 8px 15px;
     text-decoration: none;
     color: #ffffff;
-    transition: 0.4s background-color;
+    -webkit-transition: background-color 0.4s ease-out;
+    -moz-transition: background-color 0.4s ease-out;
+    -o-transition: background-color 0.4s ease-out;
+    -ms-transition: background-color 0.4s ease-out;
+    transition: background-color 0.4s ease-out;
 }
 
 
@@ -249,6 +254,44 @@ sub, sup {
     background-color: #eadc97;
     background-color: rgba(234, 220, 151, 0.5);
     cursor: default;
+}
+
+
+
+
+.units {
+    list-style: none;
+    width: 100%;
+    margin: 0 0 10px;
+    padding: 0;
+}
+.units li {
+    font-family: "Raleway", sans-serif;
+    font-size: 17px;
+    font-weight: 400;
+    text-decoration: none;
+    line-height: 40px;
+    text-align: center;
+    white-space: nowrap;
+    margin: 0;
+    padding: 0 10px;
+    border-top: 1px solid #a1a1a1;
+
+    -webkit-transition: background-color 0.4s ease-out;
+    -moz-transition: background-color 0.4s ease-out;
+    -o-transition: background-color 0.4s ease-out;
+    -ms-transition: background-color 0.4s ease-out;
+    transition: background-color 0.4s ease-out;
+}
+.units li:last-of-type {
+    border-bottom: 1px solid #a1a1a1;
+}
+.units li:hover {
+    background-color: #eadc97;
+    background-color: rgba(234, 220, 151, 0.75);
+}
+.units li::before {
+    content: none;
 }
 
 
@@ -333,8 +376,6 @@ br::-moz-selection {
     display: inline-block;
     margin: 0 10px 0 0;
     padding: 0 0 40px;
-    /*height: 100%;*/
-    /*min-height: 100%;*/
     width: 70.25%;
     background-color: #f7f7f7;
     background-color: rgba(255,255,255,0.75);
@@ -399,6 +440,11 @@ br::-moz-selection {
 .calculations {
     margin: 20px 20px 40px;
 }
+
+
+
+
+/* -------------------------------------------------------------------------- */
 
 
 

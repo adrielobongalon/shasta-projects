@@ -6,8 +6,17 @@ var $stickyDiv = $("#sticky-div");
 var distanceFromTop = $stickyDiv.offset().top;
 var distanceScrolled = 0;
 
-$window.scroll(moveSidebar);
-$window.resize(resetOffset);
+
+
+
+$(document).ready(function(){
+    moveSidebar();
+    $window.scroll(moveSidebar);
+    $window.resize(resetOffset);
+});
+
+
+
 
 function moveSidebar() {
     distanceScrolled = $(window).scrollTop();
