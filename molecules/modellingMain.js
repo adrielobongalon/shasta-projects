@@ -1,5 +1,5 @@
 /*
-       document : modellingMain.js, for shasta-projects
+       document : modellingMain.js, for molecules in shasta-projects
      created on : thursday, may 18, 2017, 09:09 am
          author : audrey bongalon
     description : main javascript file for the modelling program
@@ -90,6 +90,43 @@ function clearDrawing() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+var atomArray = [];         // will store all the atoms
+
+
+
+
+function Atom(x, y, z, element) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+    this.element = element;
+    this.radius = 0;            // radius of nucleus
+    this.possibleBonds = 1;     // maximum number of bonds the atom can make
+    this.currentBonds = [];      // atoms this is currently bonded to (use this.currentBonds.length)
+
+    this.setelement = function(element) {
+        this.element = element;
+        // radius is a function of element?
+        // bond angle is a function of element and currentBonds?
+    };
+}
+
+function createAtom() {
+    var atom = new Atom(0, 0, 0, "carbon");
+    atomArray.push(atom);
+}
 
 
 

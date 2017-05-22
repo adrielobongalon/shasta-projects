@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
-       document : model.html, for molecules in shasta-projects
-     created on : thursday, may 18, 2017, 08:50 am
+       document : lesson1.html, learnWebGL in shasta-projects
+     created on : thursday, may 18, 2017, 03:02 pm
          author : adrielo (audrey) bongalon
     description : html page for the molecule modelling program
 
@@ -20,9 +20,21 @@
     <head>
         <meta charset="utf-8">
         <title>Modecule Modelling</title>
-        <link rel="stylesheet" type="text/css" href="moleculeStyling.css">
         <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
-        <!--<link href="https://fonts.googleapis.com/css?family=Raleway&#124;Open+Sans" rel="stylesheet" type="text/css">-->
+        <style>
+            html, body {
+                margin: 0;
+                padding: 0;
+            }
+
+            #main-div {
+                margin: 40px 7%;
+            }
+
+            #canvas1 {
+                border: 1px solid #cccccc;
+            }
+        </style>
 
         <link rel="apple-touch-icon" sizes="57x57" href="../audreyfavicons/apple-touch-icon-57x57.png">
         <link rel="apple-touch-icon" sizes="60x60" href="../audreyfavicons/apple-touch-icon-60x60.png">
@@ -45,24 +57,11 @@
         <meta name="msapplication-TileImage" content="../audreyfavicons/mstile-144x144.png">
         <meta name="theme-color" content="#ffdbe2">
     </head>
-    <body>
-        <div class="main-content">
-            <div id="above-canvas">
-                <h1 id="title">model a molecule!</h1>
-            </div>
-
-            <div id="canvas-div">
-                <canvas id="canvas" width="720" height="405">Sorry. Your browser does not support HTML5 canvas.</canvas>
-            </div>
-
-            <div id="below-canvas">
-                <div id="buttons-div">
-                    <button id="clearCanvas">clear canvas</button>
-                </div>
-            </div>
+    <body onload="webGLStart();">
+        <div id="main-div">
+            <canvas id="canvas1" width="500" height="500"></canvas>
         </div>
 
         <script type="text/javascript" src="../libraries/jquery-3.1.2.js"></script>
-        <script type="text/javascript" src="modellingMain.js"></script>
     </body>
 </html>
