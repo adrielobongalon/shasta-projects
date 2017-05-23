@@ -32,7 +32,7 @@
             }
 
             #canvas1 {
-                border: 1px solid #cccccc;
+                border: 2px solid #cccccc;
             }
         </style>
 
@@ -57,22 +57,30 @@
         <meta name="msapplication-TileImage" content="../audreyfavicons/mstile-144x144.png">
         <meta name="theme-color" content="#ffdbe2">
     </head>
-    <body onload="webGLStart();">
+    <body>
         <div id="main-div">
             <canvas id="canvas1" width="500" height="500"></canvas>
         </div>
 
         <script type="text/javascript" src="../libraries/jquery-3.1.2.js"></script>
-        <script type="text/javascript">
-            /* global $ */
+        <script type="text/javascript" src="../libraries/glMatrix-0.9.5.min.js"></script>
+        <script id="shader-vs" type="x-shader/x-vertex">
+            attribute vec3 aVertexPosition;
 
-            function webGLStart() {
-                // aoeu
+            uniform mat4 uMVMatrix;
+            uniform mat4 uPMatrix;
+
+            void main(void) {
+                gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
             }
-
-            $("body").load(function() {
-                webGLStart();
-            });
         </script>
+        <script id="shader-fs" type="x-shader/x-fragment">
+            precision mediump float;
+
+            void main(void) {
+                gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+            }
+        </script>
+        <script type="text/javascript" src="lesson1.js"></script>
     </body>
 </html>
