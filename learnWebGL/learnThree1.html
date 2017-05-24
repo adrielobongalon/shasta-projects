@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <!--
-       document : lesson1.html, for learnWebGL in shasta-projects
-     created on : thursday, may 18, 2017, 03:02 pm
+       document : learnThree1.html, for learnWebGL in shasta-projects
+     created on : tuesday, may 23, 2017, 02:39 pm
          author : adrielo (audrey) bongalon
-    description : html page for learning WebGL
+    description : html page for learning Three.js
 
                                ___
                               /\  \
@@ -19,20 +19,17 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Modecule Modelling</title>
+        <title>kyoob</title>
         <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
         <style>
-            html, body {
+            html, body, #canvas {
                 margin: 0;
                 padding: 0;
-            }
-
-            #main-div {
-                margin: 40px 7%;
-            }
-
-            #canvas1 {
-                border: 2px solid #cccccc;
+                width: 100%;
+                height: 100%;
+                min-width: 100%;
+                min-height: 100%;
+                overflow: hidden;
             }
         </style>
 
@@ -55,32 +52,13 @@
         <meta name="application-name" content="Air Pollution">
         <meta name="msapplication-TileColor" content="#eadc97">
         <meta name="msapplication-TileImage" content="../audreyfavicons/mstile-144x144.png">
-        <meta name="theme-color" content="#ffdbe2">
+        <meta name="theme-color" content="#cc0066">
     </head>
     <body>
-        <div id="main-div">
-            <canvas id="canvas1" width="500" height="500"></canvas>
-        </div>
+        <div id="canvas"></div>
 
         <script type="text/javascript" src="../libraries/jquery-3.1.2.js"></script>
-        <script type="text/javascript" src="../libraries/glMatrix-0.9.5.min.js"></script>
-        <script id="shader-vs" type="x-shader/x-vertex">
-            attribute vec3 aVertexPosition;
-
-            uniform mat4 uMVMatrix;
-            uniform mat4 uPMatrix;
-
-            void main(void) {
-                gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
-            }
-        </script>
-        <script id="shader-fs" type="x-shader/x-fragment">
-            precision mediump float;
-
-            void main(void) {
-                gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-            }
-        </script>
-        <script type="text/javascript" src="lesson1.js"></script>
+        <script type="text/javascript" src="../libraries/three.js"></script>
+        <script type="text/javascript" src="learnThree1.js"></script>
     </body>
 </html>

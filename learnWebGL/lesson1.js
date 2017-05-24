@@ -39,12 +39,13 @@ function getShader(gl, id) {
     var str = "";
     var k = shaderScript.firstChild;
     while (k) {
-        if (k.nodeType == 3) {
+        if (k.nodeType == 3) {      // if text
             str += k.textContent;
         }
         k = k.nextSibling;
     }
 
+    // creates the shaders
     var shader;
     if (shaderScript.type == "x-shader/x-vertex") {
         shader = gl.createShader(gl.VERTEX_SHADER);
@@ -53,7 +54,7 @@ function getShader(gl, id) {
         shader = gl.createShader(gl.FRAGMENT_SHADER);
     }
     else {
-        return null;
+        return null;    // end if type is not correct
     }
 
     gl.shaderSource(shader, str);
@@ -77,6 +78,8 @@ function getShader(gl, id) {
 var shaderProgram;
 
 function initShaders() {
+
+    // get the shaders from the scripts on the HTML
     var fragmentShader = getShader(gl, "#shader-fs");
     var vertexShader = getShader(gl, "#shader-vs");
 
