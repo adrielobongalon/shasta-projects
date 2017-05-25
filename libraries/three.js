@@ -2968,7 +2968,7 @@
             return 1020 === a && (b = pa.get("WEBGL_depth_texture"), null !== b) ?
                 b.UNSIGNED_INT_24_8_WEBGL : 0
         }
-        console.log("THREE.WebGLRenderer", "85");
+        console.log("THREE.WebGLRenderer", "\nrelease version 85");
         a = a || {};
         var x = void 0 !== a.canvas ? a.canvas : document.createElementNS("http://www.w3.org/1999/xhtml", "canvas"),
             v = void 0 !== a.context ? a.context : null,

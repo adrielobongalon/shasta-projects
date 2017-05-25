@@ -16,16 +16,20 @@
                                                                        d8'
 */
 
-/* global $ */
+/* global $ THREE */
 
 
 
 
 var i = 0;
-var canvas = $('#canvas').get(0);
+var canvas = $("#canvas").get(0);
+var $canvas = $("#canvas");
 var canvasWidth = 720;                                                          // 16:9 ratio
 var canvasHeight = 405;
 var bgColour = "#ffdbe2";   // make sure to match with html window colour & css stylings
+
+var scene, camera, renderer;
+var geometry, material, mesh;
 
 
 
@@ -46,19 +50,15 @@ var bgColour = "#ffdbe2";   // make sure to match with html window colour & css 
 //      |    jQuery    |
 //      ----------------
 
-var $canvasDiv = $("#canvas-div");
-
 function resizeCanvas() {
 
     // begin by setting the variables, assuming it isn't too tall
-    canvasWidth = Math.floor($canvasDiv.parent().width());
+    canvasWidth = Math.floor($canvas.parent().width());
     canvasHeight = Math.floor(canvasWidth * (9 / 16));                          // 16:9 ratio
 
     var top = $("#above-canvas").height();
     var bottom = $("#below-canvas").height();
     var winht = $(window).height();
-    console.log(bottom);
-
 
     // if it's too tall, reset the values
     if (top + canvasHeight + bottom > winht) {
@@ -66,21 +66,82 @@ function resizeCanvas() {
         canvasWidth = Math.floor(canvasHeight * (16 / 9));                      // scale width to 16:9 ratio
     }
 
-    // resize the canvas
-    $canvasDiv.css({width: canvasWidth + "px"});
-    $canvasDiv.css({height: canvasHeight + "px"});
-    $(canvas).attr("width", canvasWidth);
-    $(canvas).attr("height", canvasHeight);
+    // resize the div
+    $canvas.css({width: canvasWidth + "px"});
+    $canvas.css({height: canvasHeight + "px"});
+
+    // resize within Three.js
+    if (camera) {
+        camera.aspect = canvasWidth / canvasHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(canvasWidth, canvasHeight);
+    }
 }
 
 
 
 
-$("body").ready(function() {
-    resizeCanvas();                     // resize canvas on start
-    $(window).resize(resizeCanvas);     // resize canvas on window resize
 
+
+
+
+
+
+
+
+
+
+
+
+function initialise() {
+	scene = new THREE.Scene();
+
+    // canvasWidth and canvasHeight should be properly set by now from resizeCanvas()
+	camera = new THREE.PerspectiveCamera(10, canvasWidth / canvasHeight, 1, 10000);
+	camera.position.z = 9000;
+
+
+
+	geometry = new THREE.BoxGeometry(200, 200, 200);
+	material = new THREE.MeshBasicMaterial({color: 0xcc0066, wireframe: true});
+
+	mesh = new THREE.Mesh(geometry, material);
+	scene.add(mesh);
+
+
+
+
+	renderer = new THREE.WebGLRenderer();
+	renderer.setSize(canvasWidth, canvasHeight);
+
+	canvas.appendChild(renderer.domElement);
+}
+
+
+
+
+function animate() {
+	requestAnimationFrame(animate);
+
+	mesh.rotation.x += 0.01;
+	mesh.rotation.y += 0.02;
+	mesh.rotation.z += 0.03;
+
+	renderer.render(scene, camera);
+}
+
+
+
+
+$(document).ready(function() {
+    // event listeners
+    $(window).resize(resizeCanvas);
     $("#clearCanvas").on("click", clearDrawing);
+
+    // run at start
+    resizeCanvas();                     // resize canvas on start
+    initialise();
+    animate();
 });
 
 function clearDrawing() {
@@ -127,25 +188,3 @@ function createAtom() {
     var atom = new Atom(0, 0, 0, "carbon");
     atomArray.push(atom);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-// what happens each "frame" of the animation
-function frame() {
-    // clear
-    // set background colour
-
-    // recursive function
-    window.requestAnimationFrame(frame);
-}
-
-// frame();

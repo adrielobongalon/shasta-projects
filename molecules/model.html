@@ -1,25 +1,25 @@
 <!DOCTYPE html>
-<!--
-       document : model.html, for molecules in shasta-projects
-     created on : thursday, may 18, 2017, 08:50 am
-         author : adrielo (audrey) bongalon
-    description : html page for the molecule modelling program
-
-                               ___
-                              /\  \
-      ______    ___  ___      \_\  \    ______    ______   ___  ___
-     /  __  \  /\  \/\  \    /  __  \  /\   __\  /  __  \ /\  \/\  \
-    /\  \L\  \ \ \  \_\  \  /\  \L\  \ \ \  \_/ /\   ___/ \ \  \_\  \
-    \ \___/\__\ \ \___/\__\ \ \___/\__\ \ \__\  \ \_____\  \ \____   \
-     \/__/\/__/  \/___/\__/  \/___/\__/  \/__/   \/_____/   \/___/_\  \
-                                                               /\_____/
-                                                               \/____/
+<!--                                                                                           ___
+                                                                                              /\  \
+                                                                      ______    ___  ___      \_\  \    ______    ______   ___  ___
+       document : model.html, for molecules in shasta-projects       /  __  \  /\  \/\  \    /  __  \  /\   __\  /  __  \ /\  \/\  \
+     created on : thursday, may 18, 2017, 08:50 am                  /\  \L\  \ \ \  \_\  \  /\  \L\  \ \ \  \_/ /\   ___/ \ \  \_\  \
+         author : adrielo (audrey) bongalon, helen so, chris lim    \ \___/\__\ \ \___/\__\ \ \___/\__\ \ \__\  \ \_____\  \ \____   \
+    description : html page for the molecule modelling program       \/__/\/__/  \/___/\__/  \/___/\__/  \/__/   \/_____/   \/___/_\  \
+                                                                                                            ___                /\_____/
+         ___                     ___                                                  ___                  /\__\               \/____/
+        /\  \                   /\  \                                                /\  \                 \/__/
+        \ \  \____       ______ \ \  \      ______   ___ ___                  ______ \ \  \____     ______    ___      ______
+         \ \   __ `\    /  __  \ \ \  \    /  __  \ /\  '__ `\               /  ____\ \ \   __ `\  /\   __\  /\  \    /   ___\
+          \ \  \/\  \  /\   ___/  \ \  \  /\   ___/ \ \  \/\  \             /\  \___/  \ \  \ \  \ \ \  \_/  \ \  \  |\___   \
+           \ \__\ \__\ \ \_____\   \ \__\ \ \_____\  \ \__\ \__\            \ \_____\   \ \__\ \__\ \ \__\    \ \__\ /\______/
+            \/__/\/__/  \/_____/    \/__/  \/_____/   \/__/\/__/             \/_____/    \/__/\/__/  \/__/     \/__/ \/_____/
 -->
 
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Modecule Modelling</title>
+        <title>Molecule Modelling</title>
         <link rel="stylesheet" type="text/css" href="moleculeStyling.css">
         <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
         <!--<link href="https://fonts.googleapis.com/css?family=Raleway&#124;Open+Sans" rel="stylesheet" type="text/css">-->
@@ -39,8 +39,8 @@
         <link rel="icon" type="image/png" href="../audreyfavicons/favicon-16x16.png" sizes="16x16">
         <link rel="manifest" href="../audreyfavicons/manifest.json">
         <link rel="mask-icon" href="../audreyfavicons/safari-pinned-tab.svg" color="#eadc97">
-        <meta name="apple-mobile-web-app-title" content="Air Pollution">
-        <meta name="application-name" content="Air Pollution">
+        <meta name="apple-mobile-web-app-title" content="Molecule Modelling">
+        <meta name="application-name" content="Molecule Modelling">
         <meta name="msapplication-TileColor" content="#eadc97">
         <meta name="msapplication-TileImage" content="../audreyfavicons/mstile-144x144.png">
         <meta name="theme-color" content="#ffdbe2">
@@ -48,21 +48,21 @@
     <body>
         <div class="main-content">
             <div id="above-canvas"><!-- DO NOT TOUCH -->
-                <h1 id="title">model a molecule!</h1>
+                <h1 id="title">Model a Molecule!</h1>
             </div>
 
-            <div id="canvas-div"><!-- DO NOT TOUCH -->
-                <canvas id="canvas" width="720" height="405">Sorry. Your browser does not support HTML5 canvas.</canvas>
-            </div>
+            <div id="canvas"></div><!-- DO NOT TOUCH -->
 
             <div id="below-canvas"><!-- DO NOT TOUCH -->
                 <div id="buttons-div">
-                    <button id="clearCanvas">clear canvas</button>
+                    <button id="clearCanvas">Clear Canvas</button>
                 </div>
             </div>
         </div>
 
         <script type="text/javascript" src="../libraries/jquery-3.1.2.js"></script>
+        <script type="text/javascript" src="../libraries/three.js"></script>
+        <script type="text/javascript" src="../libraries/orbitControls.js"></script>
         <script type="text/javascript" src="modellingMain.js"></script>
     </body>
 </html>
