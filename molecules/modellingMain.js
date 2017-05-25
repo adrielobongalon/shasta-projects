@@ -104,7 +104,7 @@ function initialise() {
 
     // canvasWidth and canvasHeight should be properly set by now from resizeCanvas()
 	camera = new THREE.PerspectiveCamera(10, canvasWidth / canvasHeight, 1, 10000);
-	camera.position.z = 9000;
+	camera.position.z = 9001;   // IT's OVER 9000!
 
 
 

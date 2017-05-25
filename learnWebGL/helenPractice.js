@@ -6,18 +6,28 @@ var canvasWidth = 720;                                                          
 var canvasHeight = 405;
 
 var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+var camera = new THREE.PerspectiveCamera(75, canvasWidth / canvasHeight, 0.1, 1000);
 
 var renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(canvasWidth, canvasHeight);
+renderer.setClearColor(0xffffff, 1);
 canvas.appendChild(renderer.domElement);
 
 var geometry = new THREE.BoxGeometry(1, 1, 1);
 var material = new THREE.MeshBasicMaterial({color: 0x00ff00, wireframe: true});
-var solidMaterial = new THREE.MeshBasicMaterial({color: 0x00ff00});
-var light = new THREE.DirectionalLight( 0xffffff );
-light.position.set( 0, 1, 1 ).normalize();
-scene.add(light);
+var solidMaterial = new THREE.MeshLambertMaterial({color: 0xff2222});
+
+var sphereGeometry = new THREE.SphereGeometry(1, 32, 32);
+var mesh = new THREE.Mesh(sphereGeometry, solidMaterial);
+mesh.translateX(2);
+scene.add(mesh);
+
+var light1 = new THREE.DirectionalLight(0x888888);
+var light2 = new THREE.AmbientLight(0xcccccc);
+light1.position.set(0, 1, 5).normalize();
+light2.position.set(0, 2, -5).normalize();
+scene.add(light1);
+scene.add(light2);
 
 var cube = new THREE.Mesh(geometry, solidMaterial);
 scene.add(cube);
@@ -27,9 +37,9 @@ var controls = new THREE.OrbitControls(camera);
 camera.position.z = 5;
 
 function render() {
-	requestAnimationFrame(render);
 	controls.update();
 	renderer.render(scene, camera);
+	window.requestAnimationFrame(render);
 }
 
 render();
@@ -81,7 +91,7 @@ $(document).ready(function() {
 // var delta = 200;
 // event = event || window.event;
 // var keycode = event.keyCode;
-// switch(keycode){
+// switch (keycode) {
 // case 37 : //left arrow 向左箭头
 // camera.position.x = camera.position.x - delta;
 // camera.updateProjectionMatrix();
