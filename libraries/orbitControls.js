@@ -118,6 +118,43 @@ THREE.OrbitControls = function(object, domElement, localElement) {
 	var changeEvent = {
 		type: 'change'
 	};
+	
+	var panLeft = function() {
+
+    var v = new THREE.Vector3();
+
+    return function panLeft( distance, objectMatrix ) {
+
+        var te = objectMatrix.elements;
+
+        // get elements from the X-column of matrix
+        v.set( te[ 0 ], 0, te[ 2 ] ).normalize();
+        v.multiplyScalar( - distance );
+
+        panOffset.add( v );
+
+    };
+
+}();
+
+var panUp = function() {
+
+    var v = new THREE.Vector3();
+
+    return function panUp( distance, objectMatrix ) {
+
+        var te = objectMatrix.elements;
+
+        // get elements from the Z-column of matrix
+        v.set( te[ 8 ], 0, te[ 10 ] ).normalize();
+        v.multiplyScalar( - distance );
+
+        panOffset.add( v );
+
+    };
+
+}();
+
 
 
 	this.rotateLeft = function(angle) {

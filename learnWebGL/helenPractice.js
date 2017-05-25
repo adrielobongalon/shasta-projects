@@ -7,11 +7,13 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 var geometry = new THREE.BoxGeometry(1, 1, 1);
-var material = new THREE.MeshBasicMaterial({
-	color: 0x00ff00,
-	wireframe: true
-});
-var cube = new THREE.Mesh(geometry, material);
+var material = new THREE.MeshBasicMaterial({color: 0x00ff00, wireframe: true});
+var solidMaterial = new THREE.MeshPhongMaterial({color: 0x00ff00});
+var light = new THREE.PointLight(0xffffff);
+light.position.set(1, 1, -500);
+scene.add(light);
+
+var cube = new THREE.Mesh(geometry, solidMaterial);
 scene.add(cube);
 
 var controls = new THREE.OrbitControls(camera);
