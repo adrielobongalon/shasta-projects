@@ -1,19 +1,23 @@
 /*
-       document : modellingMain.js, for molecules in shasta-projects
-     created on : thursday, may 18, 2017, 09:09 am
-         author : audrey bongalon
-    description : main javascript file for the modelling program
+                                                                                                          88
+                                                                                                          88
+                                                                                                          88
+       document : modellingMain.js, for molecules in shasta-projects    ,adPPYYba,  88       88   ,adPPYb,88  8b,dPPYba,   ,adPPYba,  8b       d8
+     created on : thursday, may 18, 2017, 09:09 am                      ""     `Y8  88       88  a8"    `Y88  88P'   "Y8  a8P,,,,,88  `8b     d8'
+         author : audrey bongalon                                       ,adPPPPP88  88       88  8b      :88  88          8PP"""""""   `8b   d8'
+    description : main javascript file for the modelling program        88,    ,88  "8a,   ,a88  "8a,   ,d88  88          "8b,   ,aa    `8b,d8'
+                                                                        `"8bbdP"Y8   `"YbbdP'Y8   `"8bbdP"Y8  88           `"Ybbd8"'      Y88'
+                                                                                                                                          d8'
+                                                                                                                                         d8'
+      88                       88                                                   88                       88             
+      88                       88                                                   88                       ""             
+      88                       88                                                   88                                      
+      88,dPPYba,    ,adPPYba,  88   ,adPPYba,  8b,dPPYba,                ,adPPYba,  88,dPPYba,   8b,dPPYba,  88  ,adPPYba,  
+      88P'    "8a  a8P,,,,,88  88  a8P,,,,_88  88P'   `"8a              a8"     ""  88P'    "8a  88P'   "Y8  88  I8(    ""  
+      88       88  8PP"""""""  88  8PP"""""""  88       88              8b          88       88  88          88   `"Y8ba,   
+      88       88  "8b,   ,aa  88  "8b,   ,aa  88       88              "8a,   ,aa  88       88  88          88  aa    )8I  
+      88       88   `"Ybbd8"'  88   `"Ybbd8"'  88       88               `"Ybbd8"'  88       88  88          88  `"YbbdP"'
 
-                                        88
-                                        88
-                                        88
-      ,adPPYYba,  88       88   ,adPPYb,88  8b,dPPYba,   ,adPPYba,  8b       d8
-      ""     `Y8  88       88  a8"    `Y88  88P'   "Y8  a8P,,,,,88  `8b     d8'
-      ,adPPPPP88  88       88  8b      :88  88          8PP"""""""   `8b   d8'
-      88,    ,88  "8a,   ,a88  "8a,   ,d88  88          "8b,   ,aa    `8b,d8'
-      `"8bbdP"Y8   `"YbbdP'Y8   `"8bbdP"Y8  88           `"Ybbd8"'      Y88'
-                                                                        d8'
-                                                                       d8'
 */
 
 /* global $ THREE */
@@ -29,7 +33,9 @@ var canvasHeight = 405;
 var bgColour = "#ffdbe2";   // make sure to match with html window colour & css stylings
 
 var scene, camera, renderer;
-var geometry, material, mesh;
+var boxGeometry, sphereGeometry, wireMaterial;
+
+var kyoob, sphere;
 
 
 
@@ -71,10 +77,10 @@ function resizeCanvas() {
     $canvas.css({height: canvasHeight + "px"});
 
     // resize within Three.js
-    if (camera) {
-        camera.aspect = canvasWidth / canvasHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(canvasWidth, canvasHeight);
+    if (camera) {                                       // this is a hacky way of preventing this from running on function call
+        camera.aspect = canvasWidth / canvasHeight;     // from $(document).ready, since camera isn't defined at that point
+        camera.updateProjectionMatrix();                // we could have just done something like "var initialised = false",
+        renderer.setSize(canvasWidth, canvasHeight);    // but i didn't want to waste memory                        -audrey
     }
 }
 
@@ -102,16 +108,24 @@ function initialise() {
 
 
 
-	geometry = new THREE.BoxGeometry(200, 200, 200);
-	material = new THREE.MeshBasicMaterial({color: 0xcc0066, wireframe: true});
 
-	mesh = new THREE.Mesh(geometry, material);
-	scene.add(mesh);
-
+	boxGeometry = new THREE.BoxGeometry(200, 200, 200);
+	sphereGeometry = new THREE.SphereGeometry(400, 32, 32);
+	wireMaterial = new THREE.MeshBasicMaterial({color: 0x000000, wireframe: true});
 
 
 
-	renderer = new THREE.WebGLRenderer();
+
+	kyoob = new THREE.Mesh(boxGeometry, wireMaterial);
+	scene.add(kyoob);
+
+    sphere = new THREE.Mesh(sphereGeometry, wireMaterial);
+    scene.add(sphere);
+
+
+
+
+	renderer = new THREE.WebGLRenderer({alpha: true});
 	renderer.setSize(canvasWidth, canvasHeight);
 
 	canvas.appendChild(renderer.domElement);
@@ -121,13 +135,13 @@ function initialise() {
 
 
 function animate() {
-	requestAnimationFrame(animate);
-
-	mesh.rotation.x += 0.01;
-	mesh.rotation.y += 0.02;
-	mesh.rotation.z += 0.03;
+	kyoob.rotation.x += 0.01;
+	kyoob.rotation.y += 0.02;
+	kyoob.rotation.z += 0.03;
 
 	renderer.render(scene, camera);
+
+    window.requestAnimationFrame(animate);
 }
 
 

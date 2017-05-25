@@ -58,13 +58,13 @@ function init() {
 
 
 function animate() {
-	requestAnimationFrame(animate);
-
 	mesh.rotation.x += 0.01;
 	mesh.rotation.y += 0.02;
 	mesh.rotation.z += 0.03;
 
 	renderer.render(scene, camera);
+
+    window.requestAnimationFrame(animate);
 }
 
 
