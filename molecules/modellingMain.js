@@ -35,7 +35,7 @@ var bgColour = "#ffdbe2";   // make sure to match with html window colour & css 
 var scene, camera, renderer;
 var boxGeometry, sphereGeometry, wireMaterial;
 
-var kyoob, sphere;
+var kyoob;
 
 
 
@@ -119,8 +119,16 @@ function initialise() {
 	kyoob = new THREE.Mesh(boxGeometry, wireMaterial);
 	scene.add(kyoob);
 
-    sphere = new THREE.Mesh(sphereGeometry, wireMaterial);
-    scene.add(sphere);
+
+
+
+    atomArray.push(new Atom(0, 0, 0, "carbon"));
+
+    if (atomArray.length > 0) {
+        for (let item of atomArray) {
+            item.create();
+        }
+    }
 
 
 
@@ -183,22 +191,43 @@ var atomArray = [];         // will store all the atoms
 
 
 function Atom(x, y, z, element) {
+    this.mesh;
     this.x = x;
     this.y = y;
     this.z = z;
     this.element = element;
     this.radius = 0;            // radius of nucleus
     this.possibleBonds = 1;     // maximum number of bonds the atom can make
-    this.currentBonds = [];      // atoms this is currently bonded to (use this.currentBonds.length)
+    this.currentBonds = [];     // atoms this is currently bonded to (use this.currentBonds.length)
 
-    this.setelement = function(element) {
-        this.element = element;
+    this.setElement = function(newElement) {
+        this.element = newElement;
+
         // radius is a function of element?
-        // bond angle is a function of element and currentBonds?
-    };
-}
+        if (newElement == "carbon") {
+            this.radius = 1;
+        }
+        else {
+            console.error("Error: tried to set atom to \"" + newElement + "\", which is not defined in the program");
+        }
 
-function createAtom() {
-    var atom = new Atom(0, 0, 0, "carbon");
-    atomArray.push(atom);
+        // bond angle is a function of element and currentBonds?
+        if (true) {
+            // angle = ?
+        }
+        // error was already thrown when setting radius
+    };
+
+    this.create = function() {
+        this.setElement("carbon");
+        this.mesh = new THREE.Mesh(sphereGeometry, wireMaterial);
+        this.mesh.scale.set(this.radius, this.radius, this.radius);
+        scene.add(this.mesh);
+    };
+
+    this.moov = function(xDir, yDir, zDir) {
+        this.mesh.translateX(xDir);
+        this.mesh.translateY(yDir);
+        this.mesh.translateZ(zDir);
+    };
 }
