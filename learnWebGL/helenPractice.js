@@ -1,4 +1,4 @@
-/* global $ THREE */
+/* global $ THREE scope panOffset */
 
 var canvas = $("#canvas").get(0);
 var $canvas = $("#canvas");
@@ -34,7 +34,11 @@ scene.add(cube);
 
 var controls = new THREE.OrbitControls(camera);
 
+
 camera.position.z = 5;
+
+// hey helen. that thing you pasted here was already written in the modified orbital controls.
+// i deleted it. the shift thing should still work.								- audrey
 
 function render() {
 	controls.update();
@@ -43,6 +47,7 @@ function render() {
 }
 
 render();
+
 
 
 
@@ -85,6 +90,8 @@ $(document).ready(function() {
     // run at start
     resizeCanvas();                     // resize canvas on start
 });
+
+
 
 // document.addEventListener('keydown',onDocumentKeyDown,false);
 // function onDocumentKeyDown(event){

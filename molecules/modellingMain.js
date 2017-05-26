@@ -32,8 +32,8 @@ var canvasWidth = 720;                                                          
 var canvasHeight = 405;
 var bgColour = "#ffdbe2";   // make sure to match with html window colour & css stylings
 
-var scene, camera, renderer;
-var boxGeometry, sphereGeometry, wireMaterial;
+var scene, camera, mainLight, ambientLight, controls, renderer;
+var boxGeometry, sphereGeometry, wireMaterial, solidMaterial;
 
 var kyoob;
 
@@ -103,20 +103,30 @@ function initialise() {
 	scene = new THREE.Scene();
 
     // canvasWidth and canvasHeight should be properly set by now from resizeCanvas()
-	camera = new THREE.PerspectiveCamera(10, canvasWidth / canvasHeight, 1, 10000);
+	camera = new THREE.PerspectiveCamera(10, canvasWidth / canvasHeight, 1000, 100000);
 	camera.position.z = 9001;   // IT's OVER 9000!
+
+    mainLight = new THREE.DirectionalLight(0x888888);
+    ambientLight = new THREE.AmbientLight(0xcccccc);
+    mainLight.position.set(0, 1, 5).normalize();
+    ambientLight.position.set(0, 2, -5).normalize();
+    scene.add(mainLight);
+    scene.add(ambientLight);
+
+    controls = new THREE.OrbitControls(camera);
 
 
 
 
 	boxGeometry = new THREE.BoxGeometry(200, 200, 200);
 	sphereGeometry = new THREE.SphereGeometry(400, 32, 32);
-	wireMaterial = new THREE.MeshBasicMaterial({color: 0x000000, wireframe: true});
+	wireMaterial = new THREE.MeshBasicMaterial({color: 0x66ff66, wireframe: true});
+	solidMaterial = new THREE.MeshLambertMaterial({color: 0xff2222});
 
 
 
 
-	kyoob = new THREE.Mesh(boxGeometry, wireMaterial);
+	kyoob = new THREE.Mesh(boxGeometry, solidMaterial);
 	scene.add(kyoob);
 
 
@@ -143,12 +153,16 @@ function initialise() {
 
 
 function animate() {
+	// the actual animation
 	kyoob.rotation.x += 0.01;
 	kyoob.rotation.y += 0.02;
 	kyoob.rotation.z += 0.03;
 
+    // update Three.js tools
+	controls.update();
 	renderer.render(scene, camera);
 
+    // recursive loop
     window.requestAnimationFrame(animate);
 }
 
