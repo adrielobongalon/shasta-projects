@@ -84,7 +84,7 @@ body {
 
 
 
-#clearCanvas {
+#clearCanvas, #addAtom {
     margin-top: 10px;
     font-family: "Raleway", sans-serif;
 }

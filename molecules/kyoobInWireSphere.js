@@ -25,19 +25,17 @@
 
 
 
+var i = 0;
 var canvas = $("#canvas").get(0);
 var $canvas = $("#canvas");
 var canvasWidth = 720;                                                          // 16:9 ratio
 var canvasHeight = 405;
-const bgColour = "#ffdbe2";   // make sure to match with html window colour & css stylings
+var bgColour = "#ffdbe2";   // make sure to match with html window colour & css stylings
 
 var scene, camera, mainLight, ambientLight, controls, renderer;
-var sphereGeometry, cylinderGeometry, wireMaterial;
-var whiteMaterial, greyMaterial, blackMaterial, redMaterial, blooMaterial;
-// var boxGeometry, kyoob;
+var boxGeometry, sphereGeometry, wireMaterial, solidMaterial;
 
-var atomArray = [];         // will store all the atoms
-var currentAtom;
+var kyoob;
 
 
 
@@ -102,25 +100,25 @@ function resizeCanvas() {
 
 
 function drawAxes() {
-    const blueMaterial = new THREE.LineBasicMaterial({color: 0x0000ff});
-    const greenMaterial = new THREE.LineBasicMaterial({color: 0x00ff00});
-    const redMaterial = new THREE.LineBasicMaterial({color: 0xff0000});
+    var blueMaterial = new THREE.LineBasicMaterial({color: 0x0000ff});
+    var greenMaterial = new THREE.LineBasicMaterial({color: 0x00ff00});
+    var redMaterial = new THREE.LineBasicMaterial({color: 0xff0000});
 
-    const xLineGeometry = new THREE.Geometry();
+    var xLineGeometry = new THREE.Geometry();
     xLineGeometry.vertices.push(new THREE.Vector3(0, 0, 0));
     xLineGeometry.vertices.push(new THREE.Vector3(1000, 0, 0));
 
-    const yLineGeometry = new THREE.Geometry();
+    var yLineGeometry = new THREE.Geometry();
     yLineGeometry.vertices.push(new THREE.Vector3(0, 0, 0));
     yLineGeometry.vertices.push(new THREE.Vector3(0, 1000, 0));
 
-    const zLineGeometry = new THREE.Geometry();
+    var zLineGeometry = new THREE.Geometry();
     zLineGeometry.vertices.push(new THREE.Vector3(0, 0, 0));
     zLineGeometry.vertices.push(new THREE.Vector3(0, 0, 1000));
 
-    const xAxis = new THREE.Line(xLineGeometry, blueMaterial);
-    const yAxis = new THREE.Line(yLineGeometry, greenMaterial);
-    const zAxis = new THREE.Line(zLineGeometry, redMaterial);
+    var xAxis = new THREE.Line(xLineGeometry, blueMaterial);
+    var yAxis = new THREE.Line(yLineGeometry, greenMaterial);
+    var zAxis = new THREE.Line(zLineGeometry, redMaterial);
 
     scene.add(xAxis);
     scene.add(yAxis);
@@ -137,35 +135,36 @@ function initialise() {
 	camera = new THREE.PerspectiveCamera(10, canvasWidth / canvasHeight, 1000, 100000);
 	camera.position.z = 9001;   // IT's OVER 9000!
 
-    // lighting
     mainLight = new THREE.DirectionalLight(0x888888);
     ambientLight = new THREE.AmbientLight(0xcccccc);
-    mainLight.position.set(0, 300, 500).normalize();
-    ambientLight.position.set(0, 200, -500).normalize();
+    mainLight.position.set(0, 1, 5).normalize();
+    ambientLight.position.set(0, 2, -5).normalize();
     scene.add(mainLight);
     scene.add(ambientLight);
 
     controls = new THREE.OrbitControls(camera);
 
-    drawAxes();
+    // drawAxes();
 
 
 
 
-	sphereGeometry = new THREE.SphereGeometry(150, 32, 32);
+	boxGeometry = new THREE.BoxGeometry(200, 200, 200);
+	sphereGeometry = new THREE.SphereGeometry(400, 32, 32);
 
 	wireMaterial = new THREE.MeshBasicMaterial({color: 0x66ff66, wireframe: true});
-	whiteMaterial = new THREE.MeshLambertMaterial({color: 0xbbbbbb});
-	greyMaterial = new THREE.MeshLambertMaterial({color: 0x888888});
-	blackMaterial = new THREE.MeshPhongMaterial({color: 0x222222});
-	blooMaterial = new THREE.MeshLambertMaterial({color: 0x4444ff});
-	redMaterial = new THREE.MeshLambertMaterial({color: 0xff2222});
+	solidMaterial = new THREE.MeshLambertMaterial({color: 0xff2222});
+
+
+
+
+	kyoob = new THREE.Mesh(boxGeometry, solidMaterial);
+	scene.add(kyoob);
 
 
 
 
     atomArray.push(new Atom(0, 0, 0, "carbon"));
-    currentAtom = atomArray[atomArray.length - 1];                              // current atom is last in array
 
     if (atomArray.length > 0) {
         for (let item of atomArray) {
@@ -186,6 +185,11 @@ function initialise() {
 
 
 function animate() {
+	// the actual animation
+	kyoob.rotation.x += 0.01;
+	kyoob.rotation.y += 0.02;
+	kyoob.rotation.z += 0.03;
+
     // update Three.js tools
 	controls.update();
 	renderer.render(scene, camera);
@@ -200,7 +204,6 @@ function animate() {
 $(document).ready(function() {
     // event listeners
     $(window).resize(resizeCanvas);
-    $("#addAtom").on("click", function() {newAtom(400, 0, 0)});
     $("#clearCanvas").on("click", clearDrawing);
 
     // run at start
@@ -208,15 +211,6 @@ $(document).ready(function() {
     initialise();
     animate();
 });
-
-function newAtom(x, y, z) {
-    let xPos = currentAtom.x + currentAtom.radius + x;
-    let yPos = currentAtom.y + currentAtom.radius + y;
-    let zPos = currentAtom.z + currentAtom.radius + z;
-    atomArray.push(new Atom(xPos, yPos, zPos, "carbon"));
-    currentAtom = atomArray[atomArray.length - 1];                          // set to last in array
-    currentAtom.create();
-}
 
 function clearDrawing() {
     // clear
@@ -237,13 +231,17 @@ function clearDrawing() {
 
 
 
+var atomArray = [];         // will store all the atoms
+
+
+
+
 function Atom(x, y, z, element) {
     this.mesh;
     this.x = x;
     this.y = y;
     this.z = z;
     this.element = element;
-    this.colour = blackMaterial;
     this.radius = 0;            // radius of nucleus
     this.possibleBonds = 1;     // maximum number of bonds the atom can make
     this.currentBonds = [];     // atoms this is currently bonded to (use this.currentBonds.length)
@@ -254,7 +252,6 @@ function Atom(x, y, z, element) {
         // radius is a function of element?
         if (newElement == "carbon") {
             this.radius = 1;
-            this.colour = blackMaterial;
         }
         else {
             console.error("Error: tried to set atom to \"" + newElement + "\", which is not defined in the program");
@@ -267,17 +264,16 @@ function Atom(x, y, z, element) {
         // error was already thrown when setting radius
     };
 
+    this.create = function() {
+        this.setElement("carbon");
+        this.mesh = new THREE.Mesh(sphereGeometry, wireMaterial);
+        this.mesh.scale.set(this.radius, this.radius, this.radius);
+        scene.add(this.mesh);
+    };
+
     this.moov = function(xDir, yDir, zDir) {
         this.mesh.translateX(xDir);
         this.mesh.translateY(yDir);
         this.mesh.translateZ(zDir);
-    };
-
-    this.create = function() {
-        this.setElement("carbon");
-        this.mesh = new THREE.Mesh(sphereGeometry, this.colour);
-        this.mesh.scale.set(this.radius, this.radius, this.radius);
-        this.moov(this.x, this.y, this.z);
-        scene.add(this.mesh);
     };
 }

@@ -1,5 +1,8 @@
 /* global $ THREE scope panOffset */
 
+var mouse;
+var raycaster;
+var INTERSECTED;
 var canvas = $("#canvas").get(0);
 var $canvas = $("#canvas");
 var canvasWidth = 720;                                                          // 16:9 ratio
@@ -37,8 +40,6 @@ var controls = new THREE.OrbitControls(camera);
 
 camera.position.z = 5;
 
-// hey helen. that thing you pasted here was already written in the modified orbital controls.
-// i deleted it. the shift thing should still work.								- audrey
 
 function render() {
 	controls.update();
@@ -47,10 +48,6 @@ function render() {
 }
 
 render();
-
-
-
-
 
 function resizeCanvas() {
 
@@ -79,6 +76,51 @@ function resizeCanvas() {
         renderer.setSize(canvasWidth, canvasHeight);    // but i didn't want to waste memory                        -audrey
     }
 }
+
+cube.onclick = function(){
+    cube.material.color.setHex(0x66ffff);
+};
+window.addEventListener("resize", onWindowResize, false);
+
+mouse.x = (event.clientX / $canvas.width()) * 2 - 1;							// why are you dividing by window.innerWidth? the canvas isn't taking up the entire page
+mouse.y = (event.clientY / $canvas.height()) * 2 + 1;							// also, clientX isn't defined. i'm presuming this code is supposed to go INSIDE some sort of callback on an
+																				// event listener. either way, this line is breaking the code								-audrey
+raycaster = new THREE.Raycaster();
+
+var vector = new THREE.Vector3(mouse.x, mouse.y, 1).unproject(camera);
+raycaster.set(camera.position, vector.sub(camera.position).normalize());
+var intersects = raycaster.intersectObjects(scene.children);
+INTERSECTED = intersects[0].object;
+
+var material = new THREE.LineBasicMaterial({color: 0xAAFFAA});
+
+// crosshair size
+var x = 0.01, y = 0.01;
+
+var geometry = new THREE.Geometry();
+
+// crosshair
+geometry.vertices.push(new THREE.Vector3(0, y, 0));
+geometry.vertices.push(new THREE.Vector3(0, -y, 0));
+geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+geometry.vertices.push(new THREE.Vector3(x, 0, 0));    
+geometry.vertices.push(new THREE.Vector3(-x, 0, 0));
+
+var crosshair = new THREE.Line(geometry, material);
+
+// place it in the center
+var crosshairPercentX = 50;
+var crosshairPercentY = 50;
+var crosshairPositionX = (crosshairPercentX / 100) * 2 - 1;
+var crosshairPositionY = (crosshairPercentY / 100) * 2 - 1;
+
+crosshair.position.x = crosshairPositionX * camera.aspect;
+crosshair.position.y = crosshairPositionY;
+
+crosshair.position.z = -0.3;
+
+camera.add(crosshair);
+scene.add(camera);
 
 $(document).ready(function() {
     // event listeners
