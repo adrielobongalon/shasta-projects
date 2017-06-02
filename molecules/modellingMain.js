@@ -25,19 +25,19 @@
 
 
 
-var canvas = $("#canvas").get(0);
-var $canvas = $("#canvas");
-var canvasWidth = 720;                                                          // 16:9 ratio
-var canvasHeight = 405;
+const canvas = $("#canvas").get(0);
+const $canvas = $("#canvas");
+let canvasWidth = 720;                                                          // 16:9 ratio
+let canvasHeight = 405;
 const bgColour = "#ffdbe2";   // make sure to match with html window colour & css stylings
 
-var scene, camera, mainLight, ambientLight, controls, renderer;
-var sphereGeometry, cylinderGeometry, wireMaterial;
-var whiteMaterial, greyMaterial, blackMaterial, redMaterial, blooMaterial;
-// var boxGeometry, kyoob;
+let scene, camera, mainLight, ambientLight, controls, renderer;
+let sphereGeometry, cylinderGeometry, wireMaterial;
+let whiteMaterial, greyMaterial, blackMaterial, redMaterial, blooMaterial;
+// let boxGeometry, kyoob;
 
-var atomArray = [];         // will store all the atoms
-var currentAtom;
+let atomArray = [];         // will store all the atoms
+let currentAtom, previousAtom;
 
 
 
@@ -64,9 +64,9 @@ function resizeCanvas() {
     canvasWidth = Math.floor($canvas.parent().width());
     canvasHeight = Math.floor(canvasWidth * (9 / 16));                          // 16:9 ratio
 
-    var top = $("#above-canvas").height();
-    var bottom = $("#below-canvas").height();
-    var winht = $(window).height();
+    const top = $("#above-canvas").height();
+    const bottom = $("#below-canvas").height();
+    const winht = $(window).height();
 
     // if it's too tall, reset the values
     if (top + canvasHeight + bottom > winht) {
@@ -85,8 +85,6 @@ function resizeCanvas() {
         renderer.setSize(canvasWidth, canvasHeight);    // but i didn't want to waste memory                        -audrey
     }
 }
-
-
 
 
 
@@ -154,6 +152,7 @@ function initialise() {
 
 	sphereGeometry = new THREE.SphereGeometry(150, 32, 32);
 
+    // materials (mainly colours)
 	wireMaterial = new THREE.MeshBasicMaterial({color: 0x66ff66, wireframe: true});
 	whiteMaterial = new THREE.MeshLambertMaterial({color: 0xbbbbbb});
 	greyMaterial = new THREE.MeshLambertMaterial({color: 0x888888});
@@ -164,19 +163,15 @@ function initialise() {
 
 
 
-    atomArray.push(new Atom(0, 0, 0, "carbon"));
-    currentAtom = atomArray[atomArray.length - 1];                              // current atom is last in array
-
-    if (atomArray.length > 0) {
-        for (let item of atomArray) {
-            item.create();
-        }
-    }
+    // construct and create the first atom, push it into atomArray
+    currentAtom = new Atom(0, 0, 0, "carbon");
+    currentAtom.create();
+    atomArray = [currentAtom];
 
 
 
 
-	renderer = new THREE.WebGLRenderer({alpha: true});
+	renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
 	renderer.setSize(canvasWidth, canvasHeight);
 
 	canvas.appendChild(renderer.domElement);
@@ -197,29 +192,102 @@ function animate() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 $(document).ready(function() {
     // event listeners
     $(window).resize(resizeCanvas);
-    $("#addAtom").on("click", function() {newAtom(400, 0, 0)});
-    $("#clearCanvas").on("click", clearDrawing);
+    $("#addAtom").on("click", newAtom);
+    $("#remoovAtom").on("click", remoovAtom);
+    $("#restart").on("click", reset);   // different names because to the user, the PROCESS is restarting, but to us the PROGRAM is NOT restarting
+    $(document).keypress(function(event) {
+        if (event.which == 13) {
+            atomArray[1].moov(0, 100, 0);
+        }
+    });
 
     // run at start
-    resizeCanvas();                     // resize canvas on start
+    resizeCanvas();                                                             // resize canvas on start
     initialise();
     animate();
 });
 
-function newAtom(x, y, z) {
-    let xPos = currentAtom.x + currentAtom.radius + x;
-    let yPos = currentAtom.y + currentAtom.radius + y;
-    let zPos = currentAtom.z + currentAtom.radius + z;
-    atomArray.push(new Atom(xPos, yPos, zPos, "carbon"));
-    currentAtom = atomArray[atomArray.length - 1];                          // set to last in array
-    currentAtom.create();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function connectAtoms() {
+    for (let item of atomArray) {
+        
+    }
 }
 
-function clearDrawing() {
-    // clear
+function newAtom() {
+    if (currentAtom.currentBonds.length < currentAtom.possibleBonds) {
+        let x = 400;
+        let y = 0;
+        let z = 0;
+        let xPos = currentAtom.x + currentAtom.radius + x;
+        let yPos = currentAtom.y + currentAtom.radius + y;
+        let zPos = currentAtom.z + currentAtom.radius + z;
+    
+        atomArray.push(new Atom(xPos, yPos, zPos, "carbon"));                   // construct the new atom
+
+        previousAtom = currentAtom;                                             // new previousAtom is the old currentAtom
+        currentAtom = atomArray[atomArray.length - 1];                          // new currentAtom is last (newest) in array
+
+        previousAtom.currentBonds.push(currentAtom);
+        currentAtom.currentBonds.push(previousAtom);
+
+        currentAtom.create();                                                   // create the new atom
+        connectAtoms();
+    }
+    else {
+        alert("Error. This atom cannot bond to any more additional atoms.");
+    }
+}
+
+function remoovAtom() {
+    alert("remoov");
+}
+
+function reset() {
+    // clear data
+    atomArray = [];
+    scene.children = [];
+
+    // reset lights and base atom
+    drawAxes();
+    scene.add(mainLight);
+    scene.add(ambientLight);
+    currentAtom = new Atom(0, 0, 0, "carbon");
+    currentAtom.create();
+    atomArray.push(currentAtom);
+
+    // reset camera
+    controls.reset();
 }
 
 
@@ -243,17 +311,19 @@ function Atom(x, y, z, element) {
     this.y = y;
     this.z = z;
     this.element = element;
-    this.colour = blackMaterial;
-    this.radius = 0;            // radius of nucleus
-    this.possibleBonds = 1;     // maximum number of bonds the atom can make
-    this.currentBonds = [];     // atoms this is currently bonded to (use this.currentBonds.length)
+    this.radius = 0;                // radius of nucleus
+    this.possibleBonds = 1;         // maximum number of bonds the atom can make
+    this.colour = blackMaterial;    // colour of model
+    this.currentBonds = [];         // atoms this is currently bonded to (use this.currentBonds.length)
+    this.nextInChain = [];          // same as currentBonds, except without the parent atom
 
     this.setElement = function(newElement) {
         this.element = newElement;
 
-        // radius is a function of element?
+        // radius is a function of element? TODO replace with helen's array
         if (newElement == "carbon") {
             this.radius = 1;
+            this.possibleBonds = 4;
             this.colour = blackMaterial;
         }
         else {
@@ -267,6 +337,13 @@ function Atom(x, y, z, element) {
         // error was already thrown when setting radius
     };
 
+    this.setPosition = function(xPos, yPos, zPos) {
+        this.x = xPos;
+        this.y = yPos;
+        this.z = zPos;
+        this.mesh.position.set(xPos, yPos, zPos);
+    };
+
     this.moov = function(xDir, yDir, zDir) {
         this.mesh.translateX(xDir);
         this.mesh.translateY(yDir);
@@ -277,7 +354,7 @@ function Atom(x, y, z, element) {
         this.setElement("carbon");
         this.mesh = new THREE.Mesh(sphereGeometry, this.colour);
         this.mesh.scale.set(this.radius, this.radius, this.radius);
-        this.moov(this.x, this.y, this.z);
+        this.mesh.position.set(this.x, this.y, this.z);
         scene.add(this.mesh);
     };
 }

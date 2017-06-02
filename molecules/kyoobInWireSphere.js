@@ -175,7 +175,7 @@ function initialise() {
 
 
 
-	renderer = new THREE.WebGLRenderer({alpha: true});
+	renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
 	renderer.setSize(canvasWidth, canvasHeight);
 
 	canvas.appendChild(renderer.domElement);
