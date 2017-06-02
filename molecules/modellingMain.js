@@ -36,6 +36,8 @@ let sphereGeometry, cylinderGeometry, wireMaterial;
 let whiteMaterial, greyMaterial, blackMaterial, redMaterial, blooMaterial;
 // let boxGeometry, kyoob;
 
+const atomSize = 150;
+
 let atomArray = [];         // will store all the atoms
 let currentAtom, previousAtom;
 
@@ -150,7 +152,7 @@ function initialise() {
 
 
 
-	sphereGeometry = new THREE.SphereGeometry(150, 32, 32);
+	sphereGeometry = new THREE.SphereGeometry(atomSize, 32, 32);
 
     // materials (mainly colours)
 	wireMaterial = new THREE.MeshBasicMaterial({color: 0x66ff66, wireframe: true});
@@ -260,6 +262,7 @@ function newAtom() {
 
         previousAtom.currentBonds.push(currentAtom);
         currentAtom.currentBonds.push(previousAtom);
+        currentAtom.parentAtom = previousAtom;
 
         currentAtom.create();                                                   // create the new atom
         connectAtoms();
@@ -306,7 +309,8 @@ function reset() {
 
 
 function Atom(x, y, z, element) {
-    this.mesh;
+    this.mesh;                      // the sphere
+    this.connections = [];          // the cylinder(s) that connect to other atoms
     this.x = x;
     this.y = y;
     this.z = z;
@@ -316,6 +320,7 @@ function Atom(x, y, z, element) {
     this.colour = blackMaterial;    // colour of model
     this.currentBonds = [];         // atoms this is currently bonded to (use this.currentBonds.length)
     this.nextInChain = [];          // same as currentBonds, except without the parent atom
+    this.parentAtom = null;         // if null, then is base; otherwise, should be set on construction
 
     this.setElement = function(newElement) {
         this.element = newElement;
@@ -348,6 +353,21 @@ function Atom(x, y, z, element) {
         this.mesh.translateX(xDir);
         this.mesh.translateY(yDir);
         this.mesh.translateZ(zDir);
+    };
+
+    this.connectToParent = function() {
+        
+    };
+    this.connectToChildren = function () {
+        // loop
+    };
+    this.connectToAll = function() {
+        // clear array; this function might be used after repositioning,
+        this.connections = [];
+        // TODO remove from scene
+
+        this.connectToParent();     // so the old cylinders will need to go
+        this.connectToChildren();
     };
 
     this.create = function() {

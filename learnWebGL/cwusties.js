@@ -87,6 +87,16 @@ function resizeCanvas() {
 }
 
 
+
+
+
+
+
+
+
+
+
+
 var bondLengths = [
 {
     name: "hydrogen",
@@ -94,7 +104,10 @@ var bondLengths = [
     fluorine: [92],
     chlorine: [127],
     bromine:  [141],
-    iodine:   [161]
+    iodine:   [161],
+    oxygen:   [96],
+    silicon:  [148],
+    carbon:   [109]
 },
 {
     name: "oxygen",
@@ -192,10 +205,10 @@ var bondLengths = [
 const periodicTable = [];
 
 function PrdcElmt(name, bonds, bondLength, radius) {
-  this.name = name;
-  this.possibleBonds = bonds;
-  this.bondLength = bondLength; // TODO replace with object
-  this.atomicRadius = radius; //in amu
+    this.name = name;
+    this.possibleBonds = bonds;
+    this.bondLength = bondLength; // TODO replace with object
+    this.atomicRadius = radius; //in amu
 }
 //note: bond length not yet accounted for, radius in progress (pm)
 //for radius, referring to http://periodictable.com/Properties/A/AtomicRadius.v.html
@@ -337,6 +350,73 @@ periodicTable.push(new PrdcElmt("radon",       0, null, 120));
 // periodicTable.push(new PrdcElmt("darmstadtium", 2, 20, 5));
 // periodicTable.push(new PrdcElmt("roentgenium", 2, 20, 5));
 
+function putBondsInTable() {
+    for (let item of periodicTable) {
+        for (let lengths of bondLengths) {
+            if (lengths.name == item.name) {
+                item.bondLength = lengths;
+            }
+        }
+    }
+}
+
+function getMaxBonds(atom, bondingTo) {
+    for (let item of bondLengths){
+        if (item.name == atom){
+            if (item[bondingTo]) {                  // check if the second element exists in the object of the first element
+                return item[bondingTo].length;      // if so, return the max number of bonds it can make to that element
+            }
+            else {
+                console.error("error: there is no data on " + atom + " bonding to " + bondingTo);
+                return false;
+            }
+        }
+    }
+    console.error("nah bwuh das cwusti. theh's no data on " + atom);
+    return false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -380,6 +460,13 @@ function drawAxes() {
 
 
 function initialise() {
+
+    // data
+    putBondsInTable();
+
+
+
+
 	scene = new THREE.Scene();
 
     // canvasWidth and canvasHeight should be properly set by now from resizeCanvas()
@@ -428,7 +515,7 @@ function initialise() {
 	renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
 	renderer.setSize(canvasWidth, canvasHeight);
 
-	canvas.appendChild(renderer.domElement);
+	canvas.appendChild(renderer.domElement);++++++++++++++++++++++++++++++++++++++++++++
 }
 
 
