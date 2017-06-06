@@ -28,7 +28,8 @@ root {
 
 
 html {
-    background: url("https://previews.123rf.com/images/bill2499/bill24991404/bill2499140400006/27291364-Molecule-structure-vector-illustration-background-Stock-Vector.jpg") no-repeat center center fixed;
+    /*background: url("https://previews.123rf.com/images/bill2499/bill24991404/bill2499140400006/27291364-Molecule-structure-vector-illustration-background-Stock-Vector.jpg") no-repeat center center fixed;*/
+    /*background: url("http://www.nktphotonics.com/wp-content/uploads/2015/03/molecules.jpg") no-repeat center center fixed;*/
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -64,8 +65,8 @@ body {
 
 
 #canvas {
-    background-color: #ffdbe2;
-    background-color: rgba(255, 219, 226, 0.9);
+    background-color: #ccffff;
+    background-color: rgba(204, 255, 255, 0.9);
 }
 
 

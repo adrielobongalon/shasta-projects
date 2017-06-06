@@ -27,25 +27,22 @@
 
 const canvas = $("#canvas").get(0);
 const $canvas = $("#canvas");
+const canvasWidthRatio = 2;
+const canvasHeightRatio = 1;
 let canvasWidth = 720;                                                          // 16:9 ratio
 let canvasHeight = 405;
 const bgColour = "#ffdbe2";   // make sure to match with html window colour & css stylings
 
-var scene, camera, mainLight, ambientLight, controls, renderer;
+var scene, camera, mainLight, ambientLight, controls, mouse, raycaster, renderer;
 var sphereGeometry, cylinderGeometry, wireMaterial;
-var whiteMaterial, greyMaterial, blackMaterial, redMaterial, blooMaterial;
+var whiteMaterial, greyMaterial, blackMaterial, redMaterial, darkBlooMaterial, greenMaterial, darkRedMaterial,
+    darkVioletMaterial, cyanMaterial, orangeMaterial, yellowMaterial, peachMaterial, violetMaterial,
+    darkGreenMaterial, darkOrangeMaterial, pinkMaterial;
 // var boxGeometry, kyoob;
+var highlightedAtom;
 
 var atomArray = [];         // will store all the atoms
 var currentAtom;
-
-
-
-
-
-
-
-
 
 
 
@@ -62,7 +59,7 @@ function resizeCanvas() {
 
     // begin by setting the variables, assuming it isn't too tall
     canvasWidth = Math.floor($canvas.parent().width());
-    canvasHeight = Math.floor(canvasWidth * (9 / 16));                          // 16:9 ratio
+    canvasHeight = Math.floor(canvasWidth * (canvasHeightRatio / canvasWidthRatio));        // 16:9 ratio
 
     const top = $("#above-canvas").height();
     const bottom = $("#below-canvas").height();
@@ -70,8 +67,8 @@ function resizeCanvas() {
 
     // if it's too tall, reset the values
     if (top + canvasHeight + bottom > winht) {
-        canvasHeight = Math.floor(winht - (top + bottom));                      // set height to max height of canvas
-        canvasWidth = Math.floor(canvasHeight * (16 / 9));                      // scale width to 16:9 ratio
+        canvasHeight = Math.floor(winht - (top + bottom));                                  // set height to max height of canvas
+        canvasWidth = Math.floor(canvasHeight * (canvasWidthRatio / canvasHeightRatio));    // scale width to 16:9 ratio
     }
 
     // resize the div
@@ -92,22 +89,20 @@ function resizeCanvas() {
 
 
 
-
-
-
-
-
 var bondLengths = [
 {
     name: "hydrogen",
-    hydrogen: [74],     // bond lengths should be in the form [single, double, triple]
-    fluorine: [92],
-    chlorine: [127],
-    bromine:  [141],
-    iodine:   [161],
-    oxygen:   [96],
-    silicon:  [148],
-    carbon:   [109]
+    hydrogen:   [74],     // bond lengths should be in the form [single, double, triple]
+    fluorine:   [92],
+    chlorine:   [127],
+    bromine:    [141],
+    iodine:     [161],
+    oxygen:     [96],
+    silicon:    [148],
+    carbon:     [109],
+    nitrogen:   [101],
+    phosphorus: [142],
+    sulfur:     [134]
 },
 {
     name: "oxygen",
@@ -118,7 +113,11 @@ var bondLengths = [
     fluorine:   [142],
     chlorine:   [164],
     bromine:    [172],
-    iodine:     [194]
+    iodine:     [194],
+    silicon:    [161],
+    carbon:     [143, 123, 113],
+    nitrogen:   [144, 120, 106]
+    
 },
 {
     name: "silicon",
@@ -129,7 +128,9 @@ var bondLengths = [
     fluorine:   [156],
     chlorine:   [204],
     bromine:    [216],
-    iodine:     [240]
+    iodine:     [240],
+    carbon:     [186],
+    phosphorus: [227]
 },
 {
     name: "carbon",
@@ -154,7 +155,8 @@ var bondLengths = [
     fluorine:   [139],
     chlorine:   [191],
     bromine:    [214],
-    iodine:     [222]
+    iodine:     [222],
+    carbon:     [147, 127, 115]
 },
 {
     name: "phosphorus",
@@ -164,7 +166,10 @@ var bondLengths = [
     fluorine:   [156],
     chlorine:   [204],
     bromine:    [222],
-    iodine:     [246]
+    iodine:     [246],
+    oxygen:     [160],
+    carbon:     [187],
+    nitrogen:   [177]
 },
 {
     name: "sulfur",
@@ -173,29 +178,66 @@ var bondLengths = [
     fluorine: [158],
     chlorine: [201],
     bromine:  [225],
-    iodine:   [234]
+    iodine:   [234],
+    oxygen:   [151],
+    silicon:  [210],
+    carbon:   [181]
 },
 {
     name: "fluorine",
-    fluorine: [143],
-    chlorine: [166],
-    bromine:  [178],
-    iodine:   [187]
+    fluorine:  [143],
+    chlorine:  [166],
+    bromine:   [178],
+    iodine:    [187],
+    hydrogen:  [92],
+    oxygen:    [142],
+    silicon:   [156],
+    carbon:    [133],
+    nitrogen:  [139],
+    phosphorus:[156],
+    sulfur:    [158]
 },
 {
     name: "chlorine",
-    chlorine: [199],
-    bromine:  [214],
-    iodine:   [243]
+    chlorine:  [199],
+    bromine:   [214],
+    iodine:    [243],
+    hydrogen:  [127],
+    oxygen:    [164],
+    silicon:   [204],
+    carbon:    [177],
+    nitrogen:  [191],
+    phosphorus:[204],
+    sulfur:    [201],
+    fluorine:  [166]
 },
 {
     name: "bromine",
-    bromine: [228],
-    iodine:  [248],
+    bromine:   [228],
+    iodine:    [248],
+    hydrogen:  [141],
+    oxygen:    [172],
+    silicon:   [216],
+    carbon:    [194],
+    nitrogen:  [214],
+    phosphorus:[222],
+    sulfur:    [225],
+    fluorine:  [178],
+    chlorine:  [214]
 },
 {
     name: "iodine",
-    iodine: [266]
+    iodine:    [266],
+    hydrogen:  [161],
+    oxygen:    [194],
+    silicon:   [240],
+    carbon:    [213],
+    nitrogen:  [222],
+    phosphorus:[246],
+    sulfur:    [234],
+    fluorine:  [187],
+    chlorine:  [243],
+    bromine:   [248]
 }
 ];
 
@@ -239,15 +281,15 @@ periodicTable.push(new PrdcElmt("potassium",    1, null, 243));
 periodicTable.push(new PrdcElmt("calcium",      2, null, 194));
 
 // //elements 21-39
-// periodicTable.push(new PrdcElmt("scandium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("titanium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("vanadium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("chromium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("manganese", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("iron", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("cobalt", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("nickel", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("copper", 2, 20, 5));
+// periodicTable.push(new PrdcElmt("scandium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("titanium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("vanadium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("chromium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("manganese", 2, null, 5));
+// periodicTable.push(new PrdcElmt("iron", 2, null, 5));
+// periodicTable.push(new PrdcElmt("cobalt", 2, null, 5));
+// periodicTable.push(new PrdcElmt("nickel", 2, null, 5));
+// periodicTable.push(new PrdcElmt("copper", 2, null, 5));
 
 
 //elements 30-40
@@ -262,15 +304,15 @@ periodicTable.push(new PrdcElmt("rubidium",     1, null, 265));
 periodicTable.push(new PrdcElmt("strontium",    2, null, 219));
 
 //elements 39-47
-// periodicTable.push(new PrdcElmt("yttrium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("zirconium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("niobium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("molybdenum", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("technetium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("ruthenium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("rhodium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("palladium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("silver", 2, 20, 5));
+// periodicTable.push(new PrdcElmt("yttrium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("zirconium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("niobium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("molybdenum", 2, null, 5));
+// periodicTable.push(new PrdcElmt("technetium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("ruthenium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("rhodium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("palladium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("silver", 2, null, 5));
 
 //element 48-56
 periodicTable.push(new PrdcElmt("cadmium",      2, null, 161));
@@ -284,31 +326,31 @@ periodicTable.push(new PrdcElmt("caesium",      1, null, 300));
 periodicTable.push(new PrdcElmt("barium",       2, null, 253));
 
 // //elements 57-71
-// periodicTable.push(new PrdcElmt("lanthanum", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("cerium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("praseodymium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("neodymium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("promethium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("samarium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("europium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("gadolinium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("terbium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("dysprosium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("holmium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("erbium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("thulium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("ytterbium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("lutetium", 2, 20, 5));
+// periodicTable.push(new PrdcElmt("lanthanum", 2, null, 5));
+// periodicTable.push(new PrdcElmt("cerium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("praseodymium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("neodymium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("promethium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("samarium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("europium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("gadolinium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("terbium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("dysprosium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("holmium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("erbium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("thulium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("ytterbium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("lutetium", 2, null, 5));
 
 // //elements 72-79
-// periodicTable.push(new PrdcElmt("hafnium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("tantalum", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("tungsten", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("rhenium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("osmium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("iridium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("platinum", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("gold", 2, 20, 5));
+// periodicTable.push(new PrdcElmt("hafnium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("tantalum", 2, null, 5));
+// periodicTable.push(new PrdcElmt("tungsten", 2, null, 5));
+// periodicTable.push(new PrdcElmt("rhenium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("osmium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("iridium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("platinum", 2, null, 5));
+// periodicTable.push(new PrdcElmt("gold", 2, null, 5));
 
 //elements 80-88
 periodicTable.push(new PrdcElmt("mercury",     2, null, 171));
@@ -320,35 +362,35 @@ periodicTable.push(new PrdcElmt("astatine",    1, null, 127));
 periodicTable.push(new PrdcElmt("radon",       0, null, 120));
 
 // bottom row -> molecules by collision
-// periodicTable.push(new PrdcElmt("francium", 1, 20, 5));
-// periodicTable.push(new PrdcElmt("radium", 2, 20, 5));
+// periodicTable.push(new PrdcElmt("francium", 1, null, 5));
+// periodicTable.push(new PrdcElmt("radium", 2, null, 5));
 
 // //elements 89-103
-// periodicTable.push(new PrdcElmt("actinium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("thorium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("protactinium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("uranium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("neptunium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("plutonium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("americium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("curium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("berkelium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("californium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("einsteinium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("fermium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("mendelevium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("nobelium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("lawrencium", 2, 20, 5));
+// periodicTable.push(new PrdcElmt("actinium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("thorium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("protactinium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("uranium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("neptunium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("plutonium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("americium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("curium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("berkelium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("californium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("einsteinium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("fermium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("mendelevium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("nobelium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("lawrencium", 2, null, 5));
 
 // //elements 104-111
-// periodicTable.push(new PrdcElmt("rutherfordum", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("dubnium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("seaborgium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("bohrium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("hassium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("meitnerium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("darmstadtium", 2, 20, 5));
-// periodicTable.push(new PrdcElmt("roentgenium", 2, 20, 5));
+// periodicTable.push(new PrdcElmt("rutherfordum", 2, null, 5));
+// periodicTable.push(new PrdcElmt("dubnium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("seaborgium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("bohrium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("hassium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("meitnerium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("darmstadtium", 2, null, 5));
+// periodicTable.push(new PrdcElmt("roentgenium", 2, null, 5));
 
 function putBondsInTable() {
     for (let item of periodicTable) {
@@ -382,54 +424,6 @@ function getMaxBonds(atom, bondingTo) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function drawAxes() {
     const blueMaterial = new THREE.LineBasicMaterial({color: 0x0000ff});
     const greenMaterial = new THREE.LineBasicMaterial({color: 0x00ff00});
@@ -456,6 +450,29 @@ function drawAxes() {
     scene.add(zAxis);
 }
 
+function changeColour(mesh, material) {
+    mesh.traverse(function(child) {
+        if (child instanceof THREE.Mesh) {
+            child.material = material;
+        }
+        mesh.geometry.uvsNeedUpdate = true;
+        mesh.needsUpdate = true;
+    });
+}
+
+function onMouseMove(event) {
+	// calculate mouse position in normalized device coordinates
+	// (-1 to +1) for both components
+
+	mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+	mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+}
+
+
+
+
+
+
 
 
 
@@ -472,7 +489,7 @@ function initialise() {
     // canvasWidth and canvasHeight should be properly set by now from resizeCanvas()
 	camera = new THREE.PerspectiveCamera(10, canvasWidth / canvasHeight, 1000, 100000);
 	camera.position.z = 9001;   // IT's OVER 9000!
-
+	
     // lighting
     mainLight = new THREE.DirectionalLight(0x888888);
     ambientLight = new THREE.AmbientLight(0xcccccc);
@@ -481,7 +498,10 @@ function initialise() {
     scene.add(mainLight);
     scene.add(ambientLight);
 
+    // controls
     controls = new THREE.OrbitControls(camera);
+    mouse = new THREE.Vector2();
+    raycaster = new THREE.Raycaster();
 
     drawAxes();
 
@@ -494,10 +514,19 @@ function initialise() {
 	whiteMaterial = new THREE.MeshLambertMaterial({color: 0xbbbbbb});
 	greyMaterial = new THREE.MeshLambertMaterial({color: 0x888888});
 	blackMaterial = new THREE.MeshPhongMaterial({color: 0x222222});
-	blooMaterial = new THREE.MeshLambertMaterial({color: 0x4444ff});
+	darkBlooMaterial = new THREE.MeshLambertMaterial({color: 0x1010dd});
 	redMaterial = new THREE.MeshLambertMaterial({color: 0xff2222});
-
-
+	greenMaterial = new THREE.MeshLambertMaterial({color: 0x00ff00});
+	darkRedMaterial = new THREE.MeshLambertMaterial({color: 0x851515});
+    darkVioletMaterial = new THREE.MeshLambertMaterial({color: 0x6C08B2});
+    cyanMaterial = new THREE.MeshLambertMaterial({color: 0x00ffff});
+    orangeMaterial = new THREE.MeshLambertMaterial({color: 0xffa500});
+    yellowMaterial = new THREE.MeshLambertMaterial({color: 0xffff00});
+    peachMaterial = new THREE.MeshLambertMaterial({color: 0xffb7ae});
+    violetMaterial = new THREE.MeshLambertMaterial({color: 0x9859C4});
+    darkGreenMaterial = new THREE.MeshLambertMaterial({color: 0x008000});
+    darkOrangeMaterial = new THREE.MeshLambertMaterial({color: 0xbf7e00});
+    pinkMaterial = new THREE.MeshLambertMaterial({color: 0xff90ce});
 
 
     atomArray.push(new Atom(0, 0, 0, "carbon"));
@@ -515,13 +544,38 @@ function initialise() {
 	renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
 	renderer.setSize(canvasWidth, canvasHeight);
 
-	canvas.appendChild(renderer.domElement);++++++++++++++++++++++++++++++++++++++++++++
+	canvas.appendChild(renderer.domElement);
 }
 
 
 
 
 function animate() {
+    // update the picking ray with the camera and mouse position
+	raycaster.setFromCamera(mouse, camera);
+
+    var intersects = raycaster.intersectObjects(scene.children);
+
+    if (intersects.length > 0) {
+    //     if (highlightedAtom != intersects[0].object) {
+    //         if (highlightedAtom) {      // resets the colour after being un-highlighted
+    //             // highlightedAtom.material.emissive.setHex(highlightedAtom.currentHex);
+    //         }
+
+            highlightedAtom = intersects[0].object;
+            changeColour(highlightedAtom, greenMaterial);
+    //         // highlightedAtom.currentHex = highlightedAtom.material.emissive.getHex();
+    //         // highlightedAtom.material.emissive.setHex(0xff0000);
+    //     }
+    }
+    else {
+    //     if (highlightedAtom) {  // resets the colour after being un-highlighted
+    //     //     // highlightedAtom.material.emissive.setHex(highlightedAtom.currentHex);
+    //     }
+
+        highlightedAtom = null;
+    }
+
     // update Three.js tools
 	controls.update();
 	renderer.render(scene, camera);
@@ -529,6 +583,19 @@ function animate() {
     // recursive loop
     window.requestAnimationFrame(animate);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -543,7 +610,7 @@ $(document).ready(function() {
             atomArray[1].moov(0, 100, 0);
         }
     });
-
+    $canvas.on("mousemove", onMouseMove);
     // run at start
     resizeCanvas();                                                             // resize canvas on start
     initialise();
@@ -632,3 +699,13 @@ function Atom(x, y, z, element) {
         scene.add(this.mesh);
     };
 }
+
+
+
+
+
+
+/* 
+CHANGE NAW BWUH DAS CWUSTI TO SOMETHING MORE PROFESSIONAL
+CHANGE TITLE FROM CWUSTI TO MODEL A MOLECULE
+*/
