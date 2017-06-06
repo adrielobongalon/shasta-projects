@@ -543,6 +543,7 @@ function initialise() {
 
 	renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
 	renderer.setSize(canvasWidth, canvasHeight);
+// 	renderer.setClearColor(0xffffff, 1);
 
 	canvas.appendChild(renderer.domElement);
 }
@@ -557,21 +558,23 @@ function animate() {
     var intersects = raycaster.intersectObjects(scene.children);
 
     if (intersects.length > 0) {
-    //     if (highlightedAtom != intersects[0].object) {
-    //         if (highlightedAtom) {      // resets the colour after being un-highlighted
-    //             // highlightedAtom.material.emissive.setHex(highlightedAtom.currentHex);
-    //         }
+        if (highlightedAtom != intersects[0].object) {
+            if (highlightedAtom) {      // resets the old highlighted atom's colour after being un-highlighted
+                changeColour(highlightedAtom, blackMaterial);
+                // highlightedAtom.material.emissive.setHex(highlightedAtom.currentHex);
+            }
 
             highlightedAtom = intersects[0].object;
             changeColour(highlightedAtom, greenMaterial);
-    //         // highlightedAtom.currentHex = highlightedAtom.material.emissive.getHex();
-    //         // highlightedAtom.material.emissive.setHex(0xff0000);
-    //     }
+            // highlightedAtom.currentHex = highlightedAtom.material.emissive.getHex();
+            // highlightedAtom.material.emissive.setHex(0xff0000);
+        }
     }
     else {
-    //     if (highlightedAtom) {  // resets the colour after being un-highlighted
-    //     //     // highlightedAtom.material.emissive.setHex(highlightedAtom.currentHex);
-    //     }
+        if (highlightedAtom) {  // resets the colour after being un-highlighted
+            changeColour(highlightedAtom, blackMaterial);
+            // highlightedAtom.material.emissive.setHex(highlightedAtom.currentHex);
+        }
 
         highlightedAtom = null;
     }
