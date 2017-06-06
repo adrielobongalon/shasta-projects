@@ -40,10 +40,14 @@ var sphereGeometry, cylinderGeometry, wireMaterial;
 var whiteMaterial, greyMaterial, blackMaterial, redMaterial, blooMaterial, greenMaterial, darkRedMaterial,
     darkVioletMaterial, cyanMaterial, orangeMaterial, yellowMaterial, peachMaterial, violetMaterial,
     darkGreenMaterial, darkOrangeMaterial, pinkMaterial;
+var whiteAltMaterial, greyAltMaterial, blackAltMaterial, redAltMaterial, blooAltMaterial, greenAltMaterial, darkRedAltMaterial,
+    darkVioletAltMaterial, cyanAltMaterial, orangeAltMaterial, yellowAltMaterial, peachAltMaterial, violetAltMaterial,
+    darkGreenAltMaterial, darkOrangeAltMaterial, pinkAltMaterial;
 var highlightedAtom;
 
 const atomSize = 150;
 const connectionSize = Math.floor(atomSize / 2);
+const connectionLength = 400;
 
 let atomArray = [];         // will store all the atoms
 let currentAtom, previousAtom;
@@ -109,6 +113,10 @@ function resizeCanvas() {
 
 
 
+
+//      --------------------------------
+//      |    chemistry-related data    |
+//      --------------------------------
 
 var bondLengths = [
 {
@@ -457,13 +465,22 @@ function getMaxBonds(atom, bondingTo) {
 
 
 
-//      ---------------------
-//      |    constructor    |
-//      ---------------------
+//      ------------------------------------------------
+//      |    constructor and atom-related functions    |
+//      ------------------------------------------------
 
 function Atom(x, y, z, element) {
     this.mesh;                      // the sphere
-    this.parentConnection = null;   // cylinder to connect to parent atom (array of cylinders if end of chain)
+    this.parentConnection = {       // cylinder to connect to parent atom (array of cylinders if end of chain)
+        mesh: null,
+        bondLength: 0,
+        x: 0,
+        y: 0,
+        z: 0,
+        angleX: 0,
+        angleY: 0,
+        angleZ: 0
+    };
     this.childConnections = [];     // the cylinder(s) that connect to children atoms
     this.x = x;
     this.y = y;
@@ -504,13 +521,25 @@ function Atom(x, y, z, element) {
     };
 
     this.moov = function(xDir, yDir, zDir) {
+        this.x += xDir;
+        this.y += yDir;
+        this.z += zDir;
         this.mesh.translateX(xDir);
         this.mesh.translateY(yDir);
         this.mesh.translateZ(zDir);
     };
 
     this.connectToParent = function() {
-        this.parentConnection = new THREE.CylinderGeometry(connectionSize, connectionSize, 20, 32);
+        this.parentConnection.mesh = new THREE.Mesh(cylinderGeometry, this.colour);
+
+        const position = getMidpoint([this.x, this.y, this.z], [this.parentAtom.x, this.parentAtom.y, this.parentAtom.z]);
+        this.parentConnection.x = position[0];
+        this.parentConnection.y = position[1];
+        this.parentConnection.z = position[2];
+        this.setPosition.call(this.parentConnection, position[0], position[1], position[2]);
+
+        // this.parentConnection.bondLength = getMidpoint([], []);
+        scene.add(this.parentConnection.mesh);
     };
     this.connectToChildren = function () {
         // loop
@@ -549,7 +578,7 @@ function changeColour(mesh, material) {
 
 
 
-function highlightAtom() {
+function highlightSelectedAtom() {
     // create ray
 	raycaster.setFromCamera(mouse, camera);
 
@@ -572,6 +601,19 @@ function highlightAtom() {
         }
         highlightedAtom = null;                                 // tell the data the ray isn't touching anything
     }
+}
+
+
+
+
+function getMidpoint(arr1, arr2) {
+    // both arrays should have coordinates in the form [x, y, z]
+    const x = Math.round((arr1[0] + arr2[0]) / 2);
+    const y = Math.round((arr1[1] + arr2[1]) / 2);
+    const z = Math.round((arr1[2] + arr2[2]) / 2);
+
+    // return array of averages
+    return ([x, y, z]);
 }
 
 
@@ -641,8 +683,7 @@ function drawAxes() {
 
 
 function initialise() {
-
-    // data
+    // initialise data
     putBondsInTable();
 
 
@@ -662,6 +703,7 @@ function initialise() {
     scene.add(mainLight);
     scene.add(ambientLight);
 
+    // controls
     controls = new THREE.OrbitControls(camera);
     mouse = new THREE.Vector2();
     mouse.x = -1;   // these lines prevent the ray starting at (0, 0), which would make the
@@ -674,25 +716,43 @@ function initialise() {
 
 
 	sphereGeometry = new THREE.SphereGeometry(atomSize, 32, 32);
+	cylinderGeometry = new THREE.CylinderGeometry(connectionSize, connectionSize, connectionLength, 32);
 
     // materials (mainly colours)
-	      wireMaterial = new THREE.MeshBasicMaterial(  {color: 0x66ff66, wireframe: true});
-	     whiteMaterial = new THREE.MeshLambertMaterial({color: 0xbbbbbb});
-	      greyMaterial = new THREE.MeshLambertMaterial({color: 0x888888});
-	     blackMaterial = new THREE.MeshPhongMaterial(  {color: 0x222222});
-	      blooMaterial = new THREE.MeshLambertMaterial({color: 0x1010dd});
-	       redMaterial = new THREE.MeshLambertMaterial({color: 0xff2222});
-	     greenMaterial = new THREE.MeshLambertMaterial({color: 0x00ff00});
-	   darkRedMaterial = new THREE.MeshLambertMaterial({color: 0x851515});
-    darkVioletMaterial = new THREE.MeshLambertMaterial({color: 0x6C08B2});
-          cyanMaterial = new THREE.MeshLambertMaterial({color: 0x00ffff});
-        orangeMaterial = new THREE.MeshLambertMaterial({color: 0xffa500});
-        yellowMaterial = new THREE.MeshLambertMaterial({color: 0xffff00});
-         peachMaterial = new THREE.MeshLambertMaterial({color: 0xffb7ae});
-        violetMaterial = new THREE.MeshLambertMaterial({color: 0x9859C4});
-     darkGreenMaterial = new THREE.MeshLambertMaterial({color: 0x008000});
-    darkOrangeMaterial = new THREE.MeshLambertMaterial({color: 0xbf7e00});
-          pinkMaterial = new THREE.MeshLambertMaterial({color: 0xff90ce});
+	         wireMaterial = new THREE.MeshBasicMaterial(  {color: 0x66ff66, wireframe: true});
+	        whiteMaterial = new THREE.MeshLambertMaterial({color: 0xbbbbbb});
+	         greyMaterial = new THREE.MeshLambertMaterial({color: 0x888888});
+	        blackMaterial = new THREE.MeshPhongMaterial(  {color: 0x222222});
+	         blooMaterial = new THREE.MeshLambertMaterial({color: 0x1010dd});
+	          redMaterial = new THREE.MeshLambertMaterial({color: 0xff2222});
+	        greenMaterial = new THREE.MeshLambertMaterial({color: 0x00ff00});
+	      darkRedMaterial = new THREE.MeshLambertMaterial({color: 0x851515});
+       darkVioletMaterial = new THREE.MeshLambertMaterial({color: 0x6C08B2});
+             cyanMaterial = new THREE.MeshLambertMaterial({color: 0x00ffff});
+           orangeMaterial = new THREE.MeshLambertMaterial({color: 0xffa500});
+           yellowMaterial = new THREE.MeshLambertMaterial({color: 0xffff00});
+            peachMaterial = new THREE.MeshLambertMaterial({color: 0xffb7ae});
+           violetMaterial = new THREE.MeshLambertMaterial({color: 0x9859C4});
+        darkGreenMaterial = new THREE.MeshLambertMaterial({color: 0x008000});
+       darkOrangeMaterial = new THREE.MeshLambertMaterial({color: 0xbf7e00});
+             pinkMaterial = new THREE.MeshLambertMaterial({color: 0xff90ce});
+          
+         whiteAltMaterial = new THREE.MeshLambertMaterial({color: 0xfffdee});
+          greyAltMaterial = new THREE.MeshLambertMaterial({color: 0x6f6d6d});
+         blackAltMaterial = new THREE.MeshPhongMaterial(  {color: 0x404040});
+          blooAltMaterial = new THREE.MeshLambertMaterial({color: 0x5858ff});
+           redAltMaterial = new THREE.MeshLambertMaterial({color: 0xff8080});
+         greenAltMaterial = new THREE.MeshLambertMaterial({color: 0x8dff8d});
+       darkRedAltMaterial = new THREE.MeshLambertMaterial({color: 0xab5555});
+    darkVioletAltMaterial = new THREE.MeshLambertMaterial({color: 0x80559f});
+          cyanAltMaterial = new THREE.MeshLambertMaterial({color: 0x8dffff});
+        orangeAltMaterial = new THREE.MeshLambertMaterial({color: 0xffd994});
+        yellowAltMaterial = new THREE.MeshLambertMaterial({color: 0xffffa0});
+         peachAltMaterial = new THREE.MeshLambertMaterial({color: 0xffcfc9});
+        violetAltMaterial = new THREE.MeshLambertMaterial({color: 0xbc9dd2});
+     darkGreenAltMaterial = new THREE.MeshLambertMaterial({color: 0x5f9a5f});
+    darkOrangeAltMaterial = new THREE.MeshLambertMaterial({color: 0xdfba74});
+          pinkAltMaterial = new THREE.MeshLambertMaterial({color: 0xf9c6e2});
 
 
 
@@ -716,7 +776,7 @@ function initialise() {
 
 function animate() {
     // highlight the atom the mouse hovers over
-    highlightAtom();
+    highlightSelectedAtom();
 
     // update Three.js tools
 	controls.update();
@@ -753,7 +813,7 @@ function connectAtoms() {
 
 function newAtom() {
     if (currentAtom.currentBonds.length < currentAtom.possibleBonds) {
-        let x = 400;
+        let x = connectionLength;
         let y = 0;
         let z = 0;
         let xPos = currentAtom.x + currentAtom.radius + x;
@@ -824,15 +884,17 @@ $(document).ready(function() {
     $("#remoovAtom").on("click", remoovAtom);
     $("#restart").on("click", reset);   // different names because to the user, the PROCESS is restarting, but to us the PROGRAM is NOT restarting
     $canvas.on("mousemove", onMouseMove);
-    $(document).keypress(function(event) {
+    $(document).on("keydown", function(event) {
         if (event.which == 13) {
-            // atomArray[1].moov(0, 100, 0);
+            atomArray[1].moov(0, 100, 0);
+        }
+        else if (event.which == 220) {
             atomArray[1].connectToParent();
         }
     });
 
     // run at start
-    resizeCanvas();                                                             // resize canvas on start
+    resizeCanvas();     // canvas must be sized on start
     initialise();
     animate();
 });
