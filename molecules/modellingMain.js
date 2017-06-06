@@ -40,6 +40,7 @@ var sphereGeometry, cylinderGeometry, wireMaterial;
 var whiteMaterial, greyMaterial, blackMaterial, redMaterial, blooMaterial, greenMaterial, darkRedMaterial,
     darkVioletMaterial, cyanMaterial, orangeMaterial, yellowMaterial, peachMaterial, violetMaterial,
     darkGreenMaterial, darkOrangeMaterial, pinkMaterial;
+var highlightedAtom;
 
 const atomSize = 150;
 const connectionSize = Math.floor(atomSize / 2);
@@ -87,9 +88,9 @@ function resizeCanvas() {
     $canvas.css({height: canvasHeight + "px"});
 
     // resize within Three.js
-    if (camera) {                                       // this is a hacky way of preventing this from running on function call
-        camera.aspect = canvasWidth / canvasHeight;     // from $(document).ready, since camera isn't defined at that point
-        camera.updateProjectionMatrix();                // we could have just done something like "var initialised = false",
+    if (camera) {                                       // this if-statement is a hacky way of preventing this from running on the
+        camera.aspect = canvasWidth / canvasHeight;     // function call from $(document).ready, since camera isn't defined at that
+        camera.updateProjectionMatrix();                // point. we could have just done something like "var initialised = false",
         renderer.setSize(canvasWidth, canvasHeight);    // but i didn't want to waste memory                        -audrey
     }
 }
@@ -535,6 +536,47 @@ function Atom(x, y, z, element) {
 
 
 
+function changeColour(mesh, material) {
+    mesh.traverse(function(child) {
+        if (child instanceof THREE.Mesh) {
+            child.material = material;
+        }
+        mesh.geometry.uvsNeedUpdate = true;
+        mesh.needsUpdate = true;
+    });
+}
+
+
+
+
+function highlightAtom() {
+    // create ray
+	raycaster.setFromCamera(mouse, camera);
+
+    // this is an array that stores all of the things the ray touches, from front (closest to camera) to back
+    const intersects = raycaster.intersectObjects(scene.children);
+
+    if (intersects.length > 0) {                                // if the ray touches anything
+        if (highlightedAtom != intersects[0].object) {          //      if it's touching anything new
+            if (highlightedAtom) {                              //      and the old thing was an atom
+                changeColour(highlightedAtom, blackMaterial);   //      unhighlight the old atom
+            }
+
+            highlightedAtom = intersects[0].object;             // then update data to store the new highlighted atom
+            changeColour(highlightedAtom, greenMaterial);       // and change its colour
+        }
+    }
+    else {                                                      // if the ray doesn't touch anything
+        if (highlightedAtom) {                                  //      if the old thing was an atom
+            changeColour(highlightedAtom, blackMaterial);       //      unhighlight it
+        }
+        highlightedAtom = null;                                 // tell the data the ray isn't touching anything
+    }
+}
+
+
+
+
 
 
 
@@ -550,6 +592,24 @@ function Atom(x, y, z, element) {
 //      -----------------------
 //      |    functionality    |
 //      -----------------------
+
+function onMouseMove(event) {
+    const canvasPosition = renderer.domElement.getBoundingClientRect();
+
+    // position inside the canvas
+    const mouseX = event.clientX - canvasPosition.left;
+    const mouseY = event.clientY - canvasPosition.top;
+    
+    // divide my the position so it represents the fraction of the canvas it takes up
+    // then multiply by 2 (because the canvas width and height both go from -1 to 1)
+    // mouse y needs to be inverted because down is positive
+    // add/subtract 1 to centre it since (0,0) is in the middle of the canvas
+    mouse.x =  2 * (mouseX / canvasWidth)  - 1;
+    mouse.y = -2 * (mouseY / canvasHeight) + 1;
+}
+
+
+
 
 function drawAxes() {
     const blueMaterial = new THREE.LineBasicMaterial({color: 0x0000ff});
@@ -603,6 +663,10 @@ function initialise() {
     scene.add(ambientLight);
 
     controls = new THREE.OrbitControls(camera);
+    mouse = new THREE.Vector2();
+    mouse.x = -1;   // these lines prevent the ray starting at (0, 0), which would make the
+    mouse.y = 1;    // base atom highlighted on startup. btw, (-1, 1) is the top-left corner
+    raycaster = new THREE.Raycaster();
 
     drawAxes();
 
@@ -612,23 +676,23 @@ function initialise() {
 	sphereGeometry = new THREE.SphereGeometry(atomSize, 32, 32);
 
     // materials (mainly colours)
-	wireMaterial = new THREE.MeshBasicMaterial({color: 0x66ff66, wireframe: true});
-	whiteMaterial = new THREE.MeshLambertMaterial({color: 0xbbbbbb});
-	greyMaterial = new THREE.MeshLambertMaterial({color: 0x888888});
-	blackMaterial = new THREE.MeshPhongMaterial({color: 0x222222});
-	blooMaterial = new THREE.MeshLambertMaterial({color: 0x1010dd});
-	redMaterial = new THREE.MeshLambertMaterial({color: 0xff2222});
-	greenMaterial = new THREE.MeshLambertMaterial({color: 0x00ff00});
-	darkRedMaterial = new THREE.MeshLambertMaterial({color: 0x851515});
+	      wireMaterial = new THREE.MeshBasicMaterial(  {color: 0x66ff66, wireframe: true});
+	     whiteMaterial = new THREE.MeshLambertMaterial({color: 0xbbbbbb});
+	      greyMaterial = new THREE.MeshLambertMaterial({color: 0x888888});
+	     blackMaterial = new THREE.MeshPhongMaterial(  {color: 0x222222});
+	      blooMaterial = new THREE.MeshLambertMaterial({color: 0x1010dd});
+	       redMaterial = new THREE.MeshLambertMaterial({color: 0xff2222});
+	     greenMaterial = new THREE.MeshLambertMaterial({color: 0x00ff00});
+	   darkRedMaterial = new THREE.MeshLambertMaterial({color: 0x851515});
     darkVioletMaterial = new THREE.MeshLambertMaterial({color: 0x6C08B2});
-    cyanMaterial = new THREE.MeshLambertMaterial({color: 0x00ffff});
-    orangeMaterial = new THREE.MeshLambertMaterial({color: 0xffa500});
-    yellowMaterial = new THREE.MeshLambertMaterial({color: 0xffff00});
-    peachMaterial = new THREE.MeshLambertMaterial({color: 0xffb7ae});
-    violetMaterial = new THREE.MeshLambertMaterial({color: 0x9859C4});
-    darkGreenMaterial = new THREE.MeshLambertMaterial({color: 0x008000});
+          cyanMaterial = new THREE.MeshLambertMaterial({color: 0x00ffff});
+        orangeMaterial = new THREE.MeshLambertMaterial({color: 0xffa500});
+        yellowMaterial = new THREE.MeshLambertMaterial({color: 0xffff00});
+         peachMaterial = new THREE.MeshLambertMaterial({color: 0xffb7ae});
+        violetMaterial = new THREE.MeshLambertMaterial({color: 0x9859C4});
+     darkGreenMaterial = new THREE.MeshLambertMaterial({color: 0x008000});
     darkOrangeMaterial = new THREE.MeshLambertMaterial({color: 0xbf7e00});
-    pinkMaterial = new THREE.MeshLambertMaterial({color: 0xff90ce});
+          pinkMaterial = new THREE.MeshLambertMaterial({color: 0xff90ce});
 
 
 
@@ -651,6 +715,9 @@ function initialise() {
 
 
 function animate() {
+    // highlight the atom the mouse hovers over
+    highlightAtom();
+
     // update Three.js tools
 	controls.update();
 	renderer.render(scene, camera);
@@ -756,6 +823,7 @@ $(document).ready(function() {
     $("#addAtom").on("click", newAtom);
     $("#remoovAtom").on("click", remoovAtom);
     $("#restart").on("click", reset);   // different names because to the user, the PROCESS is restarting, but to us the PROGRAM is NOT restarting
+    $canvas.on("mousemove", onMouseMove);
     $(document).keypress(function(event) {
         if (event.which == 13) {
             // atomArray[1].moov(0, 100, 0);

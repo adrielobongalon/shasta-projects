@@ -461,11 +461,18 @@ function changeColour(mesh, material) {
 }
 
 function onMouseMove(event) {
-	// calculate mouse position in normalized device coordinates
-	// (-1 to +1) for both components
+    const canvasPosition = renderer.domElement.getBoundingClientRect();
 
-	mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-	mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    // position inside the canvas
+    const mouseX = event.clientX - canvasPosition.left;
+    const mouseY = event.clientY - canvasPosition.top;
+    
+    // divide my the position so it represents the fraction of the canvas it takes up
+    // then multiply by 2 (because the canvas width and height both go from -1 to 1)
+    // mouse y needs to be inverted because down is positive
+    // add/subtract 1 to centre it since (0,0) is in the middle of the canvas
+    mouse.x =  2 * (mouseX / canvasWidth)  - 1;
+    mouse.y = -2 * (mouseY / canvasHeight) + 1;
 }
 
 
@@ -561,21 +568,16 @@ function animate() {
         if (highlightedAtom != intersects[0].object) {
             if (highlightedAtom) {      // resets the old highlighted atom's colour after being un-highlighted
                 changeColour(highlightedAtom, blackMaterial);
-                // highlightedAtom.material.emissive.setHex(highlightedAtom.currentHex);
             }
 
             highlightedAtom = intersects[0].object;
             changeColour(highlightedAtom, greenMaterial);
-            // highlightedAtom.currentHex = highlightedAtom.material.emissive.getHex();
-            // highlightedAtom.material.emissive.setHex(0xff0000);
         }
     }
     else {
-        if (highlightedAtom) {  // resets the colour after being un-highlighted
+        if (highlightedAtom) {          // resets the old highlighted atom's colour after being un-highlighted
             changeColour(highlightedAtom, blackMaterial);
-            // highlightedAtom.material.emissive.setHex(highlightedAtom.currentHex);
         }
-
         highlightedAtom = null;
     }
 
