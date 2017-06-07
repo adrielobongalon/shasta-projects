@@ -35,10 +35,11 @@ let canvasWidth = 720;                                                          
 let canvasHeight = 405;
 const bgColour = "#ccffff";   // make sure to match with html window colour & css stylings
 
-var currentModel = "stick and ball";
+var currentModel = "ball and stick";
 
 var scene, camera, mainLight, ambientLight, controls, mouse, raycaster, renderer;
 var sphereGeometry, cylinderGeometry, skeletalMaterial, wireMaterial;
+
 var whiteMaterial, greyMaterial, blackMaterial, redMaterial, blooMaterial, greenMaterial, darkRedMaterial,
     darkVioletMaterial, cyanMaterial, orangeMaterial, yellowMaterial, peachMaterial, violetMaterial,
     darkGreenMaterial, darkOrangeMaterial, pinkMaterial;
@@ -351,15 +352,15 @@ createTable: {      // i made this a labelled block so i can fold it up in the I
     // periodicTable.push(new PrdcElmt("silver", 2, null, 5));
     
     // element 48-56
-    periodicTable.push(new PrdcElmt("cadmium",      2, null, 161, 2, peachMaterial, peachAltMaterial));
-    periodicTable.push(new PrdcElmt("indium",       3, null, 156, 3, pinkMaterial, pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("tin",          4, null, 145, 4, pinkMaterial, pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("antimony",     3, null, 133, 5, pinkMaterial, pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("tellurium",    2, null, 123, 6, pinkMaterial, pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("cadmium",      2, null, 161, 2, peachMaterial,      peachAltMaterial));
+    periodicTable.push(new PrdcElmt("indium",       3, null, 156, 3, pinkMaterial,       pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("tin",          4, null, 145, 4, pinkMaterial,       pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("antimony",     3, null, 133, 5, pinkMaterial,       pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("tellurium",    2, null, 123, 6, pinkMaterial,       pinkAltMaterial));
     periodicTable.push(new PrdcElmt("iodine",       1, null, 115, 7, darkVioletMaterial, darkVioletAltMaterial));
-    periodicTable.push(new PrdcElmt("xenon",        0, null, 108, 8, cyanMaterial, cyanAltMaterial));
-    periodicTable.push(new PrdcElmt("caesium",      1, null, 300, 1, violetMaterial, violetAltMaterial));
-    periodicTable.push(new PrdcElmt("barium",       2, null, 253, 2, darkGreenMaterial, darkGreenAltMaterial));
+    periodicTable.push(new PrdcElmt("xenon",        0, null, 108, 8, cyanMaterial,       cyanAltMaterial));
+    periodicTable.push(new PrdcElmt("caesium",      1, null, 300, 1, violetMaterial,     violetAltMaterial));
+    periodicTable.push(new PrdcElmt("barium",       2, null, 253, 2, darkGreenMaterial,  darkGreenAltMaterial));
     
     // elements 57-71
     // periodicTable.push(new PrdcElmt("lanthanum", 2, null, 5));
@@ -390,12 +391,12 @@ createTable: {      // i made this a labelled block so i can fold it up in the I
     
     // elements 80-88
     periodicTable.push(new PrdcElmt("mercury",     2, null, 171, 2, peachMaterial, peachAltMaterial));
-    periodicTable.push(new PrdcElmt("thallium",    3, null, 156, 3, pinkMaterial, pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("lead",        4, null, 154, 4, pinkMaterial, pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("bismuth",     3, null, 143, 5, pinkMaterial, pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("polonium",    2, null, 135, 6, pinkMaterial, pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("astatine",    1, null, 127, 7, pinkMaterial, pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("radon",       0, null, 120, 8, pinkMaterial, pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("thallium",    3, null, 156, 3, pinkMaterial,  pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("lead",        4, null, 154, 4, pinkMaterial,  pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("bismuth",     3, null, 143, 5, pinkMaterial,  pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("polonium",    2, null, 135, 6, pinkMaterial,  pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("astatine",    1, null, 127, 7, pinkMaterial,  pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("radon",       0, null, 120, 8, pinkMaterial,  pinkAltMaterial));
     
     // bottom row -> molecules by collision
     // periodicTable.push(new PrdcElmt("francium", 1, null, 5));
@@ -440,8 +441,8 @@ function putBondsInTable() {
 }
 
 function getMaxBonds(atom, bondingTo) {
-    for (let item of bondLengths){
-        if (item.name == atom){
+    for (let item of bondLengths) {
+        if (item.name == atom) {
             if (item[bondingTo]) {                  // check if the second element exists in the object of the first element
                 return item[bondingTo].length;      // if so, return the max number of bonds it can make to that element
             }
@@ -519,10 +520,19 @@ function Atom(x, y, z, element) {
         // put a for-loop here. it should loop through periodicTable, and
         // if the element name is equal to newElement, take the index of the array
         // then use that index to set the proper radius, possibleBonds, colour, highlight colour to this object
-
-        else {
-            console.error("Error: tried to set atom to \"" + newElement + "\", which is not defined in the program");
+        for (let item of periodicTable) {
+            if (item.name == newElement) {
+                this.possibleBonds = item.possibleBonds;
+                this.atomicRadius = item.atomicRadius;  // we're not storing bond lengths. we need radius, colour, highlightColour
+                this.colour = item.colour;
+                this.highlightColour = item.highlightColour;
+                // data is in item;
+                // it to set this.radius, this.possibleBonds, etc.
+                return;
+            }
         }
+        // this will only run if newElement isnt in periodicTable
+        console.error("Error: tried to set atom to \"" + newElement + "\", which is not defined in the program");
 
         // TODO bond angle is a function of element and currentBonds?
     };
@@ -571,10 +581,39 @@ function Atom(x, y, z, element) {
         
     };
     this.drawSkeletal = function() {
+        if (this.parentAtom) {
+            const line = new THREE.Line(lineGeometry, blackMaterial);
+            lineGeometry.vertices.push(new THREE.Vector3(this.x));
+            lineGeometry.vertices.push(new THREE.Vector3(this.parentConnection.x));
+        }
+        // if (this.parentAtom) {
+        //     const xLineGeometry = new THREE.Geometry();
+        //     xLineGeometry.vertices.push(new THREE.Vector3(this.x));
+        //     xLineGeometry.vertices.push(new THREE.Vector3(this.parentConnection.x));
+
+        //     const yLineGeometry = new THREE.Geometry();
+        //     yLineGeometry.vertices.push(new THREE.Vector3(this.y));
+        //     yLineGeometry.vertices.push(new THREE.Vector3(this.parentConnection.y));
+
+        //     const zLineGeometry = new THREE.Geometry();
+        //     zLineGeometry.vertices.push(new THREE.Vector3(this.z));
+        //     zLineGeometry.vertices.push(new THREE.Vector3(this.parentConnection.z));
+
+            // const xAxis = new THREE.Line(xLineGeometry, blackMaterial);
+        //     const yAxis = new THREE.Line(yLineGeometry, blackMaterial);
+        //     const zAxis = new THREE.Line(zLineGeometry, blackMaterial);
+
+            scene.add(line);
+        //     scene.add(yAxis);
+        //     scene.add(zAxis);
+        }
+        if (!this.parentAtom) {
+        }
+        // HELEN
         // first check if atom is the base atom (i.e. has no parent)
         // if it has a parent, draw a line from its coordinate to its parent's coordinates
         // the line should be black
-        // if you need help, look at the "drawAxis" function i created. it's similar
+        // if you need help, look at the "drawAxes" function i created. it's similar
         // (if it doesnt have a parent, do nothing)
     };
     this.drawLewisDot = function() {
@@ -582,7 +621,12 @@ function Atom(x, y, z, element) {
     };
 
     this.clearBallAndStick = function() {
-        
+        scene.remove(this.mesh);
+
+        // remove connection, if applicable
+        if (this.parentAtom) {
+            scene.remove(this.parentConnection.mesh);
+        }
     };
     this.clearSkeletal = function() {
         
@@ -596,7 +640,9 @@ function Atom(x, y, z, element) {
         this.mesh = new THREE.Mesh(sphereGeometry, this.colour);
         this.mesh.scale.set(this.radius, this.radius, this.radius);
         this.mesh.position.set(this.x, this.y, this.z);
-        scene.add(this.mesh);
+        if (currentModel == "ball and stick") {
+            scene.add(this.mesh);
+        }
     };
 }
 
@@ -772,6 +818,7 @@ function initialise() {
 
     // materials (mainly colours)
 	         wireMaterial = new THREE.MeshBasicMaterial(  {color: 0x66ff66, wireframe: true});
+	      skeletalMateral = new THREE.LineBasicMaterial(  {color: 0x000000});
 	        whiteMaterial = new THREE.MeshLambertMaterial({color: 0xbbbbbb});
 	         greyMaterial = new THREE.MeshLambertMaterial({color: 0x888888});
 	        blackMaterial = new THREE.MeshPhongMaterial(  {color: 0x222222});
@@ -850,18 +897,19 @@ function switchModel(type) {
 
 
 
+    // remove old model from scene
     if (currentModel == "ball and stick") {
-        for (let item of atomArray){
+        for (let item of atomArray) {
             item.clearBallAndStick();
         }
     }
     else if (currentModel == "skeletal") {
-        for (let item of atomArray){
+        for (let item of atomArray) {
             item.clearSkeletal();
         }
     }
     else if (currentModel == "lewis dot") {
-        for (let item of atomArray){
+        for (let item of atomArray) {
             item.clearLewisDot();
         }
     }
@@ -869,18 +917,19 @@ function switchModel(type) {
 
 
 
+    // draw in new model
     if (type == "ball and stick") {
-        for (let item of atomArray){
+        for (let item of atomArray) {
             item.drawBallAndStick();
         }
     }
     else if (type == "skeletal") {
-        for (let item of atomArray){
+        for (let item of atomArray) {
             item.drawSkeletal();
         }
     }
     else if (type == "lewis dot") {
-        for (let item of atomArray){
+        for (let item of atomArray) {
             item.drawLewisDot();
         }
     }
