@@ -584,13 +584,10 @@ function Atom(x, y, z, element) {
                 lineGeometry.vertices.push(new THREE.Vector3(this.parentAtom.x, this.parentAtom.y, this.parentAtom.z));
                 this.skeletalLine = new THREE.Line(lineGeometry, skeletalMaterial);
             }
-
-
-
-
             //      -------------------
             //      |    lewis dot    |
             //      -------------------
+
 
 
 
