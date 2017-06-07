@@ -64,6 +64,7 @@ body {
     height: 100%;
     min-height: 100%;
     font-family: "Raleway", sans-serif;
+    font-size: 13px;
 }
 
 
@@ -91,9 +92,44 @@ body {
     padding-top: 40px;
 }
 #buttons-div {
+    display: inline-block;
+    padding: 10px 0 20px;
+    vertical-align: top;
+}
+table {
+    float: right;
+    padding: 10px 0 20px;
+    border: none;
+    text-align: right;
+}
+td {
+    vertical-align: middle;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+td:first-child {
+    padding-right: 2px;
+}
+td:nth-child(2) {
+    padding-right: 20px;
+}
+#slidersDiv {
+    display: inline-block;
     padding: 10px 0 20px;
 }
-
+#moveDiv {
+    display: inline-block;
+    padding: 10px 0 20px;
+    margin-right: 40px;
+    vertical-align: top;
+}
+#rotateDiv {
+    display: inline-block;
+    padding: 10px 0 20px;
+    margin-right: 40px;
+    vertical-align: top;
+}
 
 
 
@@ -106,4 +142,20 @@ body {
 
 button {
     font-family: "Raleway", sans-serif;
+}
+select {
+    font-family: "Raleway", sans-serif;
+}
+input {
+    font-family: "Raleway", sans-serif;
+    text-align: right;
+}
+#moveInput, #rotateInput {
+    width: 50px;
+}
+p {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    vertical-align: top;
 }

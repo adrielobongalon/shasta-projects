@@ -111,12 +111,24 @@ body {
     margin-right: 40px;
     vertical-align: top;
 }
-
+#rotateDiv {
+    display: inline-block;
+    padding: 10px 0 20px;
+    margin-right: 40px;
+    vertical-align: top;
+}
 
 
 
 #buttons-div div + div {    /* every div inside #buttons-div except the first */
     margin-top: 5px;
+}
+
+#sliders {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    vertical-align: top; 
 }
 
 
@@ -133,4 +145,5 @@ p {
     display: inline-block;
     margin: 0;
     padding: 0;
+    vertical-align: top;
 }
