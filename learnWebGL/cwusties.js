@@ -1,4 +1,4 @@
-/*
+ /*
                                                                                                           88
                                                                                                           88
                                                                                                           88
@@ -277,7 +277,7 @@ var bondLengths = [
 
 const periodicTable = [];
 
-function PrdcElmt(name, bonds, bondLength, radius, electrons, colour, hlColour) {
+function PrdcElmt(name, bonds, bondLength, radius, electrons, colour, hlColour, atomicSymbol) {
     this.name = name;
     this.possibleBonds = bonds;
     this.bondLength = bondLength;   // TODO replace with object
@@ -285,6 +285,7 @@ function PrdcElmt(name, bonds, bondLength, radius, electrons, colour, hlColour) 
     this.valenceElectrons = electrons;
     this.colour = colour;
     this.highlightColour = hlColour;
+    this.atomicS = symbol;
     
 }
 
@@ -294,28 +295,28 @@ createTable: {      // i made this a labelled block so i can fold it up in the I
     //finished first column for radius as of 5:08 may 31
     
     // elements 1-10
-    periodicTable.push(new PrdcElmt("hydrogen",     1, null, 53,   1, whiteMaterial,     whiteAltMaterial));
-    periodicTable.push(new PrdcElmt("helium",       0, null, 31,   2, cyanMaterial,      cyanAltMaterial));
-    periodicTable.push(new PrdcElmt("lithium",      1, null, 167,  1, violetMaterial,    violetAltMaterial));
-    periodicTable.push(new PrdcElmt("beryllium",    2, null, 112,  2, darkGreenMaterial, darkGreenAltMaterial));
-    periodicTable.push(new PrdcElmt("boron",        3, null, 87,   3, peachMaterial,     peachAltMaterial));
-    periodicTable.push(new PrdcElmt("carbon",       4, null, 67,   4, blackMaterial,     blackAltMaterial));
-    periodicTable.push(new PrdcElmt("nitrogen",     3, null, 56,   5, blooMaterial,      blooAltMaterial));
-    periodicTable.push(new PrdcElmt("oxygen",       2, null, 48,   6, redMaterial,       redAltMaterial));
-    periodicTable.push(new PrdcElmt("fluorine",     1, null, 42,   7, greenMaterial,     greenAltMaterial));
-    periodicTable.push(new PrdcElmt("neon",         0, null, 38,   8, cyanMaterial,      cyanAltMaterial));
+    periodicTable.push(new PrdcElmt("H",  "hydrogen",     1, null, 53,   1, whiteMaterial,     whiteAltMaterial));
+    periodicTable.push(new PrdcElmt("He", "helium",       0, null, 31,   2, cyanMaterial,      cyanAltMaterial));
+    periodicTable.push(new PrdcElmt("Li", "lithium",      1, null, 167,  1, violetMaterial,    violetAltMaterial));
+    periodicTable.push(new PrdcElmt("Be", "beryllium",    2, null, 112,  2, darkGreenMaterial, darkGreenAltMaterial));
+    periodicTable.push(new PrdcElmt("B",  "boron",        3, null, 87,   3, peachMaterial,     peachAltMaterial));
+    periodicTable.push(new PrdcElmt("C",  "carbon",       4, null, 67,   4, blackMaterial,     blackAltMaterial));
+    periodicTable.push(new PrdcElmt("N",  "nitrogen",     3, null, 56,   5, blooMaterial,      blooAltMaterial));
+    periodicTable.push(new PrdcElmt("O",  "oxygen",       2, null, 48,   6, redMaterial,       redAltMaterial));
+    periodicTable.push(new PrdcElmt("F",  "fluorine",     1, null, 42,   7, greenMaterial,     greenAltMaterial));
+    periodicTable.push(new PrdcElmt("Ne", "neon",         0, null, 38,   8, cyanMaterial,      cyanAltMaterial));
     
     // elements 11-20
-    periodicTable.push(new PrdcElmt("sodium",       1, null, 227,  1, violetMaterial,    violetAltMaterial));
-    periodicTable.push(new PrdcElmt("magnesium",    2, null, 145,  2, darkGreenMaterial, darkGreenAltMaterial));
-    periodicTable.push(new PrdcElmt("aluminium",    3, null, 118,  3, pinkMaterial,      pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("silicon",      4, null, 111,  4, pinkMaterial,      pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("phosphorus",   3, null, 98,   5, orangeMaterial,    orangeAltMaterial));
-    periodicTable.push(new PrdcElmt("sulfur",       2, null, 88,   6, yellowMaterial,    yellowAltMaterial));
-    periodicTable.push(new PrdcElmt("chlorine",     1, null, 79,   7, greenMaterial,     greenAltMaterial));
-    periodicTable.push(new PrdcElmt("argon",        1, null, 71,   8, cyanMaterial,      cyanAltMaterial));
-    periodicTable.push(new PrdcElmt("potassium",    1, null, 243,  1, violetMaterial,    violetAltMaterial));
-    periodicTable.push(new PrdcElmt("calcium",      2, null, 194,  2, darkGreenMaterial, darkGreenAltMaterial));
+    periodicTable.push(new PrdcElmt("Na", "sodium",       1, null, 227,  1, violetMaterial,    violetAltMaterial));
+    periodicTable.push(new PrdcElmt("Mg", "magnesium",    2, null, 145,  2, darkGreenMaterial, darkGreenAltMaterial));
+    periodicTable.push(new PrdcElmt("Al", "aluminium",    3, null, 118,  3, pinkMaterial,      pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("Si", "silicon",      4, null, 111,  4, pinkMaterial,      pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("P",  "phosphorus",   3, null, 98,   5, orangeMaterial,    orangeAltMaterial));
+    periodicTable.push(new PrdcElmt("S",  "sulfur",       2, null, 88,   6, yellowMaterial,    yellowAltMaterial));
+    periodicTable.push(new PrdcElmt("Cl", "chlorine",     1, null, 79,   7, greenMaterial,     greenAltMaterial));
+    periodicTable.push(new PrdcElmt("Ar", "argon",        1, null, 71,   8, cyanMaterial,      cyanAltMaterial));
+    periodicTable.push(new PrdcElmt("K",  "potassium",    1, null, 243,  1, violetMaterial,    violetAltMaterial));
+    periodicTable.push(new PrdcElmt("Ca", "calcium",      2, null, 194,  2, darkGreenMaterial, darkGreenAltMaterial));
     
     // elements 21-39
     // periodicTable.push(new PrdcElmt("scandium", 2, null, 5));
@@ -330,15 +331,15 @@ createTable: {      // i made this a labelled block so i can fold it up in the I
     
     
     // elements 30-40
-    periodicTable.push(new PrdcElmt("zinc",         2, null, 142,  2, peachMaterial, peachAltMaterial));
-    periodicTable.push(new PrdcElmt("gallium",      3, null, 136,  3, pinkMaterial,  pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("germanium",    4, null, 125,  4, pinkMaterial,  pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("arsenic",      3, null, 114,  5, pinkMaterial,  pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("selenium",     2, null, 103,  6, pinkMaterial,  pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("bromine",      1, null, 94,   7, pinkMaterial,  pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("krypton",      0, null, 88,   8, pinkMaterial,  pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("rubidium",     1, null, 265,  1, pinkMaterial,  pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("strontium",    2, null, 219,  2, pinkMaterial,  pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("Zn", "zinc",         2, null, 142,  2, peachMaterial, peachAltMaterial));
+    periodicTable.push(new PrdcElmt("Ga", "gallium",      3, null, 136,  3, pinkMaterial,  pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("Ge", "germanium",    4, null, 125,  4, pinkMaterial,  pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("As", "arsenic",      3, null, 114,  5, pinkMaterial,  pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("Se", "selenium",     2, null, 103,  6, pinkMaterial,  pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("Br", "bromine",      1, null, 94,   7, pinkMaterial,  pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("Kr", "krypton",      0, null, 88,   8, pinkMaterial,  pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("Rb", "rubidium",     1, null, 265,  1, pinkMaterial,  pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("Sr", "strontium",    2, null, 219,  2, pinkMaterial,  pinkAltMaterial));
     
     // elements 39-47
     // periodicTable.push(new PrdcElmt("yttrium", 2, null, 5));
@@ -352,15 +353,15 @@ createTable: {      // i made this a labelled block so i can fold it up in the I
     // periodicTable.push(new PrdcElmt("silver", 2, null, 5));
     
     // element 48-56
-    periodicTable.push(new PrdcElmt("cadmium",      2, null, 161, 2, peachMaterial,      peachAltMaterial));
-    periodicTable.push(new PrdcElmt("indium",       3, null, 156, 3, pinkMaterial,       pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("tin",          4, null, 145, 4, pinkMaterial,       pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("antimony",     3, null, 133, 5, pinkMaterial,       pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("tellurium",    2, null, 123, 6, pinkMaterial,       pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("iodine",       1, null, 115, 7, darkVioletMaterial, darkVioletAltMaterial));
-    periodicTable.push(new PrdcElmt("xenon",        0, null, 108, 8, cyanMaterial,       cyanAltMaterial));
-    periodicTable.push(new PrdcElmt("caesium",      1, null, 300, 1, violetMaterial,     violetAltMaterial));
-    periodicTable.push(new PrdcElmt("barium",       2, null, 253, 2, darkGreenMaterial,  darkGreenAltMaterial));
+    periodicTable.push(new PrdcElmt("Cd", "cadmium",      2, null, 161, 2, peachMaterial,      peachAltMaterial));
+    periodicTable.push(new PrdcElmt("In", "indium",       3, null, 156, 3, pinkMaterial,       pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("Sn", "tin",          4, null, 145, 4, pinkMaterial,       pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("Sb", "antimony",     3, null, 133, 5, pinkMaterial,       pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("Te", "tellurium",    2, null, 123, 6, pinkMaterial,       pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("I",  "iodine",       1, null, 115, 7, darkVioletMaterial, darkVioletAltMaterial));
+    periodicTable.push(new PrdcElmt("Xe", "xenon",        0, null, 108, 8, cyanMaterial,       cyanAltMaterial));
+    periodicTable.push(new PrdcElmt("Cs", "caesium",      1, null, 300, 1, violetMaterial,     violetAltMaterial));
+    periodicTable.push(new PrdcElmt("Ba", "barium",       2, null, 253, 2, darkGreenMaterial,  darkGreenAltMaterial));
     
     // elements 57-71
     // periodicTable.push(new PrdcElmt("lanthanum", 2, null, 5));
@@ -390,13 +391,13 @@ createTable: {      // i made this a labelled block so i can fold it up in the I
     // periodicTable.push(new PrdcElmt("gold", 2, null, 5));
     
     // elements 80-88
-    periodicTable.push(new PrdcElmt("mercury",     2, null, 171, 2, peachMaterial, peachAltMaterial));
-    periodicTable.push(new PrdcElmt("thallium",    3, null, 156, 3, pinkMaterial,  pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("lead",        4, null, 154, 4, pinkMaterial,  pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("bismuth",     3, null, 143, 5, pinkMaterial,  pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("polonium",    2, null, 135, 6, pinkMaterial,  pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("astatine",    1, null, 127, 7, pinkMaterial,  pinkAltMaterial));
-    periodicTable.push(new PrdcElmt("radon",       0, null, 120, 8, pinkMaterial,  pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("Hg", "mercury",     2, null, 171, 2, peachMaterial, peachAltMaterial));
+    periodicTable.push(new PrdcElmt("Tl", "thallium",    3, null, 156, 3, pinkMaterial,  pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("Pb", "lead",        4, null, 154, 4, pinkMaterial,  pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("Bi", "bismuth",     3, null, 143, 5, pinkMaterial,  pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("Po", "polonium",    2, null, 135, 6, pinkMaterial,  pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("At", "astatine",    1, null, 127, 7, pinkMaterial,  pinkAltMaterial));
+    periodicTable.push(new PrdcElmt("Rn", "radon",       0, null, 120, 8, pinkMaterial,  pinkAltMaterial));
     
     // bottom row -> molecules by collision
     // periodicTable.push(new PrdcElmt("francium", 1, null, 5));
@@ -554,16 +555,66 @@ function Atom(x, y, z, element) {
     };
 
     this.connectToParent = function() {
-        this.parentConnection.mesh = new THREE.Mesh(cylinderGeometry, this.colour);
+        if (this.parentAtom) {
 
-        const position = getMidpoint([this.x, this.y, this.z], [this.parentAtom.x, this.parentAtom.y, this.parentAtom.z]);
-        this.parentConnection.x = position[0];
-        this.parentConnection.y = position[1];
-        this.parentConnection.z = position[2];
-        this.setPosition.call(this.parentConnection, position[0], position[1], position[2]);
+            //      ------------------------
+            //      |    ball and stick    |
+            //      ------------------------
 
-        // this.parentConnection.bondLength = getMidpoint([], []);
-        scene.add(this.parentConnection.mesh);
+            // if there's already a cylinder, remove it
+            if (this.parentConnection.mesh) {
+                scene.remove(this.parentConnection.mesh);
+            }
+            this.parentConnection.mesh = new THREE.Mesh(cylinderGeometry, this.colour);
+    
+            // cylinder position
+            const position = getMidpoint([this.x, this.y, this.z], [this.parentAtom.x, this.parentAtom.y, this.parentAtom.z]);
+            this.parentConnection.x = position[0];
+            this.parentConnection.y = position[1];
+            this.parentConnection.z = position[2];
+            this.setPosition.call(this.parentConnection, position[0], position[1], position[2]);
+
+            // cylinder rotation
+            // this.parentConnection.mesh.rotation.x = Math.atan2((this.y - this.parentAtom.y), (this.z - this.parentAtom.z));
+            // this.parentConnection.mesh.rotation.y = Math.atan2((this.y - this.parentAtom.y), (this.z - this.parentAtom.z)) + THREE.Math.degToRad(90);
+            this.parentConnection.mesh.rotation.z = Math.atan2((this.y - this.parentAtom.y), (this.x - this.parentAtom.x)) + THREE.Math.degToRad(90);
+
+
+
+
+            //      ------------------
+            //      |    skeletal    |
+            //      ------------------
+
+            // if there's already a line, remove it
+            if (this.skeletalLine) {
+                scene.remove(this.skeletalLine);
+            }
+            if (this.element == "carbon" && this.parentAtom.element == "carbon") {          // only draw lines between carbon atoms
+                const lineGeometry = new THREE.Geometry();
+                lineGeometry.vertices.push(new THREE.Vector3(this.x, this.y, this.z));
+                lineGeometry.vertices.push(new THREE.Vector3(this.parentAtom.x, this.parentAtom.y, this.parentAtom.z));
+                this.skeletalLine = new THREE.Line(lineGeometry, skeletalMaterial);
+            }
+
+
+
+
+            //      -------------------
+            //      |    lewis dot    |
+            //      -------------------
+
+
+
+
+            // this.parentConnection.bondLength = getMidpoint([], []);
+            if (currentModel == "ball and stick") {
+                scene.add(this.parentConnection.mesh);
+            }
+            if (currentModel == "skeletal") {
+                scene.add(this.skeletalLine);
+            }
+        }
     };
     this.connectToChildren = function () {
         // loop
@@ -606,7 +657,7 @@ function Atom(x, y, z, element) {
             scene.add(line);
         //     scene.add(yAxis);
         //     scene.add(zAxis);
-        }
+        // }
         if (!this.parentAtom) {
         }
         // HELEN
@@ -615,6 +666,23 @@ function Atom(x, y, z, element) {
         // the line should be black
         // if you need help, look at the "drawAxes" function i created. it's similar
         // (if it doesnt have a parent, do nothing)
+    };
+    this.drawLewisDot = function() {
+        
+    };
+
+    this.drawBallAndStick = function() {
+        scene.add(this.mesh);
+
+        // remove connection, if applicable
+        if (this.parentAtom) {
+            scene.add(this.parentConnection.mesh);
+        }
+    };
+    this.drawSkeletal = function() {
+        if (this.parentAtom) {
+            scene.add(this.skeletalLine);
+        }
     };
     this.drawLewisDot = function() {
         

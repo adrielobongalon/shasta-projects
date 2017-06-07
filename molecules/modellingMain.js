@@ -488,6 +488,7 @@ function Atom(x, y, z, element) {
         angleZ: 0
     };
     this.childConnections = [];     // the cylinder(s) that connect to children atoms
+    this.skeletalLine = null;
     this.x = x;
     this.y = y;
     this.z = z;
@@ -537,21 +538,65 @@ function Atom(x, y, z, element) {
 
     this.connectToParent = function() {
         if (this.parentAtom) {
+
+            //      ------------------------
+            //      |    ball and stick    |
+            //      ------------------------
+
             // if there's already a cylinder, remove it
             if (this.parentConnection.mesh) {
                 scene.remove(this.parentConnection.mesh);
             }
             this.parentConnection.mesh = new THREE.Mesh(cylinderGeometry, this.colour);
     
+            // cylinder position
             const position = getMidpoint([this.x, this.y, this.z], [this.parentAtom.x, this.parentAtom.y, this.parentAtom.z]);
             this.parentConnection.x = position[0];
             this.parentConnection.y = position[1];
             this.parentConnection.z = position[2];
             this.setPosition.call(this.parentConnection, position[0], position[1], position[2]);
-    
+
+            // cylinder rotation
+            // this.parentConnection.mesh.rotation.x = Math.atan2((this.y - this.parentAtom.y), (this.z - this.parentAtom.z));
+            // this.parentConnection.mesh.rotation.y = Math.atan2((this.y - this.parentAtom.y), (this.z - this.parentAtom.z)) + THREE.Math.degToRad(90);
+            this.parentConnection.mesh.rotation.z = Math.atan2((this.y - this.parentAtom.y), (this.x - this.parentAtom.x)) + THREE.Math.degToRad(90);
+
+
+
+
+            //      ------------------
+            //      |    skeletal    |
+            //      ------------------
+
+            // if there's already a line, remove it
+            if (this.skeletalLine) {
+                scene.remove(this.skeletalLine);
+            }
+            if (this.element == "carbon" && this.parentAtom.element == "carbon") {          // only draw lines between carbon atoms
+                const lineGeometry = new THREE.Geometry();
+                lineGeometry.vertices.push(new THREE.Vector3(this.x, this.y, this.z));
+                lineGeometry.vertices.push(new THREE.Vector3(this.parentAtom.x, this.parentAtom.y, this.parentAtom.z));
+                this.skeletalLine = new THREE.Line(lineGeometry, skeletalMaterial);
+            }
+
+
+
+
+            //      -------------------
+            //      |    lewis dot    |
+            //      -------------------
+
+
+
+
             // this.parentConnection.bondLength = getMidpoint([], []);
-            scene.add(this.parentConnection.mesh);
-    }
+            if (currentModel == "ball and stick") {
+                scene.add(this.parentConnection.mesh);
+            }
+            if (currentModel == "skeletal") {
+                scene.add(this.skeletalLine);
+            }
+        }
     };
     this.connectToChildren = function () {
         // loop
@@ -566,14 +611,17 @@ function Atom(x, y, z, element) {
     };
 
     this.drawBallAndStick = function() {
-        
+        scene.add(this.mesh);
+
+        // remove connection, if applicable
+        if (this.parentAtom) {
+            scene.add(this.parentConnection.mesh);
+        }
     };
     this.drawSkeletal = function() {
-        // first check if atom is the base atom (i.e. has no parent)
-        // if it has a parent, draw a line from its coordinate to its parent's coordinates
-        // the line should be black
-        // if you need help, look at the "drawAxis" function i created. it's similar
-        // (if it doesnt have a parent, do nothing)
+        if (this.parentAtom) {
+            scene.add(this.skeletalLine);
+        }
     };
     this.drawLewisDot = function() {
         
@@ -588,7 +636,7 @@ function Atom(x, y, z, element) {
         }
     };
     this.clearSkeletal = function() {
-        
+        scene.remove(this.skeletalLine);
     };
     this.clearLewisDot = function() {
         
@@ -596,9 +644,11 @@ function Atom(x, y, z, element) {
 
     this.create = function() {
         this.setElement("carbon");
+
         this.mesh = new THREE.Mesh(sphereGeometry, this.colour);
         this.mesh.scale.set(this.radius, this.radius, this.radius);
         this.mesh.position.set(this.x, this.y, this.z);
+
         if (currentModel == "ball and stick") {
             scene.add(this.mesh);
         }
@@ -657,6 +707,24 @@ function getMidpoint(arr1, arr2) {
 
     // return array of averages
     return ([x, y, z]);
+}
+
+
+
+
+var rotationWorldMatrix;
+var xVector = new THREE.Vector3(1, 0, 0);
+var yVector = new THREE.Vector3(0, 1, 0);
+var zVector = new THREE.Vector3(0, 0, 1);
+function rotateAroundWorldAxis(object, axis, radians) {
+    rotationWorldMatrix = new THREE.Matrix4();
+    rotationWorldMatrix.makeRotationAxis(axis.normalize(), radians);
+
+    rotationWorldMatrix.multiply(object.matrix);                // pre-multiply
+
+    object.matrix = rotationWorldMatrix;
+
+    object.rotation.setFromRotationMatrix(object.matrix);
 }
 
 
@@ -761,8 +829,12 @@ function initialise() {
 	sphereGeometry = new THREE.SphereGeometry(atomSize, 32, 32);
 	cylinderGeometry = new THREE.CylinderGeometry(connectionSize, connectionSize, connectionLength, 32);
 
+
+
+
     // materials (mainly colours)
              wireMaterial = new THREE.MeshBasicMaterial(  {color: 0x66ff66, wireframe: true});
+         skeletalMaterial = new THREE.LineBasicMaterial(  {color: 0x000000, linewidth: 100});       // doesn't work on windows
             whiteMaterial = new THREE.MeshLambertMaterial({color: 0xbbbbbb});
              greyMaterial = new THREE.MeshLambertMaterial({color: 0x888888});
             blackMaterial = new THREE.MeshPhongMaterial(  {color: 0x222222});
@@ -931,6 +1003,9 @@ function remoovAtom() {
 }
 
 function reset() {
+    // default to ball-and-stick model
+    currentModel = "ball and stick";
+
     // clear data
     atomArray = [];
     scene.children = [];
@@ -987,11 +1062,32 @@ $(document).ready(function() {
             atomArray[1].moov(0, 100, 0);
             atomArray[1].connectToParent();
         }
-        else if (event.which == 220) {
+        else if (event.which == 220) {  // backslash
+            atomArray[1].parentConnection.mesh.rotation.z += 0.2;
+        }
+        else if (event.which == 65) {   // a
+            atomArray[1].moov(0, 100, 0);
             atomArray[1].connectToParent();
         }
-        else if (event.which == 65) {
-            scene.remove(atomArray[1].parentConnection.mesh);
+        else if (event.which == 79) {   // o
+            atomArray[1].moov(0, -100, 0);
+            atomArray[1].connectToParent();
+        }
+        else if (event.which == 69) {   // e
+            atomArray[1].moov(0, 0, 100);
+            atomArray[1].connectToParent();
+        }
+        else if (event.which == 85) {   // u
+            atomArray[1].moov(0, 0, -100);
+            atomArray[1].connectToParent();
+        }
+        else if (event.which == 73) {   // i
+            atomArray[1].moov(100, 0, 0);
+            atomArray[1].connectToParent();
+        }
+        else if (event.which == 68) {   // d
+            atomArray[1].moov(-100, 0, 0);
+            atomArray[1].connectToParent();
         }
     });
 
