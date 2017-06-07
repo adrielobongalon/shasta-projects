@@ -99,10 +99,17 @@ body {
     display: inline-block;
     padding: 10px 0 20px;
     margin-right: 40px;
+    vertical-align: top;
 }
 #slidersDiv {
     display: inline-block;
     padding: 10px 0 20px;
+}
+#moveDiv {
+    display: inline-block;
+    padding: 10px 0 20px;
+    margin-right: 40px;
+    vertical-align: top;
 }
 
 
@@ -117,4 +124,13 @@ body {
 
 button {
     font-family: "Raleway", sans-serif;
+}
+select {
+    font-family: "Raleway", sans-serif;
+    display: inline-block;
+}
+p {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
 }
