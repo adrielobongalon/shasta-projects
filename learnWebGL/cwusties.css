@@ -15,6 +15,18 @@
      .888888888. `88888.  8888   ,d8P    8 8888     ,o8P'    8 8888   `8b.    8 8888                8 8888
     .8'       `8. `88888.  `Y88888P'     8 888888888P'       8 8888     `88.  8 888888888888        8 8888
 
+
+                8 8888        8   8 888888888888   8 8888          8 888888888888  b.             8
+                8 8888        8   8 8888           8 8888          8 8888          888o.          8
+                8 8888        8   8 8888           8 8888          8 8888          Y88888o.       8
+                8 8888        8   8 8888           8 8888          8 8888          .`Y888888o.    8
+                8 8888        8   8 8888888888     8 8888          8 8888888888    8o. `Y888888o. 8
+                8 8888        8   8 8888           8 8888          8 8888          8`Y8o. `Y88888o8
+                8 8888888888888   8 8888           8 8888          8 8888          8   `Y8o. `Y8888
+                8 8888        8   8 8888           8 8888          8 8888          8      `Y8o. `Y8
+                8 8888        8   8 8888           8 8888          8 8888          8         `Y8o.`
+                8 8888        8   8 888888888888   8 888888888888  8 888888888888  8            `Yo
+
 */
 
 
@@ -73,12 +85,23 @@ body {
 
 
 /* these NEED to be padding and not margin so that their parent divs include
-   the space when the jQuery width() function is called */
+   the space when the jQuery height() function is called */
 #title {
     margin: 0;
     padding-top: 40px;
 }
 #buttons-div {
+    display: inline-block;
+    padding: 10px 0 20px;
+    margin-right: 40px;
+}
+#elementDropdown {
+    display: inline-block;
+    padding: 10px 0 20px;
+    margin-right: 40px;
+}
+#slidersDiv {
+    display: inline-block;
     padding: 10px 0 20px;
 }
 
@@ -88,14 +111,6 @@ body {
 #buttons-div div + div {    /* every div inside #buttons-div except the first */
     margin-top: 5px;
 }
-
-
-
-
-#buttons-div, #elementDropdown {
-    display: inline-block;
-}
-
 
 
 
