@@ -288,7 +288,7 @@ function PrdcElmt(symbol, name, bonds, bondLength, radius, electrons, colour, hl
     this.highlightColour = hlColour;
 }
 
-createTable: {      // i made this a labelled block so i can fold it up in the IDE; this stuff takes up a lot of space
+function createTable() {
     //note: bond length not yet accounted for, radius in progress (pm)
     //for radius, referring to http://periodictable.com/Properties/A/AtomicRadius.v.html
     //finished first column for radius as of 5:08 may 31
@@ -512,8 +512,9 @@ function Atom(x, y, z, element) {
 
         for (let item of periodicTable) {
             if (item.name == newElement) {
+                // this.atomicRadius = item.atomicRadius;
                 this.possibleBonds = item.possibleBonds;
-                this.atomicRadius = item.atomicRadius;
+                this.radius = 1;
                 this.colour = item.colour;
                 this.highlightColour = item.highlightColour;
                 return;
@@ -874,6 +875,8 @@ function initialise() {
     darkOrangeAltMaterial = new THREE.MeshLambertMaterial({color: 0xdfba74});
           pinkAltMaterial = new THREE.MeshLambertMaterial({color: 0xf9c6e2});
 
+    // create periodic table
+    createTable();
 
 
 

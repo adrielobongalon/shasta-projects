@@ -2,7 +2,7 @@
                                                                                                           88
                                                                                                           88
                                                                                                           88
-       document : cwusties.js, for molecules in shasta-projects    ,adPPYYba,  88       88   ,adPPYb,88  8b,dPPYba,   ,adPPYba,  8b       d8
+       document : cwusties.js, for molecules in shasta-projects         ,adPPYYba,  88       88   ,adPPYb,88  8b,dPPYba,   ,adPPYba,  8b       d8
      created on : thursday, may 18, 2017, 09:09 am                      ""     `Y8  88       88  a8"    `Y88  88P'   "Y8  a8P,,,,,88  `8b     d8'
          author : audrey bongalon, helen so, christopher lim            ,adPPPPP88  88       88  8b      :88  88          8PP"""""""   `8b   d8'
     description : main javascript file for the modelling program        88,    ,88  "8a,   ,a88  "8a,   ,d88  88          "8b,   ,aa    `8b,d8'
@@ -288,7 +288,7 @@ function PrdcElmt(symbol, name, bonds, bondLength, radius, electrons, colour, hl
     this.highlightColour = hlColour;
 }
 
-createTable: {      // i made this a labelled block so i can fold it up in the IDE; this stuff takes up a lot of space
+function createTable() {
     //note: bond length not yet accounted for, radius in progress (pm)
     //for radius, referring to http://periodictable.com/Properties/A/AtomicRadius.v.html
     //finished first column for radius as of 5:08 may 31
@@ -512,8 +512,9 @@ function Atom(x, y, z, element) {
 
         for (let item of periodicTable) {
             if (item.name == newElement) {
+                // this.atomicRadius = item.atomicRadius;
                 this.possibleBonds = item.possibleBonds;
-                this.atomicRadius = item.atomicRadius;
+                this.radius = 1;
                 this.colour = item.colour;
                 this.highlightColour = item.highlightColour;
                 return;
@@ -874,6 +875,8 @@ function initialise() {
     darkOrangeAltMaterial = new THREE.MeshLambertMaterial({color: 0xdfba74});
           pinkAltMaterial = new THREE.MeshLambertMaterial({color: 0xf9c6e2});
 
+    // create periodic table
+    createTable();
 
 
 
