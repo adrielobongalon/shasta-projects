@@ -805,6 +805,9 @@ function initialise() {
 
 	scene = new THREE.Scene();
 
+	renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
+	renderer.setSize(canvasWidth, canvasHeight);
+
     // canvasWidth and canvasHeight should be properly set by now from resizeCanvas()
 	camera = new THREE.PerspectiveCamera(10, canvasWidth / canvasHeight, 1000, 100000);
 	camera.position.z = 9001;   // IT's OVER 9000!
@@ -818,7 +821,7 @@ function initialise() {
     scene.add(ambientLight);
 
     // controls
-    controls = new THREE.OrbitControls(camera);
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
     mouse = new THREE.Vector2();
     mouse.x = -1;   // these lines prevent the ray starting at (0, 0), which would make the
     mouse.y = 1;    // base atom highlighted on startup. btw, (-1, 1) is the top-left corner
@@ -884,9 +887,6 @@ function initialise() {
 
 
 
-
-	renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
-	renderer.setSize(canvasWidth, canvasHeight);
 
 	canvas.appendChild(renderer.domElement);
 }

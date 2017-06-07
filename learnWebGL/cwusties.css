@@ -92,9 +92,9 @@ body {
 
 
 
-/*#elementDropdown {*/
-/*    display: inline-block;*/
-/*}*/
+#buttons-div, #elementDropdown {
+    display: inline-block;
+}
 
 
 
