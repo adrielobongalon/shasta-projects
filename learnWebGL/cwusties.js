@@ -1,8 +1,8 @@
- /*
+/*
                                                                                                           88
                                                                                                           88
                                                                                                           88
-       document : cwusties.js, for molecules in shasta-projects         ,adPPYYba,  88       88   ,adPPYb,88  8b,dPPYba,   ,adPPYba,  8b       d8
+       document : cwusties.js, for molecules in shasta-projects    ,adPPYYba,  88       88   ,adPPYb,88  8b,dPPYba,   ,adPPYba,  8b       d8
      created on : thursday, may 18, 2017, 09:09 am                      ""     `Y8  88       88  a8"    `Y88  88P'   "Y8  a8P,,,,,88  `8b     d8'
          author : audrey bongalon, helen so, christopher lim            ,adPPPPP88  88       88  8b      :88  88          8PP"""""""   `8b   d8'
     description : main javascript file for the modelling program        88,    ,88  "8a,   ,a88  "8a,   ,d88  88          "8b,   ,aa    `8b,d8'
@@ -277,7 +277,8 @@ var bondLengths = [
 
 const periodicTable = [];
 
-function PrdcElmt(name, bonds, bondLength, radius, electrons, colour, hlColour, atomicSymbol) {
+function PrdcElmt(symbol, name, bonds, bondLength, radius, electrons, colour, hlColour) {
+    this.symbol = symbol;
     this.name = name;
     this.possibleBonds = bonds;
     this.bondLength = bondLength;   // TODO replace with object
@@ -285,8 +286,6 @@ function PrdcElmt(name, bonds, bondLength, radius, electrons, colour, hlColour, 
     this.valenceElectrons = electrons;
     this.colour = colour;
     this.highlightColour = hlColour;
-    this.atomicS = symbol;
-    
 }
 
 createTable: {      // i made this a labelled block so i can fold it up in the IDE; this stuff takes up a lot of space
@@ -457,12 +456,6 @@ function getMaxBonds(atom, bondingTo) {
     return false;
 }
 
-var colours = [];
-
-function getOppositeColour(colour) {
-    // if you input a normal colour, outputs the highlighted version
-    // if you input a highlighted version, outputs the normal version
-}
 
 
 
@@ -495,14 +488,14 @@ function Atom(x, y, z, element) {
         angleZ: 0
     };
     this.childConnections = [];     // the cylinder(s) that connect to children atoms
+    this.skeletalLine = null;
     this.x = x;
     this.y = y;
     this.z = z;
     this.element = element;
     this.radius = 0;                // radius of nucleus
     this.possibleBonds = 1;         // maximum number of bonds the atom can make
-    this.colour = blackMaterial;    // colour of model and highlighted version
-    this.highlightColour = blackAltMaterial;
+    this.colour = blackMaterial;    // colour of model
     this.currentBonds = [];         // atoms this is currently bonded to (use this.currentBonds.length)
     this.nextInChain = [];          // same as currentBonds, except without the parent atom
     this.parentAtom = null;         // if null, then is base; if object, part of chain; if array, end of a chain
@@ -511,24 +504,18 @@ function Atom(x, y, z, element) {
         this.element = newElement;
 
         // radius is a function of element? TODO replace with helen's array
-        // if (newElement == "carbon") {
-        //     this.radius = 1;
-        //     this.possibleBonds = 4;
-        //     this.colour = blackMaterial;
-        // }
+        /*if (newElement == "carbon") {
+            this.radius = 1;
+            this.possibleBonds = 4;
+            this.colour = blackMaterial;
+        }*/
 
-        // CHRIS
-        // put a for-loop here. it should loop through periodicTable, and
-        // if the element name is equal to newElement, take the index of the array
-        // then use that index to set the proper radius, possibleBonds, colour, highlight colour to this object
         for (let item of periodicTable) {
             if (item.name == newElement) {
                 this.possibleBonds = item.possibleBonds;
-                this.atomicRadius = item.atomicRadius;  // we're not storing bond lengths. we need radius, colour, highlightColour
+                this.atomicRadius = item.atomicRadius;
                 this.colour = item.colour;
                 this.highlightColour = item.highlightColour;
-                // data is in item;
-                // it to set this.radius, this.possibleBonds, etc.
                 return;
             }
         }
@@ -629,49 +616,6 @@ function Atom(x, y, z, element) {
     };
 
     this.drawBallAndStick = function() {
-        
-    };
-    this.drawSkeletal = function() {
-        if (this.parentAtom) {
-            const line = new THREE.Line(lineGeometry, blackMaterial);
-            lineGeometry.vertices.push(new THREE.Vector3(this.x));
-            lineGeometry.vertices.push(new THREE.Vector3(this.parentConnection.x));
-        }
-        // if (this.parentAtom) {
-        //     const xLineGeometry = new THREE.Geometry();
-        //     xLineGeometry.vertices.push(new THREE.Vector3(this.x));
-        //     xLineGeometry.vertices.push(new THREE.Vector3(this.parentConnection.x));
-
-        //     const yLineGeometry = new THREE.Geometry();
-        //     yLineGeometry.vertices.push(new THREE.Vector3(this.y));
-        //     yLineGeometry.vertices.push(new THREE.Vector3(this.parentConnection.y));
-
-        //     const zLineGeometry = new THREE.Geometry();
-        //     zLineGeometry.vertices.push(new THREE.Vector3(this.z));
-        //     zLineGeometry.vertices.push(new THREE.Vector3(this.parentConnection.z));
-
-            // const xAxis = new THREE.Line(xLineGeometry, blackMaterial);
-        //     const yAxis = new THREE.Line(yLineGeometry, blackMaterial);
-        //     const zAxis = new THREE.Line(zLineGeometry, blackMaterial);
-
-            scene.add(line);
-        //     scene.add(yAxis);
-        //     scene.add(zAxis);
-        // }
-        if (!this.parentAtom) {
-        }
-        // HELEN
-        // first check if atom is the base atom (i.e. has no parent)
-        // if it has a parent, draw a line from its coordinate to its parent's coordinates
-        // the line should be black
-        // if you need help, look at the "drawAxes" function i created. it's similar
-        // (if it doesnt have a parent, do nothing)
-    };
-    this.drawLewisDot = function() {
-        
-    };
-
-    this.drawBallAndStick = function() {
         scene.add(this.mesh);
 
         // remove connection, if applicable
@@ -697,7 +641,7 @@ function Atom(x, y, z, element) {
         }
     };
     this.clearSkeletal = function() {
-        
+        scene.remove(this.skeletalLine);
     };
     this.clearLewisDot = function() {
         
@@ -705,14 +649,17 @@ function Atom(x, y, z, element) {
 
     this.create = function() {
         this.setElement("carbon");
+
         this.mesh = new THREE.Mesh(sphereGeometry, this.colour);
         this.mesh.scale.set(this.radius, this.radius, this.radius);
         this.mesh.position.set(this.x, this.y, this.z);
+
         if (currentModel == "ball and stick") {
             scene.add(this.mesh);
         }
     };
 }
+
 
 
 
@@ -724,21 +671,6 @@ function changeColour(mesh, material) {
         mesh.geometry.uvsNeedUpdate = true;
         mesh.needsUpdate = true;
     });
-}
-
-
-
-
-function get3ObjectParent(obj) {
-    // gets the parent of the three.js object
-    // refer to 438
-
-    for (let item of atomArray) {
-        if (item.mesh == obj) {
-            return item;
-        }
-    }
-    return false;   // if obj doesnt exist,
 }
 
 
@@ -780,6 +712,24 @@ function getMidpoint(arr1, arr2) {
 
     // return array of averages
     return ([x, y, z]);
+}
+
+
+
+
+var rotationWorldMatrix;
+var xVector = new THREE.Vector3(1, 0, 0);
+var yVector = new THREE.Vector3(0, 1, 0);
+var zVector = new THREE.Vector3(0, 0, 1);
+function rotateAroundWorldAxis(object, axis, radians) {
+    rotationWorldMatrix = new THREE.Matrix4();
+    rotationWorldMatrix.makeRotationAxis(axis.normalize(), radians);
+
+    rotationWorldMatrix.multiply(object.matrix);                // pre-multiply
+
+    object.matrix = rotationWorldMatrix;
+
+    object.rotation.setFromRotationMatrix(object.matrix);
 }
 
 
@@ -884,16 +834,19 @@ function initialise() {
 	sphereGeometry = new THREE.SphereGeometry(atomSize, 32, 32);
 	cylinderGeometry = new THREE.CylinderGeometry(connectionSize, connectionSize, connectionLength, 32);
 
+
+
+
     // materials (mainly colours)
-	         wireMaterial = new THREE.MeshBasicMaterial(  {color: 0x66ff66, wireframe: true});
-	      skeletalMateral = new THREE.LineBasicMaterial(  {color: 0x000000});
-	        whiteMaterial = new THREE.MeshLambertMaterial({color: 0xbbbbbb});
-	         greyMaterial = new THREE.MeshLambertMaterial({color: 0x888888});
-	        blackMaterial = new THREE.MeshPhongMaterial(  {color: 0x222222});
-	         blooMaterial = new THREE.MeshLambertMaterial({color: 0x1010dd});
-	          redMaterial = new THREE.MeshLambertMaterial({color: 0xff2222});
-	        greenMaterial = new THREE.MeshLambertMaterial({color: 0x00ff00});
-	      darkRedMaterial = new THREE.MeshLambertMaterial({color: 0x851515});
+             wireMaterial = new THREE.MeshBasicMaterial(  {color: 0x66ff66, wireframe: true});
+         skeletalMaterial = new THREE.LineBasicMaterial(  {color: 0x000000, linewidth: 100});       // doesn't work on windows
+            whiteMaterial = new THREE.MeshLambertMaterial({color: 0xbbbbbb});
+             greyMaterial = new THREE.MeshLambertMaterial({color: 0x888888});
+            blackMaterial = new THREE.MeshPhongMaterial(  {color: 0x222222});
+             blooMaterial = new THREE.MeshLambertMaterial({color: 0x1010dd});
+              redMaterial = new THREE.MeshLambertMaterial({color: 0xff2222});
+            greenMaterial = new THREE.MeshLambertMaterial({color: 0x00ff00});
+          darkRedMaterial = new THREE.MeshLambertMaterial({color: 0x851515});
        darkVioletMaterial = new THREE.MeshLambertMaterial({color: 0x6C08B2});
              cyanMaterial = new THREE.MeshLambertMaterial({color: 0x00ffff});
            orangeMaterial = new THREE.MeshLambertMaterial({color: 0xffa500});
@@ -903,7 +856,7 @@ function initialise() {
         darkGreenMaterial = new THREE.MeshLambertMaterial({color: 0x008000});
        darkOrangeMaterial = new THREE.MeshLambertMaterial({color: 0xbf7e00});
              pinkMaterial = new THREE.MeshLambertMaterial({color: 0xff90ce});
-          
+
          whiteAltMaterial = new THREE.MeshLambertMaterial({color: 0xfffdee});
           greyAltMaterial = new THREE.MeshLambertMaterial({color: 0x6f6d6d});
          blackAltMaterial = new THREE.MeshPhongMaterial(  {color: 0x404040});
@@ -960,13 +913,14 @@ function switchModel(type) {
     // don't run if model isn't changing
     if (type == currentModel) {
         console.log(type + " is already the current model");
+        return;
     }
 
 
 
 
     // remove old model from scene
-    if (currentModel == "ball and stick") {
+    if (currentModel === "ball and stick") {
         for (let item of atomArray) {
             item.clearBallAndStick();
         }
@@ -985,7 +939,8 @@ function switchModel(type) {
 
 
 
-    // draw in new model
+    // draw in new model and set it as the current one
+    currentModel = type;
     if (type == "ball and stick") {
         for (let item of atomArray) {
             item.drawBallAndStick();
@@ -1022,12 +977,6 @@ function switchModel(type) {
 //      |    buttons    |
 //      -----------------
 
-function connectAtoms() {
-    for (let item of atomArray) {
-        // item.connectToAll();
-    }
-}
-
 function newAtom() {
     if (currentAtom.currentBonds.length < currentAtom.possibleBonds) {
         let x = connectionLength;
@@ -1047,7 +996,7 @@ function newAtom() {
         currentAtom.parentAtom = previousAtom;
 
         currentAtom.create();                                                   // create the new atom
-        connectAtoms();
+        currentAtom.connectToParent();
     }
     else {
         alert("Error. This atom cannot bond to any more additional atoms.");
@@ -1059,6 +1008,9 @@ function remoovAtom() {
 }
 
 function reset() {
+    // default to ball-and-stick model
+    currentModel = "ball and stick";
+
     // clear data
     atomArray = [];
     scene.children = [];
@@ -1113,8 +1065,34 @@ $(document).ready(function() {
     $(document).on("keydown", function(event) {
         if (event.which == 13) {
             atomArray[1].moov(0, 100, 0);
+            atomArray[1].connectToParent();
         }
-        else if (event.which == 220) {
+        else if (event.which == 220) {  // backslash
+            // atomArray[1].parentConnection.mesh.rotation.z += 0.2;
+            rotateAroundWorldAxis(atomArray[1].parentConnection.mesh, xVector, 0.2);
+        }
+        else if (event.which == 65) {   // a
+            atomArray[1].moov(0, 100, 0);
+            atomArray[1].connectToParent();
+        }
+        else if (event.which == 79) {   // o
+            atomArray[1].moov(0, -100, 0);
+            atomArray[1].connectToParent();
+        }
+        else if (event.which == 69) {   // e
+            atomArray[1].moov(0, 0, 100);
+            atomArray[1].connectToParent();
+        }
+        else if (event.which == 85) {   // u
+            atomArray[1].moov(0, 0, -100);
+            atomArray[1].connectToParent();
+        }
+        else if (event.which == 73) {   // i
+            atomArray[1].moov(100, 0, 0);
+            atomArray[1].connectToParent();
+        }
+        else if (event.which == 68) {   // d
+            atomArray[1].moov(-100, 0, 0);
             atomArray[1].connectToParent();
         }
     });
