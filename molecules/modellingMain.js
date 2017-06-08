@@ -53,6 +53,7 @@ const connectionSize = Math.floor(atomSize / 2);
 const connectionLength = 400;
 
 let atomArray = [];         // will store all the atoms
+let atomMeshArray = [];
 let currentAtom, previousAtom;
 
 
@@ -689,7 +690,16 @@ function highlightSelectedAtom() {
 	raycaster.setFromCamera(mouse, camera);
 
     // this is an array that stores all of the things the ray touches, from front (closest to camera) to back
+    // const intersects = raycaster.intersectObjects(atomMeshArray);   // (used to be scene.children)
     const intersects = raycaster.intersectObjects(scene.children);
+
+    // // exclude axes from array
+    // for (let i = 0; i < intersects.length; i++) {
+    //     if (intersects[i].type == "Line") {
+    //         intersects.splice(i, 1);
+    //     }
+    // }
+    // console.log(intersects);
 
     if (intersects.length > 0) {                                // if the ray touches anything
         if (highlightedAtom != intersects[0].object) {          //      if it's touching anything new
@@ -703,6 +713,7 @@ function highlightSelectedAtom() {
                     highlightedAtomParentObject = item;
                 }
             }
+            // console.log(highlightedAtom)
             changeColour(highlightedAtom, highlightedAtomParentObject.highlightColour);       // and change its colour
         }
     }
@@ -899,6 +910,7 @@ function initialise() {
     currentAtom = new Atom(0, 0, 0, "carbon");
     currentAtom.create();
     atomArray = [currentAtom];
+    atomMeshArray = [currentAtom.mesh];
 
 
 
@@ -1006,6 +1018,8 @@ function newAtom() {
         previousAtom = currentAtom;                                             // new previousAtom is the old currentAtom
         currentAtom = atomArray[atomArray.length - 1];                          // new currentAtom is last (newest) in array
 
+        atomMeshArray.push(currentAtom.mesh);
+
         previousAtom.currentBonds.push(currentAtom);
         currentAtom.currentBonds.push(previousAtom);
         currentAtom.parentAtom = previousAtom;
@@ -1028,6 +1042,7 @@ function reset() {
 
     // clear data
     atomArray = [];
+    atomMeshArray = [];
     scene.children = [];
 
     // reset lights and base atom
@@ -1037,6 +1052,7 @@ function reset() {
     currentAtom = new Atom(0, 0, 0, "carbon");
     currentAtom.create();
     atomArray.push(currentAtom);
+    atomMeshArray.push(currentAtom.mesh);
 
     // reset camera
     controls.reset();
