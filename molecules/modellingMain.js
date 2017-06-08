@@ -46,7 +46,7 @@ var whiteMaterial, greyMaterial, blackMaterial, redMaterial, blooMaterial, green
 var whiteAltMaterial, greyAltMaterial, blackAltMaterial, redAltMaterial, blooAltMaterial, greenAltMaterial, darkRedAltMaterial,
     darkVioletAltMaterial, cyanAltMaterial, orangeAltMaterial, yellowAltMaterial, peachAltMaterial, violetAltMaterial,
     darkGreenAltMaterial, darkOrangeAltMaterial, pinkAltMaterial;
-var highlightedAtom;
+var highlightedAtom, highlightedAtomParentObject;
 
 const atomSize = 150;
 const connectionSize = Math.floor(atomSize / 2);
@@ -492,10 +492,14 @@ function Atom(x, y, z, element) {
     this.x = x;
     this.y = y;
     this.z = z;
+    this.angleX = 0;
+    this.angleY = 0;
+    this.angleZ = 0;
     this.element = element;
     this.radius = 0;                // radius of nucleus
     this.possibleBonds = 1;         // maximum number of bonds the atom can make
     this.colour = blackMaterial;    // colour of model
+    this.highlightColour = blackAltMaterial;
     this.currentBonds = [];         // atoms this is currently bonded to (use this.currentBonds.length)
     this.nextInChain = [];          // same as currentBonds, except without the parent atom
     this.parentAtom = null;         // if null, then is base; if object, part of chain; if array, end of a chain
@@ -556,16 +560,19 @@ function Atom(x, y, z, element) {
             this.parentConnection.mesh = new THREE.Mesh(cylinderGeometry, this.colour);
     
             // cylinder position
-            const position = getMidpoint([this.x, this.y, this.z], [this.parentAtom.x, this.parentAtom.y, this.parentAtom.z]);
-            this.parentConnection.x = position[0];
-            this.parentConnection.y = position[1];
-            this.parentConnection.z = position[2];
-            this.setPosition.call(this.parentConnection, position[0], position[1], position[2]);
+            const midpoint = getMidpoint([this.x, this.y, this.z], [this.parentAtom.x, this.parentAtom.y, this.parentAtom.z]);
+            this.parentConnection.x = midpoint[0];
+            this.parentConnection.y = midpoint[1];
+            this.parentConnection.z = midpoint[2];
+            this.setPosition.call(this.parentConnection, midpoint[0], midpoint[1], midpoint[2]);
+            // "position" will be halfway in between
 
             // cylinder rotation
-            // this.parentConnection.mesh.rotation.x = Math.atan2((this.y - this.parentAtom.y), (this.z - this.parentAtom.z));
+            const rotationX = Math.atan2((this.z - this.parentAtom.z), (this.x - this.parentAtom.x) + THREE.Math.degToRad(90));
             // this.parentConnection.mesh.rotation.y = Math.atan2((this.y - this.parentAtom.y), (this.z - this.parentAtom.z)) + THREE.Math.degToRad(90);
-            this.parentConnection.mesh.rotation.z = Math.atan2((this.y - this.parentAtom.y), (this.x - this.parentAtom.x)) + THREE.Math.degToRad(90);
+            const rotationZ = Math.atan2((this.y - this.parentAtom.y), (this.x - this.parentAtom.x)) + THREE.Math.degToRad(90);
+            rotateAroundWorldAxis(this.parentConnection.mesh, xVector, rotationX);
+            rotateAroundWorldAxis(this.parentConnection.mesh, zVector, rotationZ);
 
 
 
@@ -687,16 +694,21 @@ function highlightSelectedAtom() {
     if (intersects.length > 0) {                                // if the ray touches anything
         if (highlightedAtom != intersects[0].object) {          //      if it's touching anything new
             if (highlightedAtom) {                              //      and the old thing was an atom
-                changeColour(highlightedAtom, blackMaterial);   //      unhighlight the old atom
+                changeColour(highlightedAtom, highlightedAtomParentObject.colour);   //      unhighlight the old atom
             }
 
             highlightedAtom = intersects[0].object;             // then update data to store the new highlighted atom
-            changeColour(highlightedAtom, greenMaterial);       // and change its colour
+            for (let item of atomArray) {
+                if (item.mesh == highlightedAtom) {
+                    highlightedAtomParentObject = item;
+                }
+            }
+            changeColour(highlightedAtom, highlightedAtomParentObject.highlightColour);       // and change its colour
         }
     }
     else {                                                      // if the ray doesn't touch anything
         if (highlightedAtom) {                                  //      if the old thing was an atom
-            changeColour(highlightedAtom, blackMaterial);       //      unhighlight it
+            changeColour(highlightedAtom, highlightedAtomParentObject.colour);       //      unhighlight it
         }
         highlightedAtom = null;                                 // tell the data the ray isn't touching anything
     }
@@ -830,7 +842,7 @@ function initialise() {
     mouse.y = 1;    // base atom highlighted on startup. btw, (-1, 1) is the top-left corner
     raycaster = new THREE.Raycaster();
 
-    drawAxes();
+    // drawAxes();
 
 
 
@@ -1064,9 +1076,15 @@ $(document).ready(function() {
     $("#lewisDot").on("click", function() {
         switchModel("lewis dot");
     });
+    $("#dropdown").on("change", function() {
+        const element = $("#dropdown option:selected").val();
+        const lastAtom = atomArray[atomArray.length - 1];
+        lastAtom.setElement(element);
+        changeColour(lastAtom.mesh, lastAtom.colour);
+    });
     $canvas.on("mousemove", onMouseMove);
-    $(document).on("keydown", function(event) {
-        if (event.which == 13) {
+    $(window).on("keydown", function(event) {
+        if (event.which == 187) {        // =
             atomArray[1].moov(0, 100, 0);
             atomArray[1].connectToParent();
         }
@@ -1090,11 +1108,11 @@ $(document).ready(function() {
             atomArray[1].moov(0, 0, -100);
             atomArray[1].connectToParent();
         }
-        else if (event.which == 73) {   // i
+        else if (event.which == 68) {   // d
             atomArray[1].moov(100, 0, 0);
             atomArray[1].connectToParent();
         }
-        else if (event.which == 68) {   // d
+        else if (event.which == 73) {   // i
             atomArray[1].moov(-100, 0, 0);
             atomArray[1].connectToParent();
         }
