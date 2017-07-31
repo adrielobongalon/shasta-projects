@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<!--
+       document : rotate.html, for learnWebGL in shasta-projects
+     created on : tuesday, july 04, 2017, 20:54 pm    (happy 'murica day)
+         author : audrey
+    description : for testing the rotation matrix along all 3 WORLD axes
+
+                               ___
+                              /\  \
+      ______    ___  ___      \_\  \    ______    ______   ___  ___
+     /  __  \  /\  \/\  \    /  __  \  /\   __\  /  __  \ /\  \/\  \
+    /\  \L\  \ \ \  \_\  \  /\  \L\  \ \ \  \_/ /\   ___/ \ \  \_\  \
+    \ \___/\__\ \ \___/\__\ \ \___/\__\ \ \__\  \ \_____\  \ \____   \
+     \/__/\/__/  \/___/\__/  \/___/\__/  \/__/   \/_____/   \/___/_\  \
+                                                               /\_____/
+                                                               \/____/
+-->
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>rotation test</title>
+        <link rel="stylesheet" type="text/css" href="../molecules/moleculeStyling.css">
+        <style>
+            #below-canvas {
+                overflow-y: auto;
+            }
+            table {
+                float: none;
+            }
+        </style>
+        <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+        <link rel="apple-touch-icon" sizes="57x57" href="../audreyfavicons/apple-touch-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="../audreyfavicons/apple-touch-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="../audreyfavicons/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="../audreyfavicons/apple-touch-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="../audreyfavicons/apple-touch-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="../audreyfavicons/apple-touch-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="../audreyfavicons/apple-touch-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="../audreyfavicons/apple-touch-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="../audreyfavicons/apple-touch-icon-180x180.png">
+        <link rel="icon" type="image/png" href="../audreyfavicons/favicon-32x32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="../audreyfavicons/android-chrome-192x192.png" sizes="192x192">
+        <link rel="icon" type="image/png" href="../audreyfavicons/favicon-96x96.png" sizes="96x96">
+        <link rel="icon" type="image/png" href="../audreyfavicons/favicon-16x16.png" sizes="16x16">
+        <link rel="manifest" href="../audreyfavicons/manifest.json">
+        <link rel="mask-icon" href="../audreyfavicons/safari-pinned-tab.svg" color="#eadc97">
+        <meta name="apple-mobile-web-app-title" content="Molecule Modelling">
+        <meta name="application-name" content="Molecule Modelling">
+        <meta name="msapplication-TileColor" content="#eadc97">
+        <meta name="msapplication-TileImage" content="../audreyfavicons/mstile-144x144.png">
+        <meta name="theme-color" content="#ccffff">
+    </head>
+    <body>
+        <div class="main-content">
+            <div id="above-canvas"><!-- DO NOT TOUCH -->
+                <h1 id="title">Model a Molecule!</h1>
+            </div>
+
+            <div id="canvas"></div><!-- DO NOT TOUCH -->
+
+            <div id="below-canvas"><!-- DO NOT TOUCH -->
+                <table id="table">
+                    <tr>
+                        <td><p>x</p></td>
+                        <td><input type="range" id="sliderX" value="0" defaultValue="0" min="0" max="360" step="1"></td>
+                        <td><input type="number" id="inputX" name="x" value="0" min="0" max="360" placeholder="0"></td>
+                    </tr>
+                    <tr>
+                        <td><p>y</p></td>
+                        <td><input type="range" id="sliderY" value="0" defaultValue="0" min="0" max="360" step="1"></td>
+                        <td><input type="number" id="inputY" name="y" value="0" min="0" max="360" placeholder="0"></td>
+                    </tr>
+                    <tr>
+                        <td><p>z</p></td>
+                        <td><input type="range" id="sliderZ" value="0" defaultValue="0" min="0" max="360" step="1"></td>
+                        <td><input type="number" id="inputZ" name="z" value="0" min="0" max="360" placeholder="0"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="../libraries/jquery-3.1.2.js"></script>
+        <script type="text/javascript" src="../libraries/three.js"></script>
+        <script type="text/javascript" src="../libraries/orbitControlsModified.js"></script>
+        <script type="text/javascript" src="rotationTest.js"></script>
+    </body>
+</html>

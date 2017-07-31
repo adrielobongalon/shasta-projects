@@ -94,6 +94,9 @@ function resizeCanvas() {
     $canvas.css({width: canvasWidth + "px"});
     $canvas.css({height: canvasHeight + "px"});
 
+    // resize #below-canvas so that its contents line up
+    $("#below-canvas").css({width: canvasWidth + "px"});
+
     // resize within Three.js
     if (camera) {                                       // this if-statement is a hacky way of preventing this from running on the
         camera.aspect = canvasWidth / canvasHeight;     // function call from $(document).ready, since camera isn't defined at that
@@ -457,6 +460,15 @@ function getMaxBonds(atom, bondingTo) {
     return false;
 }
 
+function getCarbonAtomicRadius() {
+    for (let item of periodicTable) {
+        if (item.name == "carbon") {
+            return item.atomicRadius;   // returns 67
+        }
+    }
+    console.error("error: carbon's atomic radius could not be found in the periodic table data");
+}
+
 
 
 
@@ -505,24 +517,36 @@ function Atom(x, y, z, element) {
     this.nextInChain = [];          // same as currentBonds, except without the parent atom
     this.parentAtom = null;         // if null, then is base; if object, part of chain; if array, end of a chain
 
-    this.setElement = function(newElement) {
-        this.element = newElement;
-
-        // radius is a function of element? TODO replace with helen's array
-        /*if (newElement == "carbon") {
-            this.radius = 1;
-            this.possibleBonds = 4;
-            this.colour = blackMaterial;
-        }*/
-
+    this.createCarbonPlaceholder = function() {
         for (let item of periodicTable) {
-            if (item.name == newElement) {
-                // this.atomicRadius = item.atomicRadius;
+            if (item.name == "carbon") {
                 this.possibleBonds = item.possibleBonds;
                 this.radius = 1;
                 this.colour = item.colour;
                 this.highlightColour = item.highlightColour;
-                return;
+                return;     // dont waste time looping through all elements
+            }
+        }
+    }
+
+    this.setElement = function(newElement) {
+        this.element = newElement;
+
+        for (let item of periodicTable) {
+            if (item.name == newElement) {
+                // set possible bonds data
+                this.possibleBonds = item.possibleBonds;
+
+                // set radius data and resize
+                this.radius = item.atomicRadius / getCarbonAtomicRadius();
+                this.mesh.scale.set(this.radius, this.radius, this.radius);
+
+                // set colour data and change colour
+                this.colour = item.colour;
+                this.highlightColour = item.highlightColour;
+                changeColour(this.mesh, this.colour);
+
+                return;     // dont waste time looping through all elements
             }
         }
         // this will only run if newElement isnt in periodicTable
@@ -657,7 +681,7 @@ function Atom(x, y, z, element) {
     };
 
     this.create = function() {
-        this.setElement("carbon");
+        this.createCarbonPlaceholder();
 
         this.mesh = new THREE.Mesh(sphereGeometry, this.colour);
         this.mesh.scale.set(this.radius, this.radius, this.radius);
@@ -1077,12 +1101,15 @@ function reset() {
 //      |    startup    |
 //      -----------------
 
+var moovInputData = 0, rotateInputData = 0;
+
 $(document).ready(function() {
     // event listeners
     $(window).resize(resizeCanvas);
     $("#addAtom").on("click", newAtom);
     $("#remoovAtom").on("click", remoovAtom);
     $("#restart").on("click", reset);   // different names because to the user, the PROCESS is restarting, but to us the PROGRAM is NOT restarting
+
     $("#ballAndStick").on("click", function() {
         switchModel("ball and stick");
     });
@@ -1092,12 +1119,65 @@ $(document).ready(function() {
     $("#lewisDot").on("click", function() {
         switchModel("lewis dot");
     });
+
     $("#dropdown").on("change", function() {
         const element = $("#dropdown option:selected").val();
-        const lastAtom = atomArray[atomArray.length - 1];
-        lastAtom.setElement(element);
-        changeColour(lastAtom.mesh, lastAtom.colour);
+        currentAtom.setElement(element);
     });
+
+    $("#moovSlider").on("input", function() {
+        // gets value from slider
+        moovInputData = $(this).val();
+
+        // set placeholder and value on corresponding input box
+        $("#moovInput").attr("placeholder", moovInputData);
+        $("#moovInput").val(moovInputData);
+    });
+    $("#moovInput").on("input", function() {
+        // gets the value from input box
+        moovInputData = $(this).val();
+
+        // check to make sure value is within bounds
+        const max = $(this).attr("max");
+        const min = $(this).attr("min");
+        if (moovInputData > max) {
+            moovInputData = max;
+        }
+        else if (moovInputData < min) {
+            moovInputData = min;
+        }
+
+        // set value on slider and update the element to visually moov the slider
+        $("#moovSlider").val(moovInputData);
+        $("#moovSlider").trigger("change");
+    });
+    $("#rotateSlider").on("input", function() {
+        // gets value from slider
+        rotateInputData = $(this).val();
+
+        // set placeholder and value on corresponding input box
+        $("#rotateInput").attr("placeholder", rotateInputData);
+        $("#rotateInput").val(rotateInputData);
+    });
+    $("#rotateInput").on("input", function() {
+        // gets the value from input box
+        rotateInputData = $(this).val();
+
+       // check to make sure value is within bounds
+        const max = $(this).attr("max");
+        const min = $(this).attr("min");
+        if (rotateInputData > max) {
+            rotateInputData = max;
+        }
+        else if (rotateInputData < min) {
+            rotateInputData = min;
+        }
+
+        // set value on slider and update the element to visually moov the slider
+        $("rotateSlider").val(rotateInputData);
+        $("#rotateSlider").trigger("change");
+    });
+
     $canvas.on("mousemove", onMouseMove);
     $(window).on("keydown", function(event) {
         if (event.which == 187) {        // =

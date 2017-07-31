@@ -46,13 +46,14 @@ var whiteMaterial, greyMaterial, blackMaterial, redMaterial, blooMaterial, green
 var whiteAltMaterial, greyAltMaterial, blackAltMaterial, redAltMaterial, blooAltMaterial, greenAltMaterial, darkRedAltMaterial,
     darkVioletAltMaterial, cyanAltMaterial, orangeAltMaterial, yellowAltMaterial, peachAltMaterial, violetAltMaterial,
     darkGreenAltMaterial, darkOrangeAltMaterial, pinkAltMaterial;
-var highlightedAtom;
+var highlightedAtom, highlightedAtomParentObject;
 
 const atomSize = 150;
 const connectionSize = Math.floor(atomSize / 2);
 const connectionLength = 400;
 
 let atomArray = [];         // will store all the atoms
+let atomMeshArray = [];
 let currentAtom, previousAtom;
 
 
@@ -93,6 +94,9 @@ function resizeCanvas() {
     $canvas.css({width: canvasWidth + "px"});
     $canvas.css({height: canvasHeight + "px"});
 
+    // resize #below-canvas so that its contents line up
+    $("#below-canvas").css({width: canvasWidth + "px"});
+
     // resize within Three.js
     if (camera) {                                       // this if-statement is a hacky way of preventing this from running on the
         camera.aspect = canvasWidth / canvasHeight;     // function call from $(document).ready, since camera isn't defined at that
@@ -120,7 +124,7 @@ function resizeCanvas() {
 //      |    chemistry-related data    |
 //      --------------------------------
 
-var bondLengths = [
+var bondLengths = [     // TODO order data by atomic number
 {
     name: "hydrogen",
     hydrogen:   [74],     // bond lengths should be in the form [single, double, triple]
@@ -456,6 +460,15 @@ function getMaxBonds(atom, bondingTo) {
     return false;
 }
 
+function getCarbonAtomicRadius() {
+    for (let item of periodicTable) {
+        if (item.name == "carbon") {
+            return item.atomicRadius;   // returns 67
+        }
+    }
+    console.error("error: carbon's atomic radius could not be found in the periodic table data");
+}
+
 
 
 
@@ -492,32 +505,48 @@ function Atom(x, y, z, element) {
     this.x = x;
     this.y = y;
     this.z = z;
+    this.angleX = 0;
+    this.angleY = 0;
+    this.angleZ = 0;
     this.element = element;
     this.radius = 0;                // radius of nucleus
     this.possibleBonds = 1;         // maximum number of bonds the atom can make
     this.colour = blackMaterial;    // colour of model
+    this.highlightColour = blackAltMaterial;
     this.currentBonds = [];         // atoms this is currently bonded to (use this.currentBonds.length)
     this.nextInChain = [];          // same as currentBonds, except without the parent atom
     this.parentAtom = null;         // if null, then is base; if object, part of chain; if array, end of a chain
 
-    this.setElement = function(newElement) {
-        this.element = newElement;
-
-        // radius is a function of element? TODO replace with helen's array
-        /*if (newElement == "carbon") {
-            this.radius = 1;
-            this.possibleBonds = 4;
-            this.colour = blackMaterial;
-        }*/
-
+    this.createCarbonPlaceholder = function() {
         for (let item of periodicTable) {
-            if (item.name == newElement) {
-                // this.atomicRadius = item.atomicRadius;
+            if (item.name == "carbon") {
                 this.possibleBonds = item.possibleBonds;
                 this.radius = 1;
                 this.colour = item.colour;
                 this.highlightColour = item.highlightColour;
-                return;
+                return;     // dont waste time looping through all elements
+            }
+        }
+    }
+
+    this.setElement = function(newElement) {
+        this.element = newElement;
+
+        for (let item of periodicTable) {
+            if (item.name == newElement) {
+                // set possible bonds data
+                this.possibleBonds = item.possibleBonds;
+
+                // set radius data and resize
+                this.radius = item.atomicRadius / getCarbonAtomicRadius();
+                this.mesh.scale.set(this.radius, this.radius, this.radius);
+
+                // set colour data and change colour
+                this.colour = item.colour;
+                this.highlightColour = item.highlightColour;
+                changeColour(this.mesh, this.colour);
+
+                return;     // dont waste time looping through all elements
             }
         }
         // this will only run if newElement isnt in periodicTable
@@ -556,16 +585,19 @@ function Atom(x, y, z, element) {
             this.parentConnection.mesh = new THREE.Mesh(cylinderGeometry, this.colour);
     
             // cylinder position
-            const position = getMidpoint([this.x, this.y, this.z], [this.parentAtom.x, this.parentAtom.y, this.parentAtom.z]);
-            this.parentConnection.x = position[0];
-            this.parentConnection.y = position[1];
-            this.parentConnection.z = position[2];
-            this.setPosition.call(this.parentConnection, position[0], position[1], position[2]);
+            const midpoint = getMidpoint([this.x, this.y, this.z], [this.parentAtom.x, this.parentAtom.y, this.parentAtom.z]);
+            this.parentConnection.x = midpoint[0];
+            this.parentConnection.y = midpoint[1];
+            this.parentConnection.z = midpoint[2];
+            this.setPosition.call(this.parentConnection, midpoint[0], midpoint[1], midpoint[2]);
+            // "position" will be halfway in between
 
             // cylinder rotation
-            // this.parentConnection.mesh.rotation.x = Math.atan2((this.y - this.parentAtom.y), (this.z - this.parentAtom.z));
+            const rotationX = Math.atan2((this.z - this.parentAtom.z), (this.x - this.parentAtom.x) + THREE.Math.degToRad(90));
             // this.parentConnection.mesh.rotation.y = Math.atan2((this.y - this.parentAtom.y), (this.z - this.parentAtom.z)) + THREE.Math.degToRad(90);
-            this.parentConnection.mesh.rotation.z = Math.atan2((this.y - this.parentAtom.y), (this.x - this.parentAtom.x)) + THREE.Math.degToRad(90);
+            const rotationZ = Math.atan2((this.y - this.parentAtom.y), (this.x - this.parentAtom.x)) + THREE.Math.degToRad(90);
+            rotateAroundWorldAxis(this.parentConnection.mesh, xVector, rotationX);
+            rotateAroundWorldAxis(this.parentConnection.mesh, zVector, rotationZ);
 
 
 
@@ -584,10 +616,13 @@ function Atom(x, y, z, element) {
                 lineGeometry.vertices.push(new THREE.Vector3(this.parentAtom.x, this.parentAtom.y, this.parentAtom.z));
                 this.skeletalLine = new THREE.Line(lineGeometry, skeletalMaterial);
             }
+
+
+
+
             //      -------------------
             //      |    lewis dot    |
             //      -------------------
-
 
 
 
@@ -646,7 +681,7 @@ function Atom(x, y, z, element) {
     };
 
     this.create = function() {
-        this.setElement("carbon");
+        this.createCarbonPlaceholder();
 
         this.mesh = new THREE.Mesh(sphereGeometry, this.colour);
         this.mesh.scale.set(this.radius, this.radius, this.radius);
@@ -679,21 +714,36 @@ function highlightSelectedAtom() {
 	raycaster.setFromCamera(mouse, camera);
 
     // this is an array that stores all of the things the ray touches, from front (closest to camera) to back
+    // const intersects = raycaster.intersectObjects(atomMeshArray);   // (used to be scene.children)
     const intersects = raycaster.intersectObjects(scene.children);
+
+    // // exclude axes from array
+    // for (let i = 0; i < intersects.length; i++) {
+    //     if (intersects[i].type == "Line") {
+    //         intersects.splice(i, 1);
+    //     }
+    // }
+    // console.log(intersects);
 
     if (intersects.length > 0) {                                // if the ray touches anything
         if (highlightedAtom != intersects[0].object) {          //      if it's touching anything new
             if (highlightedAtom) {                              //      and the old thing was an atom
-                changeColour(highlightedAtom, blackMaterial);   //      unhighlight the old atom
+                changeColour(highlightedAtom, highlightedAtomParentObject.colour);   //      unhighlight the old atom
             }
 
             highlightedAtom = intersects[0].object;             // then update data to store the new highlighted atom
-            changeColour(highlightedAtom, greenMaterial);       // and change its colour
+            for (let item of atomArray) {
+                if (item.mesh == highlightedAtom) {
+                    highlightedAtomParentObject = item;
+                }
+            }
+            // console.log(highlightedAtom)
+            changeColour(highlightedAtom, highlightedAtomParentObject.highlightColour);       // and change its colour
         }
     }
     else {                                                      // if the ray doesn't touch anything
         if (highlightedAtom) {                                  //      if the old thing was an atom
-            changeColour(highlightedAtom, blackMaterial);       //      unhighlight it
+            changeColour(highlightedAtom, highlightedAtomParentObject.colour);       //      unhighlight it
         }
         highlightedAtom = null;                                 // tell the data the ray isn't touching anything
     }
@@ -827,7 +877,7 @@ function initialise() {
     mouse.y = 1;    // base atom highlighted on startup. btw, (-1, 1) is the top-left corner
     raycaster = new THREE.Raycaster();
 
-    drawAxes();
+    // drawAxes();
 
 
 
@@ -884,6 +934,7 @@ function initialise() {
     currentAtom = new Atom(0, 0, 0, "carbon");
     currentAtom.create();
     atomArray = [currentAtom];
+    atomMeshArray = [currentAtom.mesh];
 
 
 
@@ -991,6 +1042,8 @@ function newAtom() {
         previousAtom = currentAtom;                                             // new previousAtom is the old currentAtom
         currentAtom = atomArray[atomArray.length - 1];                          // new currentAtom is last (newest) in array
 
+        atomMeshArray.push(currentAtom.mesh);
+
         previousAtom.currentBonds.push(currentAtom);
         currentAtom.currentBonds.push(previousAtom);
         currentAtom.parentAtom = previousAtom;
@@ -1013,6 +1066,7 @@ function reset() {
 
     // clear data
     atomArray = [];
+    atomMeshArray = [];
     scene.children = [];
 
     // reset lights and base atom
@@ -1022,6 +1076,7 @@ function reset() {
     currentAtom = new Atom(0, 0, 0, "carbon");
     currentAtom.create();
     atomArray.push(currentAtom);
+    atomMeshArray.push(currentAtom.mesh);
 
     // reset camera
     controls.reset();
@@ -1061,9 +1116,13 @@ $(document).ready(function() {
     $("#lewisDot").on("click", function() {
         switchModel("lewis dot");
     });
+    $("#dropdown").on("change", function() {
+        const element = $("#dropdown option:selected").val();
+        currentAtom.setElement(element);
+    });
     $canvas.on("mousemove", onMouseMove);
-    $(document).on("keydown", function(event) {
-        if (event.which == 13) {
+    $(window).on("keydown", function(event) {
+        if (event.which == 187) {        // =
             atomArray[1].moov(0, 100, 0);
             atomArray[1].connectToParent();
         }
@@ -1087,11 +1146,11 @@ $(document).ready(function() {
             atomArray[1].moov(0, 0, -100);
             atomArray[1].connectToParent();
         }
-        else if (event.which == 73) {   // i
+        else if (event.which == 68) {   // d
             atomArray[1].moov(100, 0, 0);
             atomArray[1].connectToParent();
         }
-        else if (event.which == 68) {   // d
+        else if (event.which == 73) {   // i
             atomArray[1].moov(-100, 0, 0);
             atomArray[1].connectToParent();
         }

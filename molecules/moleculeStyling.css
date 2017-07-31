@@ -85,6 +85,13 @@ body {
 
 
 
+#below-canvas {
+    overflow-x: auto;
+}
+
+
+
+
 /* these NEED to be padding and not margin so that their parent divs include
    the space when the jQuery width() function is called */
 #title {
@@ -98,6 +105,7 @@ body {
 }
 table {
     float: right;
+    /*display: inline-block;*/
     padding: 10px 0 20px;
     border: none;
     text-align: right;
