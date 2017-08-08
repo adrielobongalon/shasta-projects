@@ -50,7 +50,7 @@ var highlightedAtom, highlightedAtomParentObject;
 
 const atomSize = 150;
 const connectionSize = Math.floor(atomSize / 2);
-const connectionLength = 400;
+const connectionLength = 400;   // placeholder TODO scale to carbon radius
 
 let atomArray = [];         // will store all the atoms
 let atomMeshArray = [];
@@ -491,6 +491,10 @@ function getCarbonAtomicRadius() {
     console.error("carbon's atomic radius could not be found in the periodic table data");
 }
 
+function scaleToCarbonBondLength(pm) {
+    
+}
+
 
 
 
@@ -518,15 +522,17 @@ function Atom(x, y, z, element) {
         x: 0,
         y: 0,
         z: 0,
-        angleX: 0,
-        angleY: 0,
-        angleZ: 0
+        // angleX: 0,
+        // angleY: 0,
+        // angleZ: 0
     };
     this.childConnections = [];     // the cylinder(s) that connect to children atoms
     this.skeletalLine = null;
     this.x = x;
     this.y = y;
     this.z = z;
+    this.swingAngle = 0;     // in degrees
+    this.rotateAngle = 0;   // likewise
     // this.angleX = 0;
     // this.angleY = 0;
     // this.angleZ = 0;
@@ -629,13 +635,18 @@ function Atom(x, y, z, element) {
         this.mesh.translateZ(zDir);
     };
 
-    this.reposition = function() {
+    this.reposition = function() {   // repositions atom based on swingInputData and rotateInputData
         if (this.parentAtom) {
-            
+            this.x = this.parentAtom.x + (connectionLength      * Math.cos(THREE.Math.degToRad(swingInputData)));
+            this.y = this.parentAtom.y + (connectionLength      * Math.sin(THREE.Math.degToRad(swingInputData))   * Math.cos(THREE.Math.degToRad(rotateInputData)));
+            this.z = this.parentAtom.z + (connectionLength * -1 * Math.sin(THREE.Math.degToRad(rotateInputData)) * Math.sin(THREE.Math.degToRad(swingInputData)));
+            // note that we use -sin for z because from 0-360, the atom starts in the centre, moves back, then fowards, then back to centre
+
+            this.mesh.position.set(this.x, this.y, this.z);
         }
         else {
-            alert("error: the base atom cannot be repositioned.");
-            console.error("error: the base atom cannot be repositioned.");
+            alert("the base atom cannot be repositioned.");
+            console.error("the base atom cannot be repositioned.");
         }
     };
 
@@ -1157,7 +1168,7 @@ function reset() {
 //      |    startup    |
 //      -----------------
 
-var moovInputData = 0, rotateInputData = 0;
+var swingInputData = 0, rotateInputData = 0;
 
 $(document).ready(function() {
     // event listeners
@@ -1182,39 +1193,48 @@ $(document).ready(function() {
         currentAtom.applyElementData();
     });
 
-    $("#moovSlider").on("input", function() {
+    $("#swingSlider").on("input change", function() {
         // gets value from slider
-        moovInputData = $(this).val();
+        swingInputData = $(this).val();
 
         // set placeholder and value on corresponding input box
-        $("#moovInput").attr("placeholder", moovInputData);
-        $("#moovInput").val(moovInputData);
+        $("#swingInput").attr("placeholder", swingInputData);
+        $("#swingInput").val(swingInputData);
+
+        // apply change to the selected atom
+        currentAtom.reposition();
     });
-    $("#moovInput").on("input", function() {
+    $("#swingInput").on("input", function() {
         // gets the value from input box
-        moovInputData = $(this).val();
+        swingInputData = $(this).val();
 
         // check to make sure value is within bounds
         const max = $(this).attr("max");
         const min = $(this).attr("min");
-        if (moovInputData > max) {
-            moovInputData = max;
+        if (swingInputData > max) {
+            swingInputData = max;
         }
-        else if (moovInputData < min) {
-            moovInputData = min;
+        else if (swingInputData < min) {
+            swingInputData = min;
         }
 
         // set value on slider and update the element to visually moov the slider
-        $("#moovSlider").val(moovInputData);
-        $("#moovSlider").trigger("change");
+        $("#swingSlider").val(swingInputData);
+        $("#swingSlider").trigger("change");
+
+        // apply change to the selected atom
+        currentAtom.reposition();
     });
-    $("#rotateSlider").on("input", function() {
+    $("#rotateSlider").on("input change", function() {
         // gets value from slider
         rotateInputData = $(this).val();
 
         // set placeholder and value on corresponding input box
         $("#rotateInput").attr("placeholder", rotateInputData);
         $("#rotateInput").val(rotateInputData);
+
+        // apply change to the selected atom
+        currentAtom.reposition();
     });
     $("#rotateInput").on("input", function() {
         // gets the value from input box
@@ -1233,6 +1253,9 @@ $(document).ready(function() {
         // set value on slider and update the element to visually moov the slider
         $("rotateSlider").val(rotateInputData);
         $("#rotateSlider").trigger("change");
+
+        // apply change to the selected atom
+        currentAtom.reposition();
     });
 
     $canvas.on("mousemove", onMouseMove);

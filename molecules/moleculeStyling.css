@@ -161,6 +161,9 @@ input {
 #moveInput, #rotateInput {
     width: 50px;
 }
+#swingSlider {
+    direction: rtl;
+}
 p {
     display: inline-block;
     margin: 0;
