@@ -48,8 +48,8 @@ var whiteAltMaterial, greyAltMaterial, blackAltMaterial, redAltMaterial, blooAlt
     darkGreenAltMaterial, darkOrangeAltMaterial, pinkAltMaterial;
 var highlightedAtom, highlightedAtomParentObject;
 
-const atomSize = 150;
-const connectionSize = Math.floor(atomSize / 2);
+const defaultAtomRadius = 150;  // in Three.js units
+const defaultConnectionRadius = defaultAtomRadius / 2;
 const connectionLength = 400;   // placeholder TODO scale to carbon radius
 
 let atomArray = [];         // will store all the atoms
@@ -491,8 +491,21 @@ function getCarbonAtomicRadius() {
     console.error("carbon's atomic radius could not be found in the periodic table data");
 }
 
-function scaleToCarbonBondLength(pm) {
-    
+function scaleToThreeUnits(pm) {
+/*
+                            ratio notes
+
+          x (Three.js units)         carbon radius (Three.js units)
+        ----------------------  =  ----------------------------------
+            x (picometres)             carbon radius (picometres)
+
+
+            x (return this)         150
+         ---------------------  =  -----
+          pm (function input)       67?     TODO check this value for scientific accuracy
+*/
+
+    return pm * (defaultAtomRadius / getCarbonAtomicRadius());
 }
 
 
@@ -514,37 +527,25 @@ function scaleToCarbonBondLength(pm) {
 //      |    constructor and atom-related functions    |
 //      ------------------------------------------------
 
-function Atom(x, y, z, element) {
+function Atom(element) {
     this.mesh;                      // the sphere
-    this.parentConnection = {       // cylinder to connect to parent atom (array of cylinders if end of chain)
-        mesh: null,
-        bondLength: 0,
-        x: 0,
-        y: 0,
-        z: 0,
-        // angleX: 0,
-        // angleY: 0,
-        // angleZ: 0
-    };
+    this.parentConnection;          // cylinder to connect to parent atom (array of cylinders if end of chain)
     this.childConnections = [];     // the cylinder(s) that connect to children atoms
     this.skeletalLine = null;
-    this.x = x;
-    this.y = y;
-    this.z = z;
-    this.swingAngle = 0;     // in degrees
+    this.swingAngle = 0;    // in degrees
     this.rotateAngle = 0;   // likewise
     // this.angleX = 0;
     // this.angleY = 0;
     // this.angleZ = 0;
     this.element = element;
-    this.radius = 0;                // radius of nucleus
+    this.radius = 0;                // radius of nucleus, is terms of scale to default (carbon)
     this.possibleBonds = 1;         // maximum number of bonds the atom can make
     this.colour = blackMaterial;    // colour of model
     this.highlightColour = blackAltMaterial;
     this.currentBonds = [];         // atoms this is currently bonded to (use this.currentBonds.length)
     this.nextInChain = [];          // same as currentBonds, except without the parent atom
     this.parentAtom = null;         // if null, then is base; if object, part of chain; if array, end of a chain
-    this.distanceToParent;          // in picometres
+    this.distanceToParent;          // in Three.js units
     this.typeOfBondToParent = 1;    // integer from 1 to 3, representing a single, double, or triple bond
 
     this.setElementData = function(newElement) {
@@ -572,25 +573,27 @@ function Atom(x, y, z, element) {
 
         setDistToParent: {
             if (this.parentAtom) {      // if not the base atom (i.e. has a parent atom)
-                this.distanceToParent = getBondLength(this.element, this.parentAtom.element, this.typeOfBondToParent);
+                this.distanceToParent = scaleToThreeUnits(getBondLength(this.element, this.parentAtom.element, this.typeOfBondToParent));
             }
         }
     };
 
     this.applyElementData = function() {
         this.mesh.scale.set(this.radius, this.radius, this.radius);     // radius
+        this.resizeParentConnection();                                    // bond length
         changeColour(this.mesh, this.colour);                           // colour
     };
 
     this.createCarbonPlaceholder = function() {
         setData: {
+            this.radius = 1;                    // defaults
+            this.parentConnection = null;
+
             for (let item of periodicTable) {   // gets the data from periodicTable
                 if (item.name == "carbon") {
                     this.possibleBonds = item.possibleBonds;
-                    this.radius = 1;
                     this.colour = item.colour;
                     this.highlightColour = item.highlightColour;
-                    this.parentConnection = null;
                     break setData;              // dont waste time looping through all elements
                 }
             }
@@ -598,7 +601,7 @@ function Atom(x, y, z, element) {
 
         this.mesh = new THREE.Mesh(sphereGeometry, this.colour);
         this.mesh.scale.set(this.radius, this.radius, this.radius);
-        this.mesh.position.set(this.x, this.y, this.z);
+        this.mesh.position.set(0, 0, 0);
 
         if (currentModel == "ball and stick") {
             scene.add(this.mesh);
@@ -610,8 +613,9 @@ function Atom(x, y, z, element) {
 
         this.mesh = new THREE.Mesh(sphereGeometry, this.colour);
         this.mesh.scale.set(this.radius, this.radius, this.radius);
-        this.mesh.position.set(this.x, this.y, this.z);
+        this.mesh.position.set(this.parentAtom.mesh.position.x + this.distanceToParent, this.parentAtom.mesh.position.y, this.parentAtom.mesh.position.z);
 
+        this.spawnParentConnection();
         this.applyElementData();
 
         if (currentModel == "ball and stick") {
@@ -619,17 +623,7 @@ function Atom(x, y, z, element) {
         }
     };
 
-    // this.setPosition = function(xPos, yPos, zPos) {
-    //     this.x = xPos;
-    //     this.y = yPos;
-    //     this.z = zPos;
-    //     this.mesh.position.set(xPos, yPos, zPos);
-    // };
-
     this.moov = function(xDir, yDir, zDir) {
-        this.x += xDir;
-        this.y += yDir;
-        this.z += zDir;
         this.mesh.translateX(xDir);
         this.mesh.translateY(yDir);
         this.mesh.translateZ(zDir);
@@ -637,12 +631,12 @@ function Atom(x, y, z, element) {
 
     this.reposition = function() {   // repositions atom based on swingInputData and rotateInputData
         if (this.parentAtom) {
-            this.x = this.parentAtom.x + (connectionLength      * Math.cos(THREE.Math.degToRad(swingInputData)));
-            this.y = this.parentAtom.y + (connectionLength      * Math.sin(THREE.Math.degToRad(swingInputData))   * Math.cos(THREE.Math.degToRad(rotateInputData)));
-            this.z = this.parentAtom.z + (connectionLength * -1 * Math.sin(THREE.Math.degToRad(rotateInputData)) * Math.sin(THREE.Math.degToRad(swingInputData)));
+            const x = this.parentAtom.mesh.position.x + (this.distanceToParent      * Math.cos(THREE.Math.degToRad(swingInputData)));
+            const y = this.parentAtom.mesh.position.y + (this.distanceToParent      * Math.sin(THREE.Math.degToRad(swingInputData))  * Math.cos(THREE.Math.degToRad(rotateInputData)));
+            const z = this.parentAtom.mesh.position.z + (this.distanceToParent * -1 * Math.sin(THREE.Math.degToRad(rotateInputData)) * Math.sin(THREE.Math.degToRad(swingInputData)));
             // note that we use -sin for z because from 0-360, the atom starts in the centre, moves back, then fowards, then back to centre
 
-            this.mesh.position.set(this.x, this.y, this.z);
+            this.mesh.position.set(x, y, z);
         }
         else {
             alert("the base atom cannot be repositioned.");
@@ -650,33 +644,22 @@ function Atom(x, y, z, element) {
         }
     };
 
-    this.connectToParent = function() {
+    this.spawnParentConnection = function() {
         if (this.parentAtom) {
 
             //      ------------------------
             //      |    ball and stick    |
             //      ------------------------
 
-            // if there's already a cylinder, remove it
-            if (this.parentConnection && this.parentConnection.mesh) {
-                scene.remove(this.parentConnection.mesh);
-            }
-            this.parentConnection.mesh = new THREE.Mesh(cylinderGeometry, this.colour);
+            this.parentConnection = new THREE.Mesh(cylinderGeometry, this.colour);
     
             // cylinder position
-            const midpoint = getMidpoint([this.x, this.y, this.z], [this.parentAtom.x, this.parentAtom.y, this.parentAtom.z]);
-            this.parentConnection.x = midpoint[0];
-            this.parentConnection.y = midpoint[1];
-            this.parentConnection.z = midpoint[2];
-            this.parentConnection.mesh.position.set(midpoint[0], midpoint[1], midpoint[2]);
-            // "position" will be halfway in between
+            const midpoint = getMidpoint([this.mesh.position.x, this.mesh.position.y, this.mesh.position.z],
+                                         [this.parentAtom.mesh.position.x, this.parentAtom.mesh.position.y, this.parentAtom.mesh.position.z]);
+            this.parentConnection.position.set(midpoint[0], midpoint[1], midpoint[2]);     // "position" will be halfway in between
 
             // cylinder rotation
-            const rotationX = Math.atan2((this.z - this.parentAtom.z), (this.x - this.parentAtom.x) + THREE.Math.degToRad(90));
-            // this.parentConnection.mesh.rotation.y = Math.atan2((this.y - this.parentAtom.y), (this.z - this.parentAtom.z)) + THREE.Math.degToRad(90);
-            const rotationZ = Math.atan2((this.y - this.parentAtom.y), (this.x - this.parentAtom.x)) + THREE.Math.degToRad(90);
-            rotateAroundWorldAxis(this.parentConnection.mesh, xVector, rotationX);
-            rotateAroundWorldAxis(this.parentConnection.mesh, zVector, rotationZ);
+            this.parentConnection.lookAt(this.parentAtom.mesh.position);
 
 
 
@@ -685,14 +668,10 @@ function Atom(x, y, z, element) {
             //      |    skeletal    |
             //      ------------------
 
-            // if there's already a line, remove it
-            if (this.skeletalLine) {
-                scene.remove(this.skeletalLine);
-            }
             if (this.element == "carbon" && this.parentAtom.element == "carbon") {          // only draw lines between carbon atoms
                 const lineGeometry = new THREE.Geometry();
-                lineGeometry.vertices.push(new THREE.Vector3(this.x, this.y, this.z));
-                lineGeometry.vertices.push(new THREE.Vector3(this.parentAtom.x, this.parentAtom.y, this.parentAtom.z));
+                lineGeometry.vertices.push(new THREE.Vector3(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z));
+                lineGeometry.vertices.push(new THREE.Vector3(this.parentAtom.mesh.position.x, this.parentAtom.mesh.position.y, this.parentAtom.mesh.position.z));
                 this.skeletalLine = new THREE.Line(lineGeometry, skeletalMaterial);
             }
 
@@ -703,18 +682,67 @@ function Atom(x, y, z, element) {
             //      |    lewis dot    |
             //      -------------------
 
+            // etc
 
 
 
             // this.parentConnection.bondLength = getMidpoint([], []);
             if (currentModel == "ball and stick") {
-                scene.add(this.parentConnection.mesh);
+                scene.add(this.parentConnection);
             }
             if (currentModel == "skeletal") {
                 scene.add(this.skeletalLine);
             }
         }
     };
+    this.moovParentConnection = function() {
+        if (this.parentAtom) {
+
+            //      ------------------------
+            //      |    ball and stick    |
+            //      ------------------------
+    
+            // cylinder position
+            const midpoint = getMidpoint([this.mesh.position.x, this.mesh.position.y, this.mesh.position.z],
+                                         [this.parentAtom.mesh.position.x, this.parentAtom.mesh.position.y, this.parentAtom.mesh.position.z]);
+            this.parentConnection.position.set(midpoint[0], midpoint[1], midpoint[2]);     // "position" will be halfway in between
+
+            // cylinder rotation
+            this.parentConnection.lookAt(this.parentAtom.mesh.position);
+
+
+
+
+            //      ------------------
+            //      |    skeletal    |
+            //      ------------------
+
+            // if there's a line (i.e. both atoms are carbon), remove and replace
+            if (this.skeletalLine) {
+                scene.remove(this.skeletalLine);
+                const lineGeometry = new THREE.Geometry();
+                lineGeometry.vertices.push(new THREE.Vector3(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z));
+                lineGeometry.vertices.push(new THREE.Vector3(this.parentAtom.mesh.position.x, this.parentAtom.mesh.position.y, this.parentAtom.mesh.position.z));
+                this.skeletalLine = new THREE.Line(lineGeometry, skeletalMaterial);
+                if (currentModel == "skeletal") {
+                    scene.add(this.skeletalLine);
+                }
+            }
+
+
+
+
+            //      -------------------
+            //      |    lewis dot    |
+            //      -------------------
+
+            // etc
+        }
+    };
+    this.resizeParentConnection = function() {
+        
+    };
+
     this.connectToChildren = function () {
         // loop
     };
@@ -723,7 +751,7 @@ function Atom(x, y, z, element) {
         this.connections = [];
         // TODO remove from scene
 
-        this.connectToParent();     // so the old cylinders will need to go
+        this.spawnParentConnection();     // so the old cylinders will need to go
         this.connectToChildren();
     };
 
@@ -732,11 +760,11 @@ function Atom(x, y, z, element) {
 
         // add connection, if applicable
         if (this.parentAtom) {
-            scene.add(this.parentConnection.mesh);
+            scene.add(this.parentConnection);
         }
     };
     this.drawSkeletal = function() {
-        if (this.parentAtom) {
+        if (this.parentAtom && this.skeletalLine) {
             scene.add(this.skeletalLine);
         }
     };
@@ -749,7 +777,7 @@ function Atom(x, y, z, element) {
 
         // remove connection, if applicable
         if (this.parentAtom) {
-            scene.remove(this.parentConnection.mesh);
+            scene.remove(this.parentConnection);
         }
     };
     this.clearSkeletal = function() {
@@ -827,24 +855,6 @@ function getMidpoint(arr1, arr2) {
 
     // return array of averages
     return ([x, y, z]);
-}
-
-
-
-
-var rotationWorldMatrix;
-var xVector = new THREE.Vector3(1, 0, 0);
-var yVector = new THREE.Vector3(0, 1, 0);
-var zVector = new THREE.Vector3(0, 0, 1);
-function rotateAroundWorldAxis(object, axis, radians) {
-    rotationWorldMatrix = new THREE.Matrix4();
-    rotationWorldMatrix.makeRotationAxis(axis.normalize(), radians);
-
-    rotationWorldMatrix.multiply(object.matrix);                // pre-multiply
-
-    object.matrix = rotationWorldMatrix;
-
-    object.rotation.setFromRotationMatrix(object.matrix);
 }
 
 
@@ -949,8 +959,11 @@ function initialise() {
 
 
 
-	sphereGeometry = new THREE.SphereGeometry(atomSize, 32, 32);
-	cylinderGeometry = new THREE.CylinderGeometry(connectionSize, connectionSize, connectionLength, 32);
+	sphereGeometry = new THREE.SphereGeometry(defaultAtomRadius, 32, 32);
+	cylinderGeometry = new THREE.CylinderGeometry(defaultConnectionRadius, defaultConnectionRadius, connectionLength, 32);
+	cylinderGeometry.rotateX(THREE.Math.degToRad(90));
+	// the lookAt function points the positive-z direction of an object towards a point, so we change the geometry so that
+	// the positive-z side of the cone is one of the flat sides
 
 
 
@@ -998,7 +1011,7 @@ function initialise() {
 
 
     // construct and create the first atom, push it into atomArray
-    currentAtom = new Atom(0, 0, 0, "carbon");
+    currentAtom = new Atom("carbon");
     currentAtom.createCarbonPlaceholder();
     atomArray = [currentAtom];
     atomMeshArray = [currentAtom.mesh];
@@ -1097,14 +1110,7 @@ function switchModel(type) {
 
 function newAtom() {
     if (currentAtom.currentBonds.length < currentAtom.possibleBonds) {
-        let x = connectionLength;
-        let y = 0;
-        let z = 0;
-        let xPos = currentAtom.x + currentAtom.radius + x;
-        let yPos = currentAtom.y + currentAtom.radius + y;
-        let zPos = currentAtom.z + currentAtom.radius + z;
-    
-        atomArray.push(new Atom(xPos, yPos, zPos, "carbon"));                   // construct the new atom
+        atomArray.push(new Atom("carbon"));                                     // construct the new atom
 
         previousAtom = currentAtom;                                             // new previousAtom is the old currentAtom
         currentAtom = atomArray[atomArray.length - 1];                          // new currentAtom is last (newest) in array
@@ -1116,7 +1122,6 @@ function newAtom() {
         currentAtom.parentAtom = previousAtom;
 
         currentAtom.createNew();                                                // create the new atom
-        currentAtom.connectToParent();
     }
     else {
         alert("Error. This atom cannot bond to any more additional atoms.");
@@ -1134,13 +1139,15 @@ function reset() {
     // clear data
     atomArray = [];
     atomMeshArray = [];
-    scene.children = [];
+    while (scene.children.length > 0) {         // properly clear scene
+        scene.remove(scene.children[0]);        // don't just clear array, because we have no idea what else Three.js needs to clear
+    }
 
     // reset lights and base atom
     drawAxes();
     scene.add(mainLight);
     scene.add(ambientLight);
-    currentAtom = new Atom(0, 0, 0, "carbon");
+    currentAtom = new Atom("carbon");
     currentAtom.createCarbonPlaceholder();
     atomArray.push(currentAtom);
     atomMeshArray.push(currentAtom.mesh);
@@ -1193,6 +1200,7 @@ $(document).ready(function() {
         currentAtom.applyElementData();
     });
 
+    // TODO fix inputs
     $("#swingSlider").on("input change", function() {
         // gets value from slider
         swingInputData = $(this).val();
@@ -1203,8 +1211,9 @@ $(document).ready(function() {
 
         // apply change to the selected atom
         currentAtom.reposition();
+        currentAtom.moovParentConnection();
     });
-    $("#swingInput").on("input", function() {
+    $("#swingInput").on("input change", function() {
         // gets the value from input box
         swingInputData = $(this).val();
 
@@ -1213,6 +1222,7 @@ $(document).ready(function() {
         const min = $(this).attr("min");
         if (swingInputData > max) {
             swingInputData = max;
+            // console.log("nht")   // TODO fix overflow error
         }
         else if (swingInputData < min) {
             swingInputData = min;
@@ -1224,6 +1234,7 @@ $(document).ready(function() {
 
         // apply change to the selected atom
         currentAtom.reposition();
+        currentAtom.moovParentConnection();
     });
     $("#rotateSlider").on("input change", function() {
         // gets value from slider
@@ -1235,8 +1246,9 @@ $(document).ready(function() {
 
         // apply change to the selected atom
         currentAtom.reposition();
+        currentAtom.moovParentConnection();
     });
-    $("#rotateInput").on("input", function() {
+    $("#rotateInput").on("input change", function() {
         // gets the value from input box
         rotateInputData = $(this).val();
 
@@ -1256,41 +1268,13 @@ $(document).ready(function() {
 
         // apply change to the selected atom
         currentAtom.reposition();
+        currentAtom.moovParentConnection();
     });
 
     $canvas.on("mousemove", onMouseMove);
     $(window).on("keydown", function(event) {
         if (event.which == 187) {        // =
-            atomArray[1].moov(0, 100, 0);
-            atomArray[1].connectToParent();
-        }
-        else if (event.which == 220) {  // backslash
-            // atomArray[1].parentConnection.mesh.rotation.z += 0.2;
-            rotateAroundWorldAxis(atomArray[1].parentConnection.mesh, xVector, 0.2);
-        }
-        else if (event.which == 65) {   // a
-            atomArray[1].moov(0, 100, 0);
-            atomArray[1].connectToParent();
-        }
-        else if (event.which == 79) {   // o
-            atomArray[1].moov(0, -100, 0);
-            atomArray[1].connectToParent();
-        }
-        else if (event.which == 69) {   // e
-            atomArray[1].moov(0, 0, 100);
-            atomArray[1].connectToParent();
-        }
-        else if (event.which == 85) {   // u
-            atomArray[1].moov(0, 0, -100);
-            atomArray[1].connectToParent();
-        }
-        else if (event.which == 68) {   // d
-            atomArray[1].moov(100, 0, 0);
-            atomArray[1].connectToParent();
-        }
-        else if (event.which == 73) {   // i
-            atomArray[1].moov(-100, 0, 0);
-            atomArray[1].connectToParent();
+            console.log(currentAtom.mesh.position);
         }
     });
 
