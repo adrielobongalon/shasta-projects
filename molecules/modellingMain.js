@@ -38,7 +38,7 @@ const bgColour = "#ccffff";   // make sure to match with html window colour & cs
 var currentModel = "ball and stick";
 
 var scene, camera, mainLight, ambientLight, controls, mouse, raycaster, renderer, fontLoader;
-var sphereGeometry, cylinderGeometry, skeletalMaterial, textMaterial, wireMaterial;
+var sphereGeometry, cylinderGeometry, lewisDotConnexionGeo, skeletalMaterial, textMaterial, wireMaterial, axisHelper;
 
 var whiteMaterial, greyMaterial, blackMaterial, redMaterial, blooMaterial, greenMaterial, darkRedMaterial,
     darkVioletMaterial, cyanMaterial, orangeMaterial, yellowMaterial, peachMaterial, violetMaterial,
@@ -521,10 +521,12 @@ function scaleToThreeUnits(pm) {
 function Atom() {
     this.mesh;                      // the sphere
     this.parentConnection;          // cylinder to connect to parent atom (array of cylinders if end of chain)
+    this.lewisDotConnexion;         // it's actually a semicolon text geometry mesh
     this.childConnections = [];     // the cylinder(s) that connect to children atoms
     this.skeletalLine;
     this.symbolMesh;
-    this.symbolMeshOffset = {x: 0, y: 0};       // placeholder values
+    this.symbolMeshOffset =        {x: 0, y: 0};       // placeholder values
+    this.lewisDotConnexionOffset = {x: 0, y: 0};       // ditto
     this.swingAngle = 0;    // in degrees
     this.rotateAngle = 0;   // likewise
     // this.angleX = 0;
@@ -714,7 +716,24 @@ function Atom() {
             //      |    lewis dot    |
             //      -------------------
 
-            // etc
+            // create mesh
+            this.lewisDotConnexion = new THREE.Mesh(lewisDotConnexionGeo, textMaterial);
+
+            // text needs to be centred, so calculate offset from centre
+            let boundingBox = new THREE.Box3().setFromObject(this.lewisDotConnexion);
+            // console.log(boundingBox.min, boundingBox.max, boundingBox.getSize());   // useful dimensions of text mesh
+            this.lewisDotConnexionOffset = {x: boundingBox.getSize().x / 2, y: boundingBox.getSize().y / 2};
+
+            // set position
+            this.lewisDotConnexion.position.set(midpoint[0] - this.lewisDotConnexionOffset.x,
+                                                midpoint[1] - this.lewisDotConnexionOffset.y,
+                                                midpoint[2]);
+
+            // set rotation (on initialise, the geometry is rotated by 90 degrees)
+            this.lewisDotConnexion.lookAt({x: this.parentAtom.mesh.position.x,
+                                           y: this.parentAtom.mesh.position.y - this.lewisDotConnexionOffset.y,
+                                           z: this.parentAtom.mesh.position.z});
+
 
 
 
@@ -722,8 +741,11 @@ function Atom() {
             if (currentModel == "ball and stick") {
                 scene.add(this.parentConnection);
             }
-            if (currentModel == "skeletal") {
+            else if (currentModel == "skeletal") {
                 scene.add(this.skeletalLine);
+            }
+            else if (currentModel == "lewis dot") {
+                scene.add(this.lewisDotConnexion);
             }
         }
     };
@@ -768,7 +790,14 @@ function Atom() {
             //      |    lewis dot    |
             //      -------------------
 
-            // etc
+            this.lewisDotConnexion.position.set(midpoint[0] - this.lewisDotConnexionOffset.x,
+                                                midpoint[1] - this.lewisDotConnexionOffset.y,
+                                                midpoint[2]);
+
+            // rotation
+            this.lewisDotConnexion.lookAt({x: this.parentAtom.mesh.position.x,
+                                           y: this.parentAtom.mesh.position.y - this.lewisDotConnexionOffset.y,
+                                           z: this.parentAtom.mesh.position.z});
         }
     };
     this.resizeParentConnection = function() {
@@ -802,6 +831,11 @@ function Atom() {
     };
     this.drawLewisDot = function() {
         scene.add(this.symbolMesh);
+
+        // add connection, if applicable
+        if (this.parentAtom) {
+            scene.add(this.lewisDotConnexion);
+        }
     };
 
     this.clearBallAndStick = function() {
@@ -817,6 +851,11 @@ function Atom() {
     };
     this.clearLewisDot = function() {
         scene.remove(this.symbolMesh);
+
+        // remove connection, if applicable
+        if (this.parentAtom) {
+            scene.remove(this.lewisDotConnexion);
+        }
     };
 }
 
@@ -994,6 +1033,9 @@ function initialise() {
     mouse.y = 1;    // base atom highlighted on startup. btw, (-1, 1) is the top-left corner
     raycaster = new THREE.Raycaster();
 
+    // axis helper (dev tool)
+    axisHelper = new THREE.AxisHelper(200);
+
 
 
 
@@ -1042,7 +1084,10 @@ function initialise() {
     textMaterial = new THREE.MeshLambertMaterial({color: 0x000000});
 
     fontLoader.load("../libraries/fonts/homizio.json", function(font) {
-        // puts text geometries into periodicTable (this anonymous callback runs once the json file is loaded)
+
+        // (this anonymous callback runs once the json file is loaded)
+
+        // puts text geometries into periodicTable
         for (let item of periodicTable) {
             item.textGeometry = new THREE.TextGeometry(item.symbol, {
                 font: font,
@@ -1055,9 +1100,23 @@ function initialise() {
             });
         }
 
+        // creates the text geometry for the lewis dot connections (it's actually a semicolon text geometry)
+        lewisDotConnexionGeo = new THREE.TextGeometry(":", {    // set ":" to "P" for dev use (easier to see direction)
+            font: font,
+            size: (defaultAtomRadius * 2) * ( 3/4 ),
+            height: 0,
+            curveSegments: 12,
+            bevelThickness: 2,
+            bevelSize: 5,
+            bevelEnabled: true
+        });
+        lewisDotConnexionGeo.rotateY(THREE.Math.degToRad(90));
+
+        //  ------------------------------------------------------------------------------------------------------------------
+        //  |    stuff below this box is meant to run *after* the text geometries have loaded and put into pedriodicTable    |
+        //  ------------------------------------------------------------------------------------------------------------------
+
         // construct and create the first atom, push it into atomArray
-        // (this is inside the callback to make sure currentAtom.createCarbonPlaceholder gets called
-        // only *after* the textGeometries have been added to periodicTable
         currentAtom = new Atom();
         currentAtom.createCarbonPlaceholder();
         atomArray = [currentAtom];
@@ -1089,11 +1148,10 @@ function animate() {
     // highlight the atom the mouse hovers over
     // highlightSelectedAtom();
 
-    // if on lewis dot model, make sure all text faces user
+    // if on lewis dot model, make sure all text faces user (this looks kinda funny)
     // for (let item of atomArray) {
     //     item.symbolMesh.lookAt(camera.position);
     // }
-    
 
     // update Three.js tools
 	controls.update();
@@ -1330,8 +1388,7 @@ $(document).ready(function() {
     $canvas.on("mousemove", onMouseMove);
     $(window).on("keydown", function(event) {
         if (event.which == 187) {        // =
-            console.log(currentAtom.mesh.position);
-            console.log(currentAtom.element);
+            currentAtom.lewisDotConnexion.add(axisHelper);
         }
     });
 
