@@ -524,6 +524,7 @@ function Atom() {
     this.childConnections = [];     // the cylinder(s) that connect to children atoms
     this.skeletalLine;
     this.symbolMesh;
+    this.symbolMeshOffset = {x: 0, y: 0};       // placeholder values
     this.swingAngle = 0;    // in degrees
     this.rotateAngle = 0;   // likewise
     // this.angleX = 0;
@@ -599,14 +600,16 @@ function Atom() {
         setTxtGeo: {
             for (let item of periodicTable) {
                 if (item.name == this.element) {
-                    console.log(item.textGeometry);
                     this.symbolMesh = new THREE.Mesh(item.textGeometry, textMaterial);
+                    let boundingBox = new THREE.Box3().setFromObject(this.symbolMesh);
+                    // console.log(boundingBox.min, boundingBox.max, boundingBox.getSize());   // useful dimensions of text mesh
+                    this.symbolMeshOffset = {x: boundingBox.getSize().x / 2, y: boundingBox.getSize().y / 2};
+
                     break setTxtGeo;    // dont waste time looping through unnecessary items
                 }
             }
         }
-        
-        this.symbolMesh.position.set(this.mesh.position);
+        this.symbolMesh.position.set(this.mesh.position.x - this.symbolMeshOffset.x, this.mesh.position.y - this.symbolMeshOffset.y, this.mesh.position.z);
 
 
         if (currentModel == "ball and stick") {
@@ -620,6 +623,7 @@ function Atom() {
     this.createNew = function() {
         this.setElementData("carbon");
 
+        // ball and stick
         this.mesh = new THREE.Mesh(sphereGeometry, this.colour);
         this.mesh.scale.set(this.radius, this.radius, this.radius);
         this.mesh.position.set(this.parentAtom.mesh.position.x + this.distanceToParent, this.parentAtom.mesh.position.y, this.parentAtom.mesh.position.z);
@@ -627,8 +631,26 @@ function Atom() {
         this.spawnParentConnection();
         this.applyElementData();
 
+        // lewis dot
+        setTxtGeo: {
+            for (let item of periodicTable) {
+                if (item.name == this.element) {
+                    this.symbolMesh = new THREE.Mesh(item.textGeometry, textMaterial);
+                    let boundingBox = new THREE.Box3().setFromObject(this.symbolMesh);
+                    // console.log(boundingBox.min, boundingBox.max, boundingBox.getSize());   // useful dimensions of text mesh
+                    this.symbolMeshOffset = {x: boundingBox.getSize().x / 2, y: boundingBox.getSize().y / 2};
+
+                    break setTxtGeo;    // dont waste time looping through unnecessary items
+                }
+            }
+        }
+        this.symbolMesh.position.set(this.mesh.position.x - this.symbolMeshOffset.x, this.mesh.position.y - this.symbolMeshOffset.y, this.mesh.position.z);
+
         if (currentModel == "ball and stick") {
             scene.add(this.mesh);
+        }
+        else if (currentModel == "lewis dot") {
+            scene.add(this.symbolMesh);
         }
     };
 
@@ -646,6 +668,7 @@ function Atom() {
             // note that we use -sin for z because from 0-360, the atom starts in the centre, moves back, then fowards, then back to centre
 
             this.mesh.position.set(x, y, z);
+            this.symbolMesh.position.set(this.mesh.position.x - this.symbolMeshOffset.x, this.mesh.position.y - this.symbolMeshOffset.y, this.mesh.position.z);
         }
         else {
             alert("the base atom cannot be repositioned.");
@@ -749,7 +772,7 @@ function Atom() {
         }
     };
     this.resizeParentConnection = function() {
-        
+        // TODO
     };
 
     this.connectToChildren = function () {
@@ -778,7 +801,7 @@ function Atom() {
         }
     };
     this.drawLewisDot = function() {
-        
+        scene.add(this.symbolMesh);
     };
 
     this.clearBallAndStick = function() {
@@ -793,7 +816,7 @@ function Atom() {
         scene.remove(this.skeletalLine);
     };
     this.clearLewisDot = function() {
-        
+        scene.remove(this.symbolMesh);
     };
 }
 
@@ -1065,6 +1088,12 @@ function initialise() {
 function animate() {
     // highlight the atom the mouse hovers over
     // highlightSelectedAtom();
+
+    // if on lewis dot model, make sure all text faces user
+    // for (let item of atomArray) {
+    //     item.symbolMesh.lookAt(camera.position);
+    // }
+    
 
     // update Three.js tools
 	controls.update();
