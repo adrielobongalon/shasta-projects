@@ -25,101 +25,6 @@
 
 
 
-//      --------------------------------------
-//      |    creation of global variables    |
-//      --------------------------------------
-
-const canvas = $("#canvas").get(0);
-const $canvas = $("#canvas");
-let canvasWidth = 720;                                                          // 16:9 ratio
-let canvasHeight = 405;
-const bgColour = "#ccffff";   // make sure to match with html window colour & css stylings
-
-var currentModel = "ball and stick";
-
-var scene, camera, mainLight, ambientLight, controls, mouse, raycaster, renderer, fontLoader;
-var sphereGeometry, cylinderGeometry, lewisDotConnexionGeo, skeletalMaterial, textMaterial, wireMaterial, axisHelper;
-
-var whiteMaterial, greyMaterial, blackMaterial, redMaterial, blooMaterial, greenMaterial, darkRedMaterial,
-    darkVioletMaterial, cyanMaterial, orangeMaterial, yellowMaterial, peachMaterial, violetMaterial,
-    darkGreenMaterial, darkOrangeMaterial, pinkMaterial;
-var whiteAltMaterial, greyAltMaterial, blackAltMaterial, redAltMaterial, blooAltMaterial, greenAltMaterial, darkRedAltMaterial,
-    darkVioletAltMaterial, cyanAltMaterial, orangeAltMaterial, yellowAltMaterial, peachAltMaterial, violetAltMaterial,
-    darkGreenAltMaterial, darkOrangeAltMaterial, pinkAltMaterial;
-var highlightedAtom, highlightedAtomParentObject;
-
-const defaultAtomRadius = 150;  // in Three.js units
-const defaultConnectionRadius = defaultAtomRadius / 2;
-const connectionLength = 400;   // placeholder TODO scale to carbon radius
-
-let atomArray = [];         // will store all the atoms
-let atomMeshArray = [];
-let currentAtom, previousAtom;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//      ----------------
-//      |    jQuery    |
-//      ----------------
-
-function resizeCanvas() {
-    // begin by setting the variables, assuming it isn't too tall
-    canvasWidth = Math.floor($canvas.parent().width());
-    canvasHeight = Math.floor(canvasWidth * (9 / 16));                          // 16:9 ratio
-
-    const top = $("#above-canvas").height();
-    const bottom = $("#below-canvas").height();
-    const winht = $(window).height();
-
-    // if it's too tall, reset the values
-    if (top + canvasHeight + bottom > winht) {
-        canvasHeight = Math.floor(winht - (top + bottom));                      // set height to max height of canvas
-        canvasWidth = Math.floor(canvasHeight * (16 / 9));                      // scale width to 16:9 ratio
-    }
-
-    // resize the div
-    $canvas.css({width: canvasWidth + "px"});
-    $canvas.css({height: canvasHeight + "px"});
-
-    // resize #below-canvas so that its contents line up
-    $("#below-canvas").css({width: canvasWidth + "px"});
-
-    // resize within Three.js
-    if (camera) {                                       // this if-statement is a hacky way of preventing this from running on the
-        camera.aspect = canvasWidth / canvasHeight;     // function call from $(document).ready, since camera isn't defined at that
-        camera.updateProjectionMatrix();                // point. we could have just done something like "var initialised = false",
-        renderer.setSize(canvasWidth, canvasHeight);    // but i didn't want to waste memory                        -audrey
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //      --------------------------------
 //      |    chemistry-related data    |
 //      --------------------------------
@@ -273,8 +178,7 @@ var bondLengths = [
     fluorine:  [187],
     chlorine:  [243],
     bromine:   [248]
-}
-];
+}];
 
 
 
@@ -294,9 +198,10 @@ function PrdcElmt(symbol, name, textGeometry, bonds, bondLength, radius, electro
 }
 
 function createTable() {
-    //note: bond length not yet accounted for, radius in progress (pm)
-    //for radius, referring to http://periodictable.com/Properties/A/AtomicRadius.v.html
-    //finished first column for radius as of 5:08 may 31
+    // note: bond length not yet accounted for, radius in progress
+    // radius data is in picometres (pm)
+    // radius data from http://periodictable.com/Properties/A/AtomicRadius.v.html
+    // finished first column for radius as of 5:08 may 31
     
     // elements 1-10
     periodicTable.push(new PrdcElmt("H",  "hydrogen",     null, 1, null, 53,   1, whiteMaterial,     whiteAltMaterial));
@@ -482,6 +387,15 @@ function getCarbonAtomicRadius() {
     console.error("carbon's atomic radius could not be found in the periodic table data");
 }
 
+function getCarbonSingleBondLength() {
+    for (let item of bondLengths) {
+        if (item.name == "carbon") {
+            return item.carbon[0];      // returns 154
+        }
+    }
+    console.error("the bond length of a carbon-carbon single bond could not be found in the bondLengths array");
+}
+
 function scaleToThreeUnits(pm) {
 /*
                             ratio notes
@@ -497,6 +411,101 @@ function scaleToThreeUnits(pm) {
 */
 
     return pm * (defaultAtomRadius / getCarbonAtomicRadius());
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//      --------------------------------------
+//      |    creation of global variables    |
+//      --------------------------------------
+
+const canvas = $("#canvas").get(0);
+const $canvas = $("#canvas");
+let canvasWidth = 720;                                                          // 16:9 ratio
+let canvasHeight = 405;
+const bgColour = "#ccffff";   // make sure to match with html window colour & css stylings
+
+var currentModel = "ball and stick";
+
+var scene, camera, mainLight, ambientLight, controls, mouse, raycaster, renderer, fontLoader;
+var sphereGeometry, cylinderGeometry, lewisDotConnexionGeo, skeletalMaterial, textMaterial, wireMaterial, axisHelper;
+
+var whiteMaterial, greyMaterial, blackMaterial, redMaterial, blooMaterial, greenMaterial, darkRedMaterial,
+    darkVioletMaterial, cyanMaterial, orangeMaterial, yellowMaterial, peachMaterial, violetMaterial,
+    darkGreenMaterial, darkOrangeMaterial, pinkMaterial;
+var whiteAltMaterial, greyAltMaterial, blackAltMaterial, redAltMaterial, blooAltMaterial, greenAltMaterial, darkRedAltMaterial,
+    darkVioletAltMaterial, cyanAltMaterial, orangeAltMaterial, yellowAltMaterial, peachAltMaterial, violetAltMaterial,
+    darkGreenAltMaterial, darkOrangeAltMaterial, pinkAltMaterial;
+var highlightedAtom, highlightedAtomParentObject;
+
+const defaultAtomRadius = 150;  // in Three.js units
+const defaultConnectionRadius = defaultAtomRadius / 3;  // thickness of connection
+const connectionLength = getCarbonSingleBondLength();   // placeholder TODO scale to carbon radius
+
+let atomArray = [];         // will store all the atoms
+let atomMeshArray = [];
+let currentAtom, previousAtom;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//      ----------------
+//      |    jQuery    |
+//      ----------------
+
+function resizeCanvas() {
+    // begin by setting the variables, assuming it isn't too tall
+    canvasWidth = Math.floor($canvas.parent().width());
+    canvasHeight = Math.floor(canvasWidth * (9 / 16));                          // 16:9 ratio
+
+    const top = $("#above-canvas").height();
+    const bottom = $("#below-canvas").height();
+    const winht = $(window).height();
+
+    // if it's too tall, reset the values
+    if (top + canvasHeight + bottom > winht) {
+        canvasHeight = Math.floor(winht - (top + bottom));                      // set height to max height of canvas
+        canvasWidth = Math.floor(canvasHeight * (16 / 9));                      // scale width to 16:9 ratio
+    }
+
+    // resize the div
+    $canvas.css({width: canvasWidth + "px"});
+    $canvas.css({height: canvasHeight + "px"});
+
+    // resize #below-canvas so that its contents line up
+    $("#below-canvas").css({width: canvasWidth + "px"});
+
+    // resize within Three.js
+    if (camera) {                                       // this if-statement is a hacky way of preventing this from running on the
+        camera.aspect = canvasWidth / canvasHeight;     // function call from $(document).ready, since camera isn't defined at that
+        camera.updateProjectionMatrix();                // point. we could have just done something like "var initialised = false",
+        renderer.setSize(canvasWidth, canvasHeight);    // but i didn't want to waste memory                        -audrey
+    }
 }
 
 
@@ -571,12 +580,34 @@ function Atom() {
                 this.distanceToParent = scaleToThreeUnits(getBondLength(this.element, this.parentAtom.element, this.typeOfBondToParent));
             }
         }
+
+        if (this.symbolMesh && currentModel =="lewis dot") {
+            scene.remove(this.symbolMesh);
+        }
+        setTxtGeo: {
+            for (let item of periodicTable) {
+                if (item.name == this.element) {
+                    this.symbolMesh = new THREE.Mesh(item.textGeometry, textMaterial);
+                    let boundingBox = new THREE.Box3().setFromObject(this.symbolMesh);
+                    // console.log(boundingBox.min, boundingBox.max, boundingBox.getSize());   // useful dimensions of text mesh
+                    this.symbolMeshOffset = {x: boundingBox.getSize().x / 2, y: boundingBox.getSize().y / 2};
+
+                    break setTxtGeo;    // dont waste time looping through unnecessary items
+                }
+            }
+        }
+        if (currentModel == "lewis dot") {
+            scene.remove(this.symbolMesh);
+        }
     };
 
     this.applyElementData = function() {
         this.mesh.scale.set(this.radius, this.radius, this.radius);     // radius
         this.resizeParentConnection();                                  // bond length
         changeColour(this.mesh, this.colour);                           // colour
+        // if (currentModel == "lewis dot") {
+        //     scene.add(this.symbolMesh);
+        // }
     };
 
     this.createCarbonPlaceholder = function() {
@@ -881,15 +912,18 @@ function highlightSelectedAtom() {
 
     // this is an array that stores all of the things the ray touches, from front (closest to camera) to back
     // const intersects = raycaster.intersectObjects(atomMeshArray);   // (used to be scene.children)
-    const intersects = raycaster.intersectObjects(scene.children);
+    const everything = raycaster.intersectObjects(scene.children);
 
-    // // exclude axes from array
-    // for (let i = 0; i < intersects.length; i++) {
-    //     if (intersects[i].type == "Line") {
-    //         intersects.splice(i, 1);
-    //     }
-    // }
-    // console.log(intersects);
+    console.log(everything[0]);
+
+    // exclude axes from array (by creating a new array)
+    const intersects = [];
+    for (let item of everything) {
+        if (item.isMesh) {
+            intersects.push(item);
+        }
+    }
+    console.log(intersects);
 
     if (intersects.length > 0) {                                // if the ray touches anything
         if (highlightedAtom != intersects[0].object) {          //      if it's touching anything new
@@ -1312,6 +1346,7 @@ $(document).ready(function() {
             currentAtom.reposition();
         }
         currentAtom.moovParentConnection();
+        currentAtom.symbolMesh.position.set(currentAtom.mesh.position.x - currentAtom.symbolMeshOffset.x, currentAtom.mesh.position.y - currentAtom.symbolMeshOffset.y, currentAtom.mesh.position.z);
     });
 
     // TODO fix inputs
@@ -1389,6 +1424,9 @@ $(document).ready(function() {
     $(window).on("keydown", function(event) {
         if (event.which == 187) {        // =
             currentAtom.lewisDotConnexion.add(axisHelper);
+        }
+        else if (event.which == 65) {    // a
+            console.log("hi");
         }
     });
 
