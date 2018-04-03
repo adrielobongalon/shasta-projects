@@ -160,6 +160,7 @@ function initialise() {
     // construct and create the first atom, push it into atomArray
     currentAtom = new Atom();
     currentAtom.createCarbonPlaceholder();
+    currentAtom.updateAppearance(currentModel); // draw to canvas
     atomArray = [currentAtom];
     atomMeshArray = [currentAtom.mesh];
 
@@ -206,45 +207,9 @@ function switchModel(type) {
         return;
     }
 
-
-
-
-    // remove old model from scene
-    if (currentModel === "ball and stick") {
-        for (let item of atomArray) {
-            item.clearBallAndStick();
-        }
-    }
-    else if (currentModel == "skeletal") {
-        for (let item of atomArray) {
-            item.clearSkeletal();
-        }
-    }
-    else if (currentModel == "lewis dot") {
-        for (let item of atomArray) {
-            item.clearLewisDot();
-        }
-    }
-
-
-
-
-    // draw in new model and set it as the current one
     currentModel = type;
-    if (type == "ball and stick") {
-        for (let item of atomArray) {
-            item.drawBallAndStick();
-        }
-    }
-    else if (type == "skeletal") {
-        for (let item of atomArray) {
-            item.drawSkeletal();
-        }
-    }
-    else if (type == "lewis dot") {
-        for (let item of atomArray) {
-            item.drawLewisDot();
-        }
+    for (let item of atomArray) {
+        item.updateAppearance(currentModel);
     }
 }
 
@@ -274,7 +239,7 @@ let swingInputData = 0, rotateInputData = 0;
 $(document).ready(function() {
     // event listeners
     $(window).resize(canvasData.resize());
-    $("#addAtom").on("click", function() {
+    $("#addAtom").click(function() {
         if (currentAtom.currentBonds.length < currentAtom.possibleBonds) {
             atomArray.push(new Atom());                                             // construct the new atom
     
@@ -299,10 +264,10 @@ $(document).ready(function() {
             alert("This atom cannot bond to any more additional atoms.");
         }
     });
-    $("#remoovAtom").on("click", function() {
+    $("#remoovAtom").click(function() {
         alert("remoov");
     });
-    $("#restart").on("click", function() {
+    $("#restart").click(function() {
         // default to ball-and-stick model
         currentModel = "ball and stick";
     
@@ -326,17 +291,11 @@ $(document).ready(function() {
         $("#dropdown").val("carbon");
     });
 
-    $("#ballAndStick").on("click", function() {
-        switchModel("ball and stick");
-    });
-    $("#skeletal").on("click", function() {
-        switchModel("skeletal");
-    });
-    $("#lewisDot").on("click", function() {
-        switchModel("lewis dot");
-    });
+    $("#ballAndStick").click(() => {switchModel("ball and stick");});
+    $("#skeletal").click(() => {switchModel("skeletal");});
+    $("#lewisDot").click(() => {switchModel("lewis dot");});
 
-    $("#dropdown").on("change", function() {
+    $("#dropdown").on("change", () => {
         const element = $("#dropdown option:selected").val();
         currentAtom.setElementData(element);
         currentAtom.applyElementData();
@@ -350,7 +309,7 @@ $(document).ready(function() {
     });
 
     // TODO fix inputs
-    $("#swingSlider").on("input change", function() {
+    $("#swingSlider").on("input change", () => {
         // gets value from slider
         swingInputData = $(this).val();
 
@@ -362,7 +321,7 @@ $(document).ready(function() {
         currentAtom.reposition();
         currentAtom.moovParentConnection();
     });
-    $("#swingInput").on("input change", function() {
+    $("#swingInput").on("input change", () => {
         // gets the value from input box
         swingInputData = $(this).val();
 
@@ -385,7 +344,7 @@ $(document).ready(function() {
         currentAtom.reposition();
         currentAtom.moovParentConnection();
     });
-    $("#rotateSlider").on("input change", function() {
+    $("#rotateSlider").on("input change", () => {
         // gets value from slider
         rotateInputData = $(this).val();
 
@@ -397,7 +356,7 @@ $(document).ready(function() {
         currentAtom.reposition();
         currentAtom.moovParentConnection();
     });
-    $("#rotateInput").on("input change", function() {
+    $("#rotateInput").on("input change", () => {
         // gets the value from input box
         rotateInputData = $(this).val();
 
@@ -420,7 +379,7 @@ $(document).ready(function() {
         currentAtom.moovParentConnection();
     });
 
-    $("#canvas").on("mousemove", function(event) {
+    $("#canvas").on("mousemove", event => {
         const canvasPosition = threeData.renderer.domElement.getBoundingClientRect();
 
         // position inside the canvas
@@ -435,11 +394,11 @@ $(document).ready(function() {
         threeData.mouse.y = -2 * (mouseY / canvasData.height) + 1;
     });
 
-    $(window).on("keydown", function(event) {
-        if (event.which == 187) {        // =
+    $(window).on("keydown", event => {
+        if (event.key === "=") {
             currentAtom.lewisDotConnexion.add(new THREE.axisHelper(200));
         }
-        else if (event.which == 65) {    // a
+        else if (event.key === "a") {
             console.log("hi");
         }
     });

@@ -25,7 +25,7 @@ class Atom {
     constructor() {
         this.mesh;                      // the sphere
         this.parentConnection;          // cylinder to connect to parent atom (array of cylinders if end of chain)
-        this.lewisDotConnexion;         // it's actually a semicolon text geometry mesh
+        this.lewisDotConnexion;         // it's actually a semicolon text geometry mesh; WATCH_DOGS anyone?
         this.childConnections = [];     // the cylinder(s) that connect to children atoms
         this.skeletalLine;
         this.symbolMesh;
@@ -77,10 +77,6 @@ class Atom {
             }
         }
 
-        // TODO why is this even here?
-        // if (this.symbolMesh && currentModel == "lewis dot") {
-        //     threeData.scene.remove(this.symbolMesh);
-        // }
         setTxtGeo: {
             for (let item of periodicTable) {
                 if (item.name == this.element) {
@@ -93,19 +89,12 @@ class Atom {
                 }
             }
         }
-        // TODO why is this here too?
-        // if (currentModel == "lewis dot") {
-        //     threeData.scene.remove(this.symbolMesh);
-        // }
     }
 
     applyElementData() {
         this.mesh.scale.set(this.radius, this.radius, this.radius);     // radius
         this.resizeParentConnection();                                  // bond length
         threeData.updateMaterial(this.mesh, this.material);             // colour
-        // if (currentModel == "lewis dot") {
-        //     scene.add(this.symbolMesh);
-        // }
     }
 
     // only meant for that base atom
@@ -143,14 +132,6 @@ class Atom {
             }
         }
         this.symbolMesh.position.set(this.mesh.position.x - this.symbolMeshOffset.x, this.mesh.position.y - this.symbolMeshOffset.y, this.mesh.position.z);
-
-
-        if (currentModel == "ball and stick") {
-            threeData.scene.add(this.mesh);
-        }
-        else if (currentModel == "lewis dot") {
-            threeData.scene.add(this.symbolMesh);
-        }
     }
 
     // meant for all the new atoms that get connected to the base atom
@@ -179,13 +160,6 @@ class Atom {
             }
         }
         this.symbolMesh.position.set(this.mesh.position.x - this.symbolMeshOffset.x, this.mesh.position.y - this.symbolMeshOffset.y, this.mesh.position.z);
-
-        if (currentModel == "ball and stick") {
-            threeData.scene.add(this.mesh);
-        }
-        else if (currentModel == "lewis dot") {
-            threeData.scene.add(this.symbolMesh);
-        }
     }
 
     moov(xDir, yDir, zDir) {
@@ -270,15 +244,6 @@ class Atom {
 
 
             // this.parentConnection.bondLength = getMidpoint([], []);
-            if (currentModel == "ball and stick") {
-                threeData.scene.add(this.parentConnection);
-            }
-            else if (currentModel == "skeletal") {
-                threeData.scene.add(this.skeletalLine);
-            }
-            else if (currentModel == "lewis dot") {
-                threeData.scene.add(this.lewisDotConnexion);
-            }
         }
     }
     moovParentConnection() {
@@ -310,10 +275,8 @@ class Atom {
                 lineGeometry.vertices.push(new THREE.Vector3(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z));
                 lineGeometry.vertices.push(new THREE.Vector3(this.parentAtom.mesh.position.x, this.parentAtom.mesh.position.y, this.parentAtom.mesh.position.z));
                 this.skeletalLine = new THREE.Line(lineGeometry, skeletalMaterial);
-                if (currentModel == "skeletal") {
-                    threeData.scene.add(this.skeletalLine);
-                }
             }
+            // TODO update line vertices instead of removing-and-replacing
 
 
 
@@ -348,45 +311,28 @@ class Atom {
         this.connectToChildren();
     }
 
-    drawBallAndStick() {
-        threeData.scene.add(this.mesh);
+    updateAppearance(currentModel) {
+        /* nothing appears to happen by removing a nonexistent mesh, so this
+           shouldn't cause any errors */
+        threeData.scene.remove(this.mesh);
+        threeData.scene.remove(this.parentConnection);
+        threeData.scene.remove(this.skeletalLine);
+        threeData.scene.remove(this.symbolMesh);
+        threeData.scene.remove(this.lewisDotConnexion);
 
-        // add connection, if applicable
-        if (this.parentAtom) {
-            threeData.scene.add(this.parentConnection);
+
+
+
+        if (currentModel === "ball and stick") {
+            threeData.scene.add(this.mesh);
+            if (this.parentAtom) threeData.scene.add(this.parentConnection);
         }
-    }
-    drawSkeletal() {
-        if (this.parentAtom && this.skeletalLine) {
+        if (currentModel != "skeletal" && this.skeletalLine) {  // lines only drawn for carbon-carbon bonds
             threeData.scene.add(this.skeletalLine);
         }
-    }
-    drawLewisDot() {
-        threeData.scene.add(this.symbolMesh);
-
-        // add connection, if applicable
-        if (this.parentAtom) {
-            threeData.scene.add(this.lewisDotConnexion);
-        }
-    }
-
-    clearBallAndStick() {
-        threeData.scene.remove(this.mesh);
-
-        // remove connection, if applicable
-        if (this.parentAtom) {
-            scene.remove(this.parentConnection);
-        }
-    }
-    clearSkeletal() {
-        threeData.scene.remove(this.skeletalLine);
-    }
-    clearLewisDot() {
-        threeData.scene.remove(this.symbolMesh);
-
-        // remove connection, if applicable
-        if (this.parentAtom) {
-            threeData.scene.remove(this.lewisDotConnexion);
+        if (currentModel != "lewis dot") {
+            threeData.scene.add(this.symbolMesh);
+            if (this.parentAtom) threeData.scene.add(this.lewisDotConnexion);
         }
     }
 }

@@ -351,7 +351,6 @@ const chemistryData = {
             if (bond) {
                 let length = bond[type - 1];
                 if (length) return length;
-                // else
                 console.error("there is no data on those elements sharing that many bonds");
                 return undefined;
             }
@@ -381,9 +380,7 @@ const chemistryData = {
     
     getCarbonAtomicRadius() {
         for (let item of periodicTable) {
-            if (item.name == "carbon") {
-                return item.atomicRadius;   // returns 67
-            }
+            if (item.name == "carbon") return item.atomicRadius;   // returns 67
         }
         console.error("carbon's atomic radius could not be found in the periodic table data");
     },
