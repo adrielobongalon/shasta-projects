@@ -61,8 +61,8 @@ class Atom {
                     this.radius = item.atomicRadius / chemistryData.getCarbonAtomicRadius();
     
                     // set colour data and change colour
-                    this.material = item.colour;
-                    this.highlightColour = item.highlightColour;
+                    this.material = threeData[item.colour + "Material"];
+                    this.highlightMaterial = threeData[item.colour + "AltMaterial"];
     
                     break getDataFromPrdcTbl;     // dont waste time looping through all elements
                 }
@@ -97,10 +97,7 @@ class Atom {
         threeData.updateMaterial(this.mesh, this.material);             // colour
     }
 
-    // only meant for that base atom
-    // (i.e. the first one that always shows up by default)
-    // NOT meant to be a placeholder for anything connected to it
-    createCarbonPlaceholder() {
+    createBaseAtom() {
         setData: {
             this.radius = 1;                    // defaults
             this.parentConnection = null;
@@ -109,7 +106,7 @@ class Atom {
                 if (item.name == "carbon") {
                     this.possibleBonds = item.possibleBonds;
                     this.material = threeData[item.colour + "Material"];
-                    this.highlightMaterial = threeData[item.colour + "AltMaterial"];;
+                    this.highlightMaterial = threeData[item.colour + "AltMaterial"];
                     break setData;              // dont waste time looping through all elements
                 }
             }

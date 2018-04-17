@@ -159,7 +159,7 @@ function initialise() {
 
     // construct and create the first atom, push it into atomArray
     currentAtom = new Atom();
-    currentAtom.createCarbonPlaceholder();
+    currentAtom.createBaseAtom();
     currentAtom.updateAppearance(currentModel); // draw to canvas
     atomArray = [currentAtom];
     atomMeshArray = [currentAtom.mesh];
@@ -237,26 +237,24 @@ function switchModel(type) {
 let swingInputData = 0, rotateInputData = 0;
 
 $(document).ready(function() {
-    // event listeners
-    $(window).resize(canvasData.resize());
+    $(window).resize(canvasData.resize);
     $("#addAtom").click(function() {
         if (currentAtom.currentBonds.length < currentAtom.possibleBonds) {
-            atomArray.push(new Atom());                                             // construct the new atom
-    
-            previousAtom = currentAtom;                                             // new previousAtom is the old currentAtom
-            currentAtom = atomArray[atomArray.length - 1];                          // new currentAtom is last (newest) in array
-    
+            previousAtom = currentAtom;                                         // new previousAtom is the old currentAtom
+            currentAtom = new Atom();
+
+            currentAtom.createNew();                                            // create the new atom
+            currentAtom.updateAppearance(currentModel);
+
+            atomArray.push(currentAtom);
             atomMeshArray.push(currentAtom.mesh);
     
             previousAtom.currentBonds.push(currentAtom);
             currentAtom.currentBonds.push(previousAtom);
             currentAtom.parentAtom = previousAtom;
-    
-            currentAtom.createNew();                                                // create the new atom
-    
-    
-    
-    
+
+
+
             // reset input values
             $("#dropdown").val("carbon");
         }
@@ -280,8 +278,8 @@ $(document).ready(function() {
         // drawAxes();
         threeData.addLights();
         currentAtom = new Atom();
-        currentAtom.createCarbonPlaceholder();
-        atomArray.push(currentAtom);
+        currentAtom.createBaseAtom();
+        atomArray.push(currentAtom);        // TODO replace "clear array and push" with "set array to just the new one"
         atomMeshArray.push(currentAtom.mesh);
     
         // reset camera

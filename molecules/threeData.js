@@ -115,12 +115,10 @@ const threeData = {
     addSceneAxis() {
         this.scene.add(this.axisHelper);
     },
-    updateCameraRatio() {
-        if (this.camera) {                                              // this if-statement is a hacky way of preventing this from running on the
-            this.camera.aspect = canvasData.width / canvasData.height;  // function call from $(document).ready, since camera isn't defined at that
-            this.camera.updateProjectionMatrix();                       // point. we could have just done something like "var initialised = false",
-            this.renderer.setSize(canvasData.width, canvasData.height); // but i didn't want to waste memory                        -audrey
-        }
+    updateCameraRatio(width, height) {
+        this.camera.aspect = width / height;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(width, height);
     },
     updateTools() {
         this.controls.update();

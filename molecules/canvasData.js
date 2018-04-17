@@ -48,6 +48,6 @@ const canvasData = {
         $("#below-canvas").css({width: this.width + "px"});
     
         // resize within Three.js
-        threeData.updateCameraRatio();
+        threeData.updateCameraRatio(this.width, this.height);
     }
 };
