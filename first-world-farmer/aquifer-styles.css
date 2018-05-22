@@ -1,0 +1,181 @@
+/*
+       document : aquifer-styles.css
+     created on : thursday, may 03, 2018, 11:46 am
+         author : audrey bongalon
+    description : for an AP Environmental Science demonstration
+
+                                        88
+                                        88
+                                        88
+      ,adPPYYba,  88       88   ,adPPYb,88  8b,dPPYba,   ,adPPYba,  8b       d8
+      ""     `Y8  88       88  a8"    `Y88  88P'   "Y8  a8P,,,,,88  `8b     d8'
+      ,adPPPPP88  88       88  8b      :88  88          8PP"""""""   `8b   d8'
+      88,    ,88  "8a,   ,a88  "8a,   ,d88  88          "8b,   ,aa    `8b,d8'
+      `"8bbdP"Y8   `"YbbdP'Y8   `"8bbdP"Y8  88           `"Ybbd8"'      Y88'
+                                                                        d8'
+                                                                       d8'
+*/
+
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background: url("farm.jpg") no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+
+    font-family: sans-serif;
+}
+
+
+
+
+p {
+    margin: 0 0 10px;
+}
+
+
+
+
+#player-registry {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+
+    width: 800px;
+    height: 300px;
+
+    background-color: #ffffff;
+	background-color: rgba(255, 255, 255, 0.7);
+}
+#player-registry p {
+    margin: 0 40px;
+}
+
+
+
+
+#name-entry {
+    margin: 40px;
+}
+
+
+
+
+#name-list-div {
+    height: 200px;
+    overflow-y: auto;
+    margin-bottom: 5px;
+}
+
+
+
+
+#main {
+    /* hidden at start */
+    display: none;
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    padding: 40px;
+
+    width: 1000px;
+    height: 500px;
+
+    background-color: #ffffff;
+	background-color: rgba(255, 255, 255, 0.7);
+}
+
+
+
+
+#options-box {
+    
+}
+
+
+
+
+#options-box-1 div, #options-box-2 div {
+    display: inline-block;
+    width: 32%;
+    vertical-align: top;
+    text-align: center;
+}
+
+
+
+
+h2 {
+    margin: 20px 0 5px;
+}
+img {
+    width: 90%;
+}
+
+
+
+
+#next {
+    margin: 20px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    text-align: right;
+    font-size: 10px;
+}
+
+
+
+
+#overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    opacity: 0;
+    z-index: 98;
+}
+
+
+
+
+#aquifer-is-empty-box {
+    /* hidden at start */
+    display: none;
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    padding: 40px;
+
+    width: 800px;
+    height: 300px;
+
+    background-color: #ffffff;
+
+	z-index: 99;
+}
+
+
+
+
+#answer {
+    display: none;
+    margin-top: 40px;
+    text-align: center;
+}

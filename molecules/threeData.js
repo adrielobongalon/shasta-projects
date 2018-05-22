@@ -18,7 +18,7 @@
                                                                     d8'
 */
 
-/* global THREE chemistryData canvasData */
+/* global THREE chemistryData periodicTable canvasData */
 
 
 
@@ -50,39 +50,8 @@ const threeData = {
     skeletalMaterial:       new THREE.LineBasicMaterial(  {color: 0x000000, linewidth: 100}),       // linewidth doesn't work on windows
     textMaterial:           new THREE.MeshLambertMaterial({color: 0x000000}),
 
-    whiteMaterial:          new THREE.MeshLambertMaterial({color: 0xbbbbbb}),
-    greyMaterial:           new THREE.MeshLambertMaterial({color: 0x888888}),
-    blackMaterial:          new THREE.MeshPhongMaterial(  {color: 0x222222}),
-    blooMaterial:           new THREE.MeshLambertMaterial({color: 0x1010dd}),
-    redMaterial:            new THREE.MeshLambertMaterial({color: 0xff2222}),
-    greenMaterial:          new THREE.MeshLambertMaterial({color: 0x00ff00}),
-    darkRedMaterial:        new THREE.MeshLambertMaterial({color: 0x851515}),
-    darkVioletMaterial:     new THREE.MeshLambertMaterial({color: 0x6C08B2}),
-    cyanMaterial:           new THREE.MeshLambertMaterial({color: 0x00ffff}),
-    orangeMaterial:         new THREE.MeshLambertMaterial({color: 0xffa500}),
-    yellowMaterial:         new THREE.MeshLambertMaterial({color: 0xffff00}),
-    peachMaterial:          new THREE.MeshLambertMaterial({color: 0xffb7ae}),
-    violetMaterial:         new THREE.MeshLambertMaterial({color: 0x9859C4}),
-    darkGreenMaterial:      new THREE.MeshLambertMaterial({color: 0x008000}),
-    darkOrangeMaterial:     new THREE.MeshLambertMaterial({color: 0xbf7e00}),
-    pinkMaterial:           new THREE.MeshLambertMaterial({color: 0xff90ce}),
-
-    whiteAltMaterial:       new THREE.MeshLambertMaterial({color: 0xfffdee}),
-    greyAltMaterial:        new THREE.MeshLambertMaterial({color: 0x6f6d6d}),
-    blackAltMaterial:       new THREE.MeshPhongMaterial(  {color: 0x404040}),
-    blooAltMaterial:        new THREE.MeshLambertMaterial({color: 0x5858ff}),
-    redAltMaterial:         new THREE.MeshLambertMaterial({color: 0xff8080}),
-    greenAltMaterial:       new THREE.MeshLambertMaterial({color: 0x8dff8d}),
-    darkRedAltMaterial:     new THREE.MeshLambertMaterial({color: 0xab5555}),
-    darkVioletAltMaterial:  new THREE.MeshLambertMaterial({color: 0x80559f}),
-    cyanAltMaterial:        new THREE.MeshLambertMaterial({color: 0x8dffff}),
-    orangeAltMaterial:      new THREE.MeshLambertMaterial({color: 0xffd994}),
-    yellowAltMaterial:      new THREE.MeshLambertMaterial({color: 0xffffa0}),
-    peachAltMaterial:       new THREE.MeshLambertMaterial({color: 0xffcfc9}),
-    violetAltMaterial:      new THREE.MeshLambertMaterial({color: 0xbc9dd2}),
-    darkGreenAltMaterial:   new THREE.MeshLambertMaterial({color: 0x5f9a5f}),
-    darkOrangeAltMaterial:  new THREE.MeshLambertMaterial({color: 0xdfba74}),
-    pinkAltMaterial:        new THREE.MeshLambertMaterial({color: 0xf9c6e2}),
+    materials:    new Map(),
+    altMaterials: new Map(),
 
     // font loader
     fontLoader: new THREE.FontLoader(),
@@ -91,10 +60,6 @@ const threeData = {
     init() {
         // scale renderer to proper ratio
     	this.renderer.setSize(canvasData.width, canvasData.height);
-
-        this.cylinderGeometry.rotateX(THREE.Math.degToRad(90));
-    	// the lookAt function points the positive-z direction of an object towards a point, so we change the geometry so that
-    	// the positive-z side of the cone is one of the flat sides
     },
     setUpScene() {
     	this.camera.position.z = 9001;   // IT's OVER 9000!
@@ -172,21 +137,22 @@ threeData.controls = new THREE.OrbitControls(threeData.camera, threeData.rendere
 
 
 const constants = {
-    defaultAtomRadius: null,
-    defaultConnectionRadius: null,
-    connectionLength: null
+    defaultAtomRadius: 150,         // in three.js units
+    defaultConnectionRadius: null,  // will become 50 (which is 1/3 of defaultAtomRadius)
+    connectionLength: null          // will become C-C single bond scaled to three.js units
 };
 
 // outside main object because properties are based on each other
-constants.defaultAtomRadius = 150,  // in Three.js units
 constants.defaultConnectionRadius = constants.defaultAtomRadius / 3,  // thickness of connection, 50
 
 
 
 
 // outside main object because parameters are based on properties in the constants object
+/* the lookAt function points the positive-z direction of an object towards a point, so we change the geometry so that
+   the positive-z side of the cone is one of the flat sides */
 threeData.sphereGeometry = new THREE.SphereGeometry(constants.defaultAtomRadius, 32, 32);
-threeData.cylinderGeometry = new THREE.CylinderGeometry(constants.defaultConnectionRadius, constants.defaultConnectionRadius, constants.connectionLength, 32);
+
 threeData.scaleToThreeUnits = function scaleToThreeUnits(pm) {
     /*
                                 ratio notes
@@ -201,8 +167,47 @@ threeData.scaleToThreeUnits = function scaleToThreeUnits(pm) {
               pm (function input)       67?     TODO check this value for scientific accuracy
     */
     // console.log(defaultAtomRadius);
-    return pm * (constants.defaultAtomRadius / chemistryData.getCarbonAtomicRadius());
+    return pm * (constants.defaultAtomRadius / periodicTable.get("carbon").atomicRadius);
 };
 
 // down here because it requires the scaling function
-threeData.connectionLength = threeData.scaleToThreeUnits(chemistryData.getCarbonSingleBondLength()); // placeholder TODO scale to carbon radius
+constants.connectionLength = threeData.scaleToThreeUnits(chemistryData.getCarbonSingleBondLength());
+threeData.cylinderGeometry = new THREE.CylinderGeometry(constants.defaultConnectionRadius, constants.defaultConnectionRadius, constants.connectionLength, 32);
+threeData.cylinderGeometry.rotateX(THREE.Math.degToRad(90));
+
+
+
+
+threeData.materials.set("white",            new THREE.MeshLambertMaterial({color: 0xbbbbbb}));
+threeData.materials.set("grey",             new THREE.MeshLambertMaterial({color: 0x888888}));
+threeData.materials.set("black",            new THREE.MeshPhongMaterial(  {color: 0x222222}));
+threeData.materials.set("bloo",             new THREE.MeshLambertMaterial({color: 0x1010dd}));
+threeData.materials.set("red",              new THREE.MeshLambertMaterial({color: 0xff2222}));
+threeData.materials.set("green",            new THREE.MeshLambertMaterial({color: 0x00ff00}));
+threeData.materials.set("dark red",         new THREE.MeshLambertMaterial({color: 0x851515}));
+threeData.materials.set("dark violet",      new THREE.MeshLambertMaterial({color: 0x6C08B2}));
+threeData.materials.set("cyan",             new THREE.MeshLambertMaterial({color: 0x00ffff}));
+threeData.materials.set("orange",           new THREE.MeshLambertMaterial({color: 0xffa500}));
+threeData.materials.set("yellow",           new THREE.MeshLambertMaterial({color: 0xffff00}));
+threeData.materials.set("peach",            new THREE.MeshLambertMaterial({color: 0xffb7ae}));
+threeData.materials.set("violet",           new THREE.MeshLambertMaterial({color: 0x9859C4}));
+threeData.materials.set("dark green",       new THREE.MeshLambertMaterial({color: 0x008000}));
+threeData.materials.set("dark orange",      new THREE.MeshLambertMaterial({color: 0xbf7e00}));
+threeData.materials.set("pink",             new THREE.MeshLambertMaterial({color: 0xff90ce}));
+
+threeData.altMaterials.set("white",         new THREE.MeshLambertMaterial({color: 0xfffdee}));
+threeData.altMaterials.set("grey",          new THREE.MeshLambertMaterial({color: 0x6f6d6d}));
+threeData.altMaterials.set("black",         new THREE.MeshPhongMaterial(  {color: 0x404040}));
+threeData.altMaterials.set("bloo",          new THREE.MeshLambertMaterial({color: 0x5858ff}));
+threeData.altMaterials.set("red",           new THREE.MeshLambertMaterial({color: 0xff8080}));
+threeData.altMaterials.set("green",         new THREE.MeshLambertMaterial({color: 0x8dff8d}));
+threeData.altMaterials.set("darkRed",       new THREE.MeshLambertMaterial({color: 0xab5555}));
+threeData.altMaterials.set("darkViolet",    new THREE.MeshLambertMaterial({color: 0x80559f}));
+threeData.altMaterials.set("cyan",          new THREE.MeshLambertMaterial({color: 0x8dffff}));
+threeData.altMaterials.set("orange",        new THREE.MeshLambertMaterial({color: 0xffd994}));
+threeData.altMaterials.set("yellow",        new THREE.MeshLambertMaterial({color: 0xffffa0}));
+threeData.altMaterials.set("peach",         new THREE.MeshLambertMaterial({color: 0xffcfc9}));
+threeData.altMaterials.set("violet",        new THREE.MeshLambertMaterial({color: 0xbc9dd2}));
+threeData.altMaterials.set("darkGreen",     new THREE.MeshLambertMaterial({color: 0x5f9a5f}));
+threeData.altMaterials.set("darkOrange",    new THREE.MeshLambertMaterial({color: 0xdfba74}));
+threeData.altMaterials.set("pink",          new THREE.MeshLambertMaterial({color: 0xf9c6e2}));

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<!--
+       document : aquifer-game.html
+     created on : thursday, may 03, 2018, 11:43 am
+         author : audrey bongalon
+    description : for an AP Environmental Science demonstration
+
+                               ___
+                              /\  \
+      ______    ___  ___      \_\  \    ______    ______   ___  ___
+     /  __  \  /\  \/\  \    /  __  \  /\   __\  /  __  \ /\  \/\  \
+    /\  \L\  \ \ \  \_\  \  /\  \L\  \ \ \  \_/ /\   ___/ \ \  \_\  \
+    \ \___/\__\ \ \___/\__\ \ \___/\__\ \ \__\  \ \_____\  \ \____   \
+     \/__/\/__/  \/___/\__/  \/___/\__/  \/__/   \/_____/   \/___/_\  \
+                                                               /\_____/
+                                                               \/____/
+-->
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Aquifers - First World Farmer</title>
+        <link rel="stylesheet" type="text/css" href="aquifer-styles.css">
+        <link href="https://fonts.googleapis.com/css?family=Raleway:100" rel="stylesheet" type="text/css">
+
+        <link rel="apple-touch-icon" sizes="57x57" href="../audreyfavicons/apple-touch-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="../audreyfavicons/apple-touch-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="../audreyfavicons/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="../audreyfavicons/apple-touch-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="../audreyfavicons/apple-touch-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="../audreyfavicons/apple-touch-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="../audreyfavicons/apple-touch-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="../audreyfavicons/apple-touch-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="../audreyfavicons/apple-touch-icon-180x180.png">
+        <link rel="icon" type="image/png" href="../audreyfavicons/favicon-32x32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="../audreyfavicons/android-chrome-192x192.png" sizes="192x192">
+        <link rel="icon" type="image/png" href="../audreyfavicons/favicon-96x96.png" sizes="96x96">
+        <link rel="icon" type="image/png" href="../audreyfavicons/favicon-16x16.png" sizes="16x16">
+        <link rel="manifest" href="../audreyfavicons/manifest.json">
+        <link rel="mask-icon" href="../audreyfavicons/safari-pinned-tab.svg" color="#88aaee">
+        <meta name="apple-mobile-web-app-title" content="../audrey">
+        <meta name="application-name" content="../audrey">
+        <meta name="msapplication-TileColor" content="#88aaee">
+        <meta name="msapplication-TileImage" content="../audreyfavicons/mstile-144x144.png">
+        <meta name="theme-color" content="#88aaee">
+
+        <meta name="keywords" content="environmental science, aquifer, aquifers, game, simulation, tragedy of the commons">
+        <meta name="description" content="game/simulation for tragedy of the commons with water from an aquifer">
+        <meta name="author" content="audrey bongalon">
+    </head>
+    <body>
+        <!--<div id="overlay"></div>-->
+        <div id="player-registry">
+            <div id="name-entry">
+                <input type="text" placeholder="Enter your team name here." id="name-box">
+                <input type="button" value="Add" id="add-name-button">
+                <input type="button" value="Done" id="done-name-button">
+            </div>
+            <p>Players:</p>
+            <div id="name-list-div">
+                <ol id="name-list"></ol>
+            </div>
+        </div>
+        <div id="main">
+            <p>Player Turn: <span id="player-turn"></span></p>
+            <p>Cash: $<span id="cash"></span></p>
+            <p>Season: <span id="season"></span></p>
+            <div id="options-box-1">
+                <div>
+                    <h2>Flood Irrigation</h2>
+                    <img src="flood.jpg">
+                </div>
+                <div>
+                    <h2>Spray Irrigation</h2>
+                    <img src="spray.jpg">
+                </div>
+                <div>
+                    <h2>Drip Irrigation</h2>
+                    <img src="drip.jpg">
+                </div>
+            </div>
+            <div id="options-box-2">
+                <div>
+                    <p>Estimated Profit: $100</p>
+                    <p>Water Usage: 1000 gallons</p>
+                    <input type="radio" name="irrigation" value="flood" id="flood-button" checked><label for="flood-button">Select</label>
+                </div>
+                <div>
+                    <p>Estimated Profit: $50</p>
+                    <p>Water Usage: 100 gallons</p>
+                    <input type="radio" name="irrigation" value="spray" id="spray-button"><label for="spray-button">Select</label>
+                </div>
+                <div>
+                    <p>Estimated Profit: $10</p>
+                    <p>Water Usage: 10 gallons</p>
+                    <input type="radio" name="irrigation" value="drip" id="drip-button"><label for="drip-button">Select</label>
+                </div>
+            </div>
+            <div id="next">
+                <p>Once you have made your selection, press the button and pass the computer to the next player.</p>
+                <input type="button" value="Next Player" id="next-player">
+            </div>
+        </div>
+        <div id="aquifer-is-empty-box">
+            <h2>Question for the whole group:</h2>
+            <p>In how many turns do you think the aquifer will be totally drained?</p>
+            <input type="radio" name="empty" value="10 seasons" id="10-button" checked><label for="10-button">10 seasons</label><br>
+            <input type="radio" name="empty" value="5 seasons" id="5-button"><label for="5-button">5 seasons</label><br>
+            <input type="radio" name="empty" value="3 seasons" id="3-button"><label for="3-button">3 seasons</label><br>
+            <input type="radio" name="empty" value="1 seasons" id="1-button"><label for="1-button">1 season</label><br><br>
+            <input type="button" value="Answer" id="empty-answer-button"><br>
+            <h2 id="answer">Trick question. It actually ran out 3 turns ago on round <span id="round"></span>!</h2>
+        </div>
+
+        <script type="text/javascript" src="../libraries/jquery-3.1.2.js"></script>
+        <script type="text/javascript" src="aquifer-program.js"></script>
+    </body>
+</html>

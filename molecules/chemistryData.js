@@ -163,163 +163,182 @@ bondLengths.set("iodine", {
 
 
 
-function PrdcElmt(symbol, name, bonds, bondLengths, radius, electrons, colour) {
-    this.symbol = symbol;
-    this.name = name;
-    this.possibleBonds = bonds;
-    this.bondLengths = bondLengths;
-    this.atomicRadius = radius;
-    this.valenceElectrons = electrons;
-    this.colour = colour;
-}
 
-const periodicTable = [
-    // note: bond length not yet accounted for, radius in progress
-    // radius data is in picometres (pm)
-    // radius data from http://periodictable.com/Properties/A/AtomicRadius.v.html
-    // finished first column for radius as of 5:08 may 31
-    
-    // elements 1-10
-    new PrdcElmt("H",  "hydrogen",  1, null, 53,   1, "white"),
-    new PrdcElmt("He", "helium",    0, null, 31,   2, "cyan"),
-    new PrdcElmt("Li", "lithium",   1, null, 167,  1, "violet"),
-    new PrdcElmt("Be", "beryllium", 2, null, 112,  2, "dark green"),
-    new PrdcElmt("B",  "boron",     3, null, 87,   3, "peach"),
-    new PrdcElmt("C",  "carbon",    4, null, 67,   4, "black"),
-    new PrdcElmt("N",  "nitrogen",  3, null, 56,   5, "bloo"),
-    new PrdcElmt("O",  "oxygen",    2, null, 48,   6, "red"),
-    new PrdcElmt("F",  "fluorine",  1, null, 42,   7, "green"),
-    new PrdcElmt("Ne", "neon",      0, null, 38,   8, "cyan"),
-    
-    // elements 11-20
-    new PrdcElmt("Na", "sodium",        1, null, 227,  1, "violet"),
-    new PrdcElmt("Mg", "magnesium",     2, null, 145,  2, "dark green"),
-    new PrdcElmt("Al", "aluminium",     3, null, 118,  3, "pink"),
-    new PrdcElmt("Si", "silicon",       4, null, 111,  4, "pink"),
-    new PrdcElmt("P",  "phosphorus",    3, null, 98,   5, "orange"),
-    new PrdcElmt("S",  "sulfur",        2, null, 88,   6, "yellow"),
-    new PrdcElmt("Cl", "chlorine",      1, null, 79,   7, "green"),
-    new PrdcElmt("Ar", "argon",         1, null, 71,   8, "cyan"),
-    new PrdcElmt("K",  "potassium",     1, null, 243,  1, "violet"),
-    new PrdcElmt("Ca", "calcium",       2, null, 194,  2, "dark green"),
-    
-    // elements 21-39
-    // new PrdcElmt("scandium", 2, null, 5),
-    // new PrdcElmt("titanium", 2, null, 5),
-    // new PrdcElmt("vanadium", 2, null, 5),
-    // new PrdcElmt("chromium", 2, null, 5),
-    // new PrdcElmt("manganese", 2, null, 5),
-    // new PrdcElmt("iron", 2, null, 5),
-    // new PrdcElmt("cobalt", 2, null, 5),
-    // new PrdcElmt("nickel", 2, null, 5),
-    // new PrdcElmt("copper", 2, null, 5),
-    
-    
-    // elements 30-40
-    new PrdcElmt("Zn", "zinc",      2, null, 142,  2, "peach"),
-    new PrdcElmt("Ga", "gallium",   3, null, 136,  3, "pink"),
-    new PrdcElmt("Ge", "germanium", 4, null, 125,  4, "pink"),
-    new PrdcElmt("As", "arsenic",   3, null, 114,  5, "pink"),
-    new PrdcElmt("Se", "selenium",  2, null, 103,  6, "pink"),
-    new PrdcElmt("Br", "bromine",   1, null, 94,   7, "pink"),
-    new PrdcElmt("Kr", "krypton",   0, null, 88,   8, "pink"),
-    new PrdcElmt("Rb", "rubidium",  1, null, 265,  1, "pink"),
-    new PrdcElmt("Sr", "strontium", 2, null, 219,  2, "pink"),
-    
-    // elements 39-47
-    // new PrdcElmt("yttrium", 2, null, 5),
-    // new PrdcElmt("zirconium", 2, null, 5),
-    // new PrdcElmt("niobium", 2, null, 5),
-    // new PrdcElmt("molybdenum", 2, null, 5),
-    // new PrdcElmt("technetium", 2, null, 5),
-    // new PrdcElmt("ruthenium", 2, null, 5),
-    // new PrdcElmt("rhodium", 2, null, 5),
-    // new PrdcElmt("palladium", 2, null, 5),
-    // new PrdcElmt("silver", 2, null, 5),
-    
-    // element 48-56
-    new PrdcElmt("Cd", "cadmium",   2, null, 161, 2, "peach"),
-    new PrdcElmt("In", "indium",    3, null, 156, 3, "pink"),
-    new PrdcElmt("Sn", "tin",       4, null, 145, 4, "pink"),
-    new PrdcElmt("Sb", "antimony",  3, null, 133, 5, "pink"),
-    new PrdcElmt("Te", "tellurium", 2, null, 123, 6, "pink"),
-    new PrdcElmt("I",  "iodine",    1, null, 115, 7, "dark violet"),
-    new PrdcElmt("Xe", "xenon",     0, null, 108, 8, "cyan"),
-    new PrdcElmt("Cs", "caesium",   1, null, 300, 1, "violet"),
-    new PrdcElmt("Ba", "barium",    2, null, 253, 2, "dark green"),
-    
-    // elements 57-71
-    // new PrdcElmt("lanthanum", 2, null, 5),
-    // new PrdcElmt("cerium", 2, null, 5),
-    // new PrdcElmt("praseodymium", 2, null, 5),
-    // new PrdcElmt("neodymium", 2, null, 5),
-    // new PrdcElmt("promethium", 2, null, 5),
-    // new PrdcElmt("samarium", 2, null, 5),
-    // new PrdcElmt("europium", 2, null, 5),
-    // new PrdcElmt("gadolinium", 2, null, 5),
-    // new PrdcElmt("terbium", 2, null, 5),
-    // new PrdcElmt("dysprosium", 2, null, 5),
-    // new PrdcElmt("holmium", 2, null, 5),
-    // new PrdcElmt("erbium", 2, null, 5),
-    // new PrdcElmt("thulium", 2, null, 5),
-    // new PrdcElmt("ytterbium", 2, null, 5),
-    // new PrdcElmt("lutetium", 2, null, 5),
-    
-    // elements 72-79
-    // new PrdcElmt("hafnium", 2, null, 5),
-    // new PrdcElmt("tantalum", 2, null, 5),
-    // new PrdcElmt("tungsten", 2, null, 5),
-    // new PrdcElmt("rhenium", 2, null, 5),
-    // new PrdcElmt("osmium", 2, null, 5),
-    // new PrdcElmt("iridium", 2, null, 5),
-    // new PrdcElmt("platinum", 2, null, 5),
-    // new PrdcElmt("gold", 2, null, 5),
-    
-    // elements 80-88
-    new PrdcElmt("Hg", "mercury",   2, null, 171, 2, "peach"),
-    new PrdcElmt("Tl", "thallium",  3, null, 156, 3, "pink"),
-    new PrdcElmt("Pb", "lead",      4, null, 154, 4, "pink"),
-    new PrdcElmt("Bi", "bismuth",   3, null, 143, 5, "pink"),
-    new PrdcElmt("Po", "polonium",  2, null, 135, 6, "pink"),
-    new PrdcElmt("At", "astatine",  1, null, 127, 7, "pink"),
-    new PrdcElmt("Rn", "radon",     0, null, 120, 8, "pink")
-    
-    // bottom row -> molecules by collision
-    // new PrdcElmt("francium", 1, null, 5),
-    // new PrdcElmt("radium", 2, null, 5),
-    
-    // elements 89-103
-    // new PrdcElmt("actinium", 2, null, 5),
-    // new PrdcElmt("thorium", 2, null, 5),
-    // new PrdcElmt("protactinium", 2, null, 5),
-    // new PrdcElmt("uranium", 2, null, 5),
-    // new PrdcElmt("neptunium", 2, null, 5),
-    // new PrdcElmt("plutonium", 2, null, 5),
-    // new PrdcElmt("americium", 2, null, 5),
-    // new PrdcElmt("curium", 2, null, 5),
-    // new PrdcElmt("berkelium", 2, null, 5),
-    // new PrdcElmt("californium", 2, null, 5),
-    // new PrdcElmt("einsteinium", 2, null, 5),
-    // new PrdcElmt("fermium", 2, null, 5),
-    // new PrdcElmt("mendelevium", 2, null, 5),
-    // new PrdcElmt("nobelium", 2, null, 5),
-    // new PrdcElmt("lawrencium", 2, null, 5),
-    
-    // elements 104-111
-    // new PrdcElmt("rutherfordum", 2, null, 5),
-    // new PrdcElmt("dubnium", 2, null, 5),
-    // new PrdcElmt("seaborgium", 2, null, 5),
-    // new PrdcElmt("bohrium", 2, null, 5),
-    // new PrdcElmt("hassium", 2, null, 5),
-    // new PrdcElmt("meitnerium", 2, null, 5),
-    // new PrdcElmt("darmstadtium", 2, null, 5),
-    // new PrdcElmt("roentgenium", 2, null, 5)
-];
 
-// this iife puts bond lengths in periodic table
+
+
+const periodicTable = new Map();
+
 (function() {
-    for (let i = 0; i < periodicTable.length; i++) {    // value is being modified, so we can't use a for-of loop
-        periodicTable[i].bondLengths = bondLengths.get(periodicTable[i].name);
+    function PrdcElmt(symbol, name, bonds, bondLengths, radius, electrons, colour) {
+        this.symbol = symbol;
+        this.name = name;
+        this.possibleBonds = bonds;
+        this.bondLengths = bondLengths;
+        this.atomicRadius = radius;
+        this.valenceElectrons = electrons;
+        this.colour = colour;
+    }
+    
+    const periodicTableArray = [
+        // radius data is in picometres (pm)
+        // radius data from http://periodictable.com/Properties/A/AtomicRadius.v.html
+        // finished first column for radius as of 5:08 may 31
+        
+        // elements 1-10
+        new PrdcElmt("H",  "hydrogen",  1, null, 53,   1, "white"),
+        new PrdcElmt("He", "helium",    0, null, 31,   2, "cyan"),
+        new PrdcElmt("Li", "lithium",   1, null, 167,  1, "violet"),
+        new PrdcElmt("Be", "beryllium", 2, null, 112,  2, "dark green"),
+        new PrdcElmt("B",  "boron",     3, null, 87,   3, "peach"),
+        new PrdcElmt("C",  "carbon",    4, null, 67,   4, "black"),
+        new PrdcElmt("N",  "nitrogen",  3, null, 56,   5, "bloo"),
+        new PrdcElmt("O",  "oxygen",    2, null, 48,   6, "red"),
+        new PrdcElmt("F",  "fluorine",  1, null, 42,   7, "green"),
+        new PrdcElmt("Ne", "neon",      0, null, 38,   8, "cyan"),
+        
+        // elements 11-20
+        new PrdcElmt("Na", "sodium",        1, null, 227,  1, "violet"),
+        new PrdcElmt("Mg", "magnesium",     2, null, 145,  2, "dark green"),
+        new PrdcElmt("Al", "aluminium",     3, null, 118,  3, "pink"),
+        new PrdcElmt("Si", "silicon",       4, null, 111,  4, "pink"),
+        new PrdcElmt("P",  "phosphorus",    3, null, 98,   5, "orange"),
+        new PrdcElmt("S",  "sulfur",        2, null, 88,   6, "yellow"),
+        new PrdcElmt("Cl", "chlorine",      1, null, 79,   7, "green"),
+        new PrdcElmt("Ar", "argon",         1, null, 71,   8, "cyan"),
+        new PrdcElmt("K",  "potassium",     1, null, 243,  1, "violet"),
+        new PrdcElmt("Ca", "calcium",       2, null, 194,  2, "dark green"),
+        
+        // elements 21-39
+        // new PrdcElmt("scandium", 2, null, 5),
+        // new PrdcElmt("titanium", 2, null, 5),
+        // new PrdcElmt("vanadium", 2, null, 5),
+        // new PrdcElmt("chromium", 2, null, 5),
+        // new PrdcElmt("manganese", 2, null, 5),
+        // new PrdcElmt("iron", 2, null, 5),
+        // new PrdcElmt("cobalt", 2, null, 5),
+        // new PrdcElmt("nickel", 2, null, 5),
+        // new PrdcElmt("copper", 2, null, 5),
+        
+        
+        // elements 30-40
+        new PrdcElmt("Zn", "zinc",      2, null, 142,  2, "peach"),
+        new PrdcElmt("Ga", "gallium",   3, null, 136,  3, "pink"),
+        new PrdcElmt("Ge", "germanium", 4, null, 125,  4, "pink"),
+        new PrdcElmt("As", "arsenic",   3, null, 114,  5, "pink"),
+        new PrdcElmt("Se", "selenium",  2, null, 103,  6, "pink"),
+        new PrdcElmt("Br", "bromine",   1, null, 94,   7, "pink"),
+        new PrdcElmt("Kr", "krypton",   0, null, 88,   8, "pink"),
+        new PrdcElmt("Rb", "rubidium",  1, null, 265,  1, "pink"),
+        new PrdcElmt("Sr", "strontium", 2, null, 219,  2, "pink"),
+        
+        // elements 39-47
+        // new PrdcElmt("yttrium", 2, null, 5),
+        // new PrdcElmt("zirconium", 2, null, 5),
+        // new PrdcElmt("niobium", 2, null, 5),
+        // new PrdcElmt("molybdenum", 2, null, 5),
+        // new PrdcElmt("technetium", 2, null, 5),
+        // new PrdcElmt("ruthenium", 2, null, 5),
+        // new PrdcElmt("rhodium", 2, null, 5),
+        // new PrdcElmt("palladium", 2, null, 5),
+        // new PrdcElmt("silver", 2, null, 5),
+        
+        // element 48-56
+        new PrdcElmt("Cd", "cadmium",   2, null, 161, 2, "peach"),
+        new PrdcElmt("In", "indium",    3, null, 156, 3, "pink"),
+        new PrdcElmt("Sn", "tin",       4, null, 145, 4, "pink"),
+        new PrdcElmt("Sb", "antimony",  3, null, 133, 5, "pink"),
+        new PrdcElmt("Te", "tellurium", 2, null, 123, 6, "pink"),
+        new PrdcElmt("I",  "iodine",    1, null, 115, 7, "dark violet"),
+        new PrdcElmt("Xe", "xenon",     0, null, 108, 8, "cyan"),
+        new PrdcElmt("Cs", "caesium",   1, null, 300, 1, "violet"),
+        new PrdcElmt("Ba", "barium",    2, null, 253, 2, "dark green"),
+        
+        // elements 57-71
+        // new PrdcElmt("lanthanum", 2, null, 5),
+        // new PrdcElmt("cerium", 2, null, 5),
+        // new PrdcElmt("praseodymium", 2, null, 5),
+        // new PrdcElmt("neodymium", 2, null, 5),
+        // new PrdcElmt("promethium", 2, null, 5),
+        // new PrdcElmt("samarium", 2, null, 5),
+        // new PrdcElmt("europium", 2, null, 5),
+        // new PrdcElmt("gadolinium", 2, null, 5),
+        // new PrdcElmt("terbium", 2, null, 5),
+        // new PrdcElmt("dysprosium", 2, null, 5),
+        // new PrdcElmt("holmium", 2, null, 5),
+        // new PrdcElmt("erbium", 2, null, 5),
+        // new PrdcElmt("thulium", 2, null, 5),
+        // new PrdcElmt("ytterbium", 2, null, 5),
+        // new PrdcElmt("lutetium", 2, null, 5),
+        
+        // elements 72-79
+        // new PrdcElmt("hafnium", 2, null, 5),
+        // new PrdcElmt("tantalum", 2, null, 5),
+        // new PrdcElmt("tungsten", 2, null, 5),
+        // new PrdcElmt("rhenium", 2, null, 5),
+        // new PrdcElmt("osmium", 2, null, 5),
+        // new PrdcElmt("iridium", 2, null, 5),
+        // new PrdcElmt("platinum", 2, null, 5),
+        // new PrdcElmt("gold", 2, null, 5),
+        
+        // elements 80-88
+        new PrdcElmt("Hg", "mercury",   2, null, 171, 2, "peach"),
+        new PrdcElmt("Tl", "thallium",  3, null, 156, 3, "pink"),
+        new PrdcElmt("Pb", "lead",      4, null, 154, 4, "pink"),
+        new PrdcElmt("Bi", "bismuth",   3, null, 143, 5, "pink"),
+        new PrdcElmt("Po", "polonium",  2, null, 135, 6, "pink"),
+        new PrdcElmt("At", "astatine",  1, null, 127, 7, "pink"),
+        new PrdcElmt("Rn", "radon",     0, null, 120, 8, "pink")
+        
+        // bottom row -> molecules by collision
+        // new PrdcElmt("francium", 1, null, 5),
+        // new PrdcElmt("radium", 2, null, 5),
+        
+        // elements 89-103
+        // new PrdcElmt("actinium", 2, null, 5),
+        // new PrdcElmt("thorium", 2, null, 5),
+        // new PrdcElmt("protactinium", 2, null, 5),
+        // new PrdcElmt("uranium", 2, null, 5),
+        // new PrdcElmt("neptunium", 2, null, 5),
+        // new PrdcElmt("plutonium", 2, null, 5),
+        // new PrdcElmt("americium", 2, null, 5),
+        // new PrdcElmt("curium", 2, null, 5),
+        // new PrdcElmt("berkelium", 2, null, 5),
+        // new PrdcElmt("californium", 2, null, 5),
+        // new PrdcElmt("einsteinium", 2, null, 5),
+        // new PrdcElmt("fermium", 2, null, 5),
+        // new PrdcElmt("mendelevium", 2, null, 5),
+        // new PrdcElmt("nobelium", 2, null, 5),
+        // new PrdcElmt("lawrencium", 2, null, 5),
+        
+        // elements 104-111
+        // new PrdcElmt("rutherfordum", 2, null, 5),
+        // new PrdcElmt("dubnium", 2, null, 5),
+        // new PrdcElmt("seaborgium", 2, null, 5),
+        // new PrdcElmt("bohrium", 2, null, 5),
+        // new PrdcElmt("hassium", 2, null, 5),
+        // new PrdcElmt("meitnerium", 2, null, 5),
+        // new PrdcElmt("darmstadtium", 2, null, 5),
+        // new PrdcElmt("roentgenium", 2, null, 5)
+    ];
+
+    // put pond lengths in periodicTableArray
+    for (let i = 0; i < periodicTableArray.length; i++) {    // value is being modified, so we can't use a for-of loop
+        periodicTableArray[i].bondLengths = bondLengths.get(periodicTableArray[i].name);
+    }
+
+
+
+
+    for (let item of periodicTableArray) {
+        periodicTable.set(item.name, {
+            symbol: item.symbol,
+            possibleBonds: item.possibleBonds,
+            bondLengths: bondLengths,
+            atomicRadius: item.atomicRadius,
+            valenceElectrons: item.valenceElectrons,
+            colour: item.colour
+        });
     }
 })();
 
@@ -377,14 +396,7 @@ const chemistryData = {
         console.error("nah bwuh das cwusti. theh's no data on " + element);
         return false;
     },
-    
-    getCarbonAtomicRadius() {
-        for (let item of periodicTable) {
-            if (item.name == "carbon") return item.atomicRadius;   // returns 67
-        }
-        console.error("carbon's atomic radius could not be found in the periodic table data");
-    },
-    
+
     getCarbonSingleBondLength() {
         let result = bondLengths.get("carbon").carbon[0];
 

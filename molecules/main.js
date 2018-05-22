@@ -243,7 +243,7 @@ $(document).ready(function() {
             previousAtom = currentAtom;                                         // new previousAtom is the old currentAtom
             currentAtom = new Atom();
 
-            currentAtom.createNew();                                            // create the new atom
+            currentAtom.createAsChildOf(previousAtom);                          // create the new atom
             currentAtom.updateAppearance(currentModel);
 
             atomArray.push(currentAtom);
